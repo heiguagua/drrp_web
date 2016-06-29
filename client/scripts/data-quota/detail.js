@@ -18,9 +18,9 @@ DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state
     });
 
     //informationResource required by deps
-    $scope.DataquotaRequirementByDepTotals = Http.getDataQuotaRequirementByDepTotals(
-      {resource_id: $stateParams.resource_id}
-    );
+    // $scope.DataquotaRequirementByDepTotals = Http.getDataQuotaRequirementByDepTotals(
+    //   {resource_id: $stateParams.resource_id}
+    // );
 
 
   }
@@ -57,11 +57,39 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
   function(){
     return {
       restrict: 'AE',
-      template: "<div style='width:400px;height:400px;position:relative;top:8px'></div>",
+      template: "<div style='width:500px;height:400px;position:relative;top:8px'></div>",
       link: function(scope, element, attr){
-
+        // scope.DataquotaRequirementByDepTotals.then(function(result) {
+        //   if (200 == result.data.head.status) {
+        //     var dataquotaRequirement = result.data.body[0];
+        //     vat deptotal = dataquotaRequirement.deptotal;
+        //     vat resourceName = dataquotaRequirement.resourceName;
+        //     vat depNames = dataquotaRequirement.depNames;
+        //     var obj = {name: resourceName,x: 500 y:100 };
+        //     var obj1 = {source: resourceName,target: "" };
+        //     var data1 = [obj];
+        //     var lingks1 = [obj1];
+        //     if(deptotal){
+        //        depNames.forEach(function (i,item){
+        //          console.log("d");
+        //          obj.name = item;
+        //          obj.x = 600;
+        //          obj.y = 100 + (i+1)*20;
+        //          data1.push(obj);
+        //          obj1.target = item ;
+        //          lingks1.push(obj1);
+        //        })
+        //        console.log(data1);
+        //        console.log(lingks1);
+        //     }
+        //   }
+        // }
+        var data1 = [{name: "资源1", x: 500, y: 100 },{name: "节点2", x: 600,  y: 120 },{name: "节点3", x: 600,  y: 140 }];
+        var links1 = [{source: "资源1", target: "节点1" },
+                      {source: "资源1", target: "节点2" },
+                      {source: "资源1", target: "节点3"}];
         var myChart = echarts.init((element.find('div'))[0]);
-        var option1 = {
+        var option = {
             title: {
                 text: '信息资源对应的需求部门数'
             },
@@ -88,55 +116,20 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
                             }
                         }
                     },
-                    data: [{
-                        name: '中心',
-                        x: 550,
-                        y: 250
-                    }, {
-                        name: '节点1',
-                        x: 800,
-                        y: 250
-                    }, {
-                        name: '节点2',
-                        x: 550,
-                        y: 50
-                    }, {
-                        name: '节点3',
-                        x: 550,
-                        y: 400
-                    }, {
-                        name: '节点4',
-                        x: 300,
-                        y: 250
-                    }],
-                    links: [{
-                        source: '中心',
-                        target: '节点1',
-
-                    }, {
-                        source: '中心',
-                        target: '节点2'
-                    }, {
-                        source: '中心',
-                        target: '节点3'
-                    }, {
-                        source: '中心2',
-                        target: '节点4'
-                    }, {
-                        source: '节点1',
-                        target: '节点4'
-                    }],
+                    data: data1,
+                    links: links1,
                     lineStyle: {
                         normal: {
                             opacity: 0.9,
                             width: 2,
-                            curveness: 0
+                            curveness: 0.3
                         }
                     }
                 }
             ]
         };
-        myChart.setOption(option1);
+
+       myChart.setOption(option);
       }
     }
   }
