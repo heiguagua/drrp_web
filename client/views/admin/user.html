@@ -33,7 +33,7 @@
                 </thead>
                 <tbody>
                   <tr ng-repeat="user in users">
-                    <td>{{$index+1}}</td>
+                    <td class='numberAndDateStyle'>{{$index+1}}</td>
                     <td>
                       <a ng-click="updateUser(user)"><button type="button" class="btn btn-success btn-xs"><i class="fa fa-pencil-square-o"> 修改</i></button></a>&nbsp;&nbsp;
                       <!-- <a ng-click="deleteUser(user)"><button type="button" class="btn btn-danger btn-xs"><i class="fa fa-remove"> 删除</i></button></a> -->
@@ -43,7 +43,7 @@
                     <td>{{user.organization}}</td>
                     <td>{{user.organization_code}}</td>
                     <td>{{user.person_name}}</td>
-                    <td>{{user.phone}}</td>
+                    <td class='numberAndDateStyle'>{{user.phone}}</td>
                     <td>{{user.email}}</td>
                     <td>{{user.remark}}</td>
                     </td>

@@ -34,20 +34,20 @@
               </thead>
               <tbody>
                 <tr ng-repeat="AdminDep in AdminDepartments">
-                  <th>{{$index+1}}</th>
+                  <td class='numberAndDateStyle'>{{$index+1}}</td>
                   <td>
                     <a ng-click="updateDepartment(AdminDep)"><button type="button" class="btn btn-success btn-xs"><i class="fa fa-pencil-square-o"> 修改</i></button></a>&nbsp;&nbsp;
                     <a ng-click="deleteDepartment(AdminDep)"><button type="button" class="btn btn-danger btn-xs"><i class="fa fa-remove"> 删除</i></button></a>
                   </td>
                   <td>{{AdminDep.dep_sn}}</td>
-                  <td>{{AdminDep.order_by}}</td>
+                  <td class='numberAndDateStyle'>{{AdminDep.order_by}}</td>
                   <td>{{AdminDep.dep_name}}</td>
                   <td>{{AdminDep.parent_fullname}}</td>
                   <td>{{AdminDep.dep_type_name}}</td>
                   <td>{{AdminDep.area_code_name}}</td>
                   <td>{{AdminDep.theme_name}}</td>
                   <td>{{AdminDep.contacts}}</td>
-                  <td>{{AdminDep.contact_phone}}</td>
+                  <td class='numberAndDateStyle'>{{AdminDep.contact_phone}}</td>
                 </tr>
               </tbody>
             </table>

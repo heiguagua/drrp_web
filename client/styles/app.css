@@ -162,6 +162,15 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
   vertical-align: middle;
 }
+#dashboard .table-patch th {
+  text-align: center;
+}
+#dashboard .table-patch td {
+  text-align: left;
+}
+#dashboard .table-patch .numberAndDateStyle {
+  text-align: right;
+}
 #dashboard .first-section .panel {
   height: 310px;
 }
@@ -1440,7 +1449,12 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
   font-size: 13px;
   vertical-align: middle;
+}
+#data-quota-detail .table-patch th {
   text-align: center;
+}
+#data-quota-detail .table-patch td {
+  text-align: left;
 }
 #data-quota-detail .quota-example .table-responsive {
   margin-top: 0;
@@ -1458,7 +1472,15 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
   font-size: 14px;
   vertical-align: middle;
+}
+#admin-user .table-patch th {
   text-align: center;
+}
+#admin-user .table-patch td {
+  text-align: left;
+}
+#admin-user .table-patch .numberAndDateStyle {
+  text-align: right;
 }
 #admin-department .table-patch td,
 #admin-department .table-patch th {
@@ -1470,5 +1492,13 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
   font-size: 14px;
   vertical-align: middle;
+}
+#admin-department .table-patch th {
   text-align: center;
+}
+#admin-department .table-patch td {
+  text-align: left;
+}
+#admin-department .table-patch .numberAndDateStyle {
+  text-align: right;
 }
