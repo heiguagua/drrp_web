@@ -264,6 +264,9 @@ input.ng-touched.ng-invalid {
 #department-summary .panel-list .panel table {
   table-layout: fixed;
 }
+#department-summary .panel-list .panel table tr th {
+  text-align: center;
+}
 #department-summary .panel-list .panel table tr td {
   overflow: hidden;
   white-space: nowrap;
@@ -588,6 +591,9 @@ input.ng-touched.ng-invalid {
 }
 #department-inventory-detail .tab-content #invntDetail .text-right {
   text-align: right;
+}
+#department-inventory-detail .tab-content #exampleData table tr th {
+  text-align: center;
 }
 #department-inventory-upload {
   margin-bottom: 50px;
@@ -1216,6 +1222,9 @@ input.ng-touched.ng-invalid {
 }
 #department-audit-info .audit-wrap .audit-info table.no-border tr td {
   border: none;
+}
+#department-audit-info .audit-wrap .audit-info table tr th {
+  text-align: center;
 }
 #department-audit-info .audit-wrap .step-number {
   background-color: #35aa47;

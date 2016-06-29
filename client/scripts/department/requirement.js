@@ -261,11 +261,14 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
     $scope.Paging = {};
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
+    $scope.Paging.currentPage = 1;
 
     // 模态框信息资源列表分页
     $scope.ModalPaging = {};
+    $scope.ModalPaging.currentPage = 1;
     $scope.ModalPaging.maxSize = 5;
     $scope.ModalPaging.itemsPerPage = 10;
+	
 
     var _httpConfirmParams = {};
     _httpConfirmParams.limit = 10;

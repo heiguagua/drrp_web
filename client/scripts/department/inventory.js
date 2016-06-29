@@ -667,6 +667,15 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         $scope.ResourceItem.secret_flag_name = n.dict_name;
       })
 
+      $scope.$watch('data.parent_id', function(n) {
+        if(n) {
+          $scope.ResourceItem.parent_id = n.item_name;
+        }
+        else{
+          $scope.ResourceItem.parent_id = '';
+        }
+      })
+
       $scope.checkItemName = function() {
         if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
           console.log($scope.ResourceItem);
@@ -693,6 +702,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
       }
 
+      console.log($scope.ResourceItemList);
+      $scope.parent.ItemsList = $scope.ResourceItemList;
       Component.popModal($scope, 'Department.Inventory.Controller.publish', '新增', 'item-add-modal').result.then(function(res) {
         console.log($scope.ResourceItem);
         $scope.itemAdded = false;
@@ -728,7 +739,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.shareFreqEmpty = false;
       $scope.parent = {};
       $scope.parent.itemNameExist = false;
-
+      $scope.parent.ItemsList = $scope.ResourceItemList;
       $scope.data = {};
 
       // if (InfoItem.id) { // 在修改信息资源中修改
@@ -757,6 +768,13 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         }
       })
 
+      _($scope.parent.ItemsList).forEach(function(resourceItem) {
+        if (InfoItem.parent_id == resourceItem.item_name) {
+          $scope.data.parent_id = resourceItem;
+          console.log($scope.data.parent_id);
+        }
+      })
+
       $scope.$watch('data.item_type', function(n) {
         console.log($scope.data.item_type);
         if (n) {
@@ -769,6 +787,16 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         console.log(n);
         $scope.ResourceItem.secret_flag = n.id;
         $scope.ResourceItem.secret_flag_name = n.dict_name;
+      })
+
+      $scope.$watch('data.parent_id', function(n) {
+        console.log($scope.data.parent_id);
+        if(n) {
+          $scope.ResourceItem.parent_id = n.item_name;
+        }
+        else{
+          $scope.ResourceItem.parent_id = '';
+        }
       })
 
       $scope.checkItemName = function() {

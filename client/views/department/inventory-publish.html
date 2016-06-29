@@ -314,7 +314,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='rescoureItem in ResourceItemList | orderBy:"-create_time" '>
+              <tr ng-repeat='rescoureItem in ResourceItemList | orderBy:"item_ord" '>
                 <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
                 <td>{{$index+1}}</td>
                 <td>
@@ -455,6 +455,15 @@
           <span class='require-sign'>*</span>是否涉密:</label>
         <div class="col-sm-10">
           <select ng-model='data.secret_flag' required ng-options="qsflag as qsflag.dict_name for qsflag in  secretFlagList track by qsflag.id" class='custom-form-control'></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          父节点信息项:</label>
+        <div class="col-sm-10">
+          <select ng-model='data.parent_id'  ng-options="srcItem as srcItem.item_name for srcItem in parent.ItemsList track by srcItem.item_name" class='custom-form-control'></select>
+          <p ng-show="(data.parent_id.item_name == ResourceItem.item_name) && ResourceItem.item_name"  class="help-block">不能选择自身作为父级信息项。</p>
         </div>
       </div>
 
