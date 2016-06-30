@@ -214,8 +214,9 @@
                 <label>共享方式说明：</label><input ng-class="{true: 'ng-hide', false: 'ng-show'}[shareMethodOtherShow]" type='text' class='custom-form-control' name='share_method_desc' ng-model='InfoResource.share_method_desc'/>
               </span>
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[shareMethodOtherShow]">
-                <input type='text' name='share_method_other' class='custom-form-control' ng-model='InfoResource.share_method_other' placeholder='请输入其他类信息'/>
+                <input type='text' ng-maxlength='256' name='share_method_other' class='custom-form-control' ng-model='InfoResource.share_method_other' placeholder='请输入其他类信息' />
               </span>
+              <p ng-show="InfoResourceForm.share_method_other.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
               <p ng-show="!InfoResource.share_method && submitted && !resItemAddBtn" class="help-block">请选择共享方式</p>
             </div>
           </div>
@@ -481,7 +482,7 @@
           ng-options="sharelv as sharelv.dict_name for sharelv in  shareLevelList track by sharelv.id"
           class='custom-form-control' ng-selected='ResourceItem.share_level_obj.id == sharelv.id'></select>
           <span ng-class="{true: 'ng-show', false: 'ng-hide'}[parent.depShow]">指定部门名称：
-            <div style='display:inline-block' isteven-multi-select input-model="deptList" output-model="parent.itemoutputDeptList" helper-elements="all none filter" button-label="dep_name" item-label="dep_name" max-height="250px" tick-property="ticked"></div>
+            <div style='display:inline-block' isteven-multi-select input-model="deptList" output-model="ResourceItem.itemoutputDeptList" helper-elements="all none filter" button-label="dep_name" item-label="dep_name" max-height="250px" tick-property="ticked"></div>
           </span>
         </div>
       </div>

@@ -400,8 +400,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       if ($scope.resNameExist) {
         isValid = false;
       }
-      if (($scope.shareFreqSelection.length == 0 || !$scope.InfoResource.share_level || !$scope.InfoResource.share_type || !$scope.InfoResource.share_limit
-        || !$scope.InfoResource.share_method || ($scope.InfoResource.social_open_flag != 0 && $scope.InfoResource.social_open_flag != 1) ) && !$scope.resItemAddBtn) { // 未选择更新周期
+      if (($scope.shareFreqSelection.length == 0 || !$scope.InfoResource.share_level || !$scope.InfoResource.share_type || !$scope.InfoResource.share_limit || !$scope.InfoResource.share_method || ($scope.InfoResource.social_open_flag != 0 && $scope.InfoResource.social_open_flag != 1)) && !$scope.resItemAddBtn) { // 未选择更新周期
         isValid = false;
       }
       if ($scope.resItemAddBtn && ($scope.ResourceItemList.length == 0)) { // 未添加信息项
@@ -442,10 +441,9 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           console.log($scope.ResourceItemList);
         })
         _($scope.ResourceItemApplyInfo).forEach(function(item) {
-          if($scope.InfoResource.id) {
+          if ($scope.InfoResource.id) {
             item.InfoResourceId = $scope.InfoResource.id;
-          }
-          else {
+          } else {
             item.InfoResourceId = $scope.InfoResource.resource_name;
           }
         })
@@ -609,6 +607,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         InfoResourceAddObj.InfoResourceApplyInfo = InfoResourceApplyInfo;
         InfoResourceAddObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
         InfoResourceAddObj.InfoItem = $scope.ResourceItemList;
+        InfoResourceAddObj.InfoItemApplyInfo = $scope.ResourceItemApplyInfo;
 
         console.log(InfoResourceAddObj);
         $scope.updatePromise = Http.updateInfoResource(InfoResourceAddObj).then(function(result) {
@@ -636,39 +635,43 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     $scope.editItems = function(id) {
       console.log($scope.InfoResource);
       $scope.ResourceItemConfigList = [];
+      $scope.ResourceItemList = [];
+      $scope.parent = {};
+      $scope.parent.itemoutputDeptList = [];
       Http.getInfoItemList({
         resource_id: id
       }).then(function(result) {
-        $scope.ResourceItemList = result.data.body;
-        // 拼接信息资源所有信息项的多选项
-        _($scope.ResourceItemList).forEach(function(item) {
-          var shareFreqDictName = [];
-          _(item.config).forEach(function(config) {
-            var itemConfig = {};
-            itemConfig.InfoItemId = item.item_name;
-            itemConfig.sys_dict_id = config.id;
-            shareFreqDictName.push(config.dict_name);
-            $scope.ResourceItemConfigList.push(itemConfig);
-          })
-          item.update_period_name = shareFreqDictName.toString();
-
-          // 获取指定部门开放列表
-          $scope.parent = {};
-          _($scope.deptList).forEach(function(allItem) {
-            _(item.deps).forEach(function(authItem) {
-              if (allItem.id == authItem) {
-                allItem.ticked = true;
-                $scope.parent.itemoutputDeptList.push(allItem);
-              }
+        if (200 == result.data.head.status) {
+          $scope.ResourceItemList = result.data.body;
+          // 拼接信息资源所有信息项的多选项
+          _($scope.ResourceItemList).forEach(function(item) {
+            var shareFreqDictName = [];
+            _(item.config).forEach(function(config) {
+              var itemConfig = {};
+              itemConfig.InfoItemId = item.item_name;
+              itemConfig.sys_dict_id = config.id;
+              shareFreqDictName.push(config.dict_name);
+              $scope.ResourceItemConfigList.push(itemConfig);
             })
-          });
-        })
+            item.update_period_name = shareFreqDictName.toString();
+
+            // 获取指定部门开放列表
+            var itemShareDeps = _.map(item.itemdepconfig, 'id');
+            _(itemShareDeps).forEach(function(value) {
+              var share_dep = {};
+              share_dep.InfoItemId = item.item_name;
+              share_dep.apply_dep = value;
+              $scope.ResourceItemApplyInfo.push(share_dep);
+            });
+          })
+        }
+
       })
       $scope.ResItemListShow = true;
     }
 
     $scope.addResourceItem = function(type) {
-      console.log($scope.InfoResource);
+      console.log($scope.ResourceItemList);
       $scope.shareFreqEmpty = false;
       $scope.Modal = {};
       $scope.itemAdded = false;
@@ -691,16 +694,15 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
       $scope.$watch('data.parent_id', function(n) {
         $scope.parent.childParentConflict = false;
-        if(n) {
+        if (n) {
           _($scope.ResourceItemList).forEach(function(item) {
-            if((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+            if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
               $scope.parent.childParentConflict = true;
               return;
             }
           });
           $scope.ResourceItem.parent_id = n.item_name;
-        }
-        else{
+        } else {
           $scope.ResourceItem.parent_id = '';
         }
       })
@@ -708,7 +710,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       // show or hide department
       $scope.$watch('ResourceItem.share_level_obj', function(n) {
         $scope.parent.depShow = false;
-        if(n) {
+        if (n) {
           if (LEVEL_ALL_OPEN != n.id) { // 不为全开放
             if (LEVEL_AUTH == n.id) { // 授权开放
               $scope.parent.depShow = true;
@@ -716,7 +718,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             } else {
               $scope.parent.depShow = false;
               $scope.parent.socialOpenFlag = true;
-              $scope.parent.itemoutputDeptList = [];
+              $scope.ResourceItem.itemoutputDeptList = [];
             }
             _($scope.socialOpenList).forEach(function(socialOpen) {
               if (socialOpen.dict_code == 0) {
@@ -730,7 +732,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
                 $scope.ResourceItem.social_open_flag_obj = socialOpen;
               }
             })
-            $scope.parent.itemoutputDeptList = [];
+            $scope.ResourceItem.itemoutputDeptList = [];
           }
         }
       })
@@ -797,9 +799,9 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           shareFreqDictName.push(item.dict_name);
         });
 
-        console.log($scope.parent.itemoutputDeptList);
+        console.log($scope.ResourceItem.itemoutputDeptList);
         // 组装指定部门
-        var shareDeps = _.map($scope.parent.itemoutputDeptList, 'id');
+        var shareDeps = _.map($scope.ResourceItem.itemoutputDeptList, 'id');
         _(shareDeps).forEach(function(value) {
           var share_dep = {};
           share_dep.InfoItemId = $scope.ResourceItem.item_name;
@@ -808,6 +810,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         });
 
         $scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
+        $scope.ResourceItem.itemdepconfig = $scope.ResourceItem.itemoutputDeptList;
         $scope.ResourceItem.update_period_name = shareFreqDictName.toString();
         $scope.ResourceItemList.push($scope.ResourceItem);
 
@@ -823,20 +826,24 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.Modal = {};
       $scope.itemUpdated = false;
       $scope.ResourceItem = angular.copy(InfoItem);
-      $scope.ResourceItem.shareFreqItemSelection = _.map(InfoItem.config,'id');
+      $scope.ResourceItem.shareFreqItemSelection = _.map(InfoItem.config, 'id');
       $scope.ResourceItem.shareFreqItemObjSelection = InfoItem.config;
+
       $scope.shareFreqEmpty = false;
       $scope.parent = {};
       $scope.parent.itemNameExist = false;
       $scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
+      $scope.parent.depShow = false;
       var hasEmpty = false;
       _($scope.parent.ItemsList).forEach(function(item) {
-        if(item.item_name == '') {
+        if (item.item_name == '') {
           hasEmpty = true;
         }
       })
-      if(!hasEmpty) {
-        $scope.parent.ItemsList.push({'item_name':''});
+      if (!hasEmpty) {
+        $scope.parent.ItemsList.push({
+          'item_name': ''
+        });
       }
 
       $scope.data = {};
@@ -854,6 +861,30 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       //   $scope.shareFreqItemObjSelection = $scope.ResourceItem.update_period_obj_temp;
       // }
 
+      _($scope.itemTypeList).forEach(function(itemType) {
+        if (InfoItem.item_type == itemType.id) {
+          $scope.ResourceItem.item_type_obj = itemType;
+        }
+      })
+
+      _($scope.secretFlagList).forEach(function(secretFlag) {
+        if (InfoItem.secret_flag == secretFlag.id) {
+          $scope.ResourceItem.secret_flag_obj = secretFlag;
+        }
+      })
+
+      _($scope.shareTypeList).forEach(function(shareType) {
+        if (InfoItem.share_type == shareType.dict_code) {
+          $scope.ResourceItem.share_type_obj = shareType;
+        }
+      })
+
+      _($scope.socialOpenList).forEach(function(openFlag) {
+        if (InfoItem.social_open_flag == openFlag.dict_code) {
+          $scope.ResourceItem.social_open_flag_obj = openFlag;
+        }
+      })
+
       _($scope.parent.ItemsList).forEach(function(resourceItem) {
         if (InfoItem.parent_id == resourceItem.item_name) {
           $scope.data.parent_id = resourceItem;
@@ -861,26 +892,66 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         }
       })
 
-      _($scope.parent.shareLevelList).forEach(function(shareLevel) {
+      _($scope.shareLevelList).forEach(function(shareLevel) {
         if (InfoItem.share_level == shareLevel.id) {
           $scope.ResourceItem.share_level_obj = shareLevel;
           console.log($scope.ResourceItem.share_level_obj);
         }
       })
+      $scope.ResourceItem.itemoutputDeptList = [];
+      _($scope.deptList).forEach(function(allItem) {
+        var shareDepsItem = _.map(InfoItem.itemdepconfig, 'id');
+        _(shareDepsItem).forEach(function(authItem) {
+          if (allItem.id == authItem) {
+            allItem.ticked = true;
+            $scope.ResourceItem.itemoutputDeptList.push(allItem);
+          }
+        })
+      });
+      console.log($scope.ResourceItem.itemoutputDeptList);
+      // show or hide department
+      $scope.$watch('ResourceItem.share_level_obj', function(n) {
+        $scope.parent.depShow = false;
+        if (n) {
+          if (LEVEL_ALL_OPEN != n.id) { // 不为全开放
+            if (LEVEL_AUTH == n.id) { // 授权开放
+              $scope.parent.depShow = true;
+              $scope.socialOpenFlag = false;
+            } else {
+              $scope.parent.depShow = false;
+              $scope.parent.socialOpenFlag = true;
+              $scope.ResourceItem.itemoutputDeptList = [];
+            }
+            _($scope.socialOpenList).forEach(function(socialOpen) {
+              if (socialOpen.dict_code == 0) {
+                $scope.ResourceItem.social_open_flag_obj = socialOpen;
+              }
+            })
+
+          } else {
+            _($scope.socialOpenList).forEach(function(socialOpen) {
+              if (socialOpen.dict_code == 1) {
+                $scope.ResourceItem.social_open_flag_obj = socialOpen;
+              }
+            })
+            $scope.ResourceItem.itemoutputDeptList = [];
+          }
+        }
+        console.log($scope.ResourceItem.itemoutputDeptList);
+      })
 
       $scope.$watch('data.parent_id', function(n) {
 
         $scope.parent.childParentConflict = false;
-        if(n) {
+        if (n) {
           _($scope.ResourceItemList).forEach(function(item) {
-            if((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+            if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
               $scope.parent.childParentConflict = true;
               return;
             }
           });
           $scope.ResourceItem.parent_id = n.item_name;
-        }
-        else{
+        } else {
           $scope.ResourceItem.parent_id = '';
         }
         console.log($scope.parent.childParentConflict);
@@ -941,9 +1012,9 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           return item == InfoItem;
         });
 
-        console.log($scope.parent.itemoutputDeptList);
+        console.log($scope.ResourceItem.itemoutputDeptList);
         // 组装指定部门
-        var shareDeps = _.map($scope.parent.itemoutputDeptList, 'id');
+        var shareDeps = _.map($scope.ResourceItem.itemoutputDeptList, 'id');
         _(shareDeps).forEach(function(value) {
           var share_dep = {};
           share_dep.InfoItemId = $scope.ResourceItem.item_name;
@@ -959,6 +1030,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           shareFreqDictName.push(item.dict_name);
         });
         $scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
+        $scope.ResourceItem.itemdepconfig = $scope.ResourceItem.itemoutputDeptList;
         $scope.ResourceItem.update_period_name = shareFreqDictName.toString();
         $scope.ResourceItemList.push($scope.ResourceItem);
 

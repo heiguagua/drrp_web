@@ -162,45 +162,47 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
             <label for="" class="col-sm-2 control-label">
               <span class='require-sign'>*</span>共享级别:</label>
             <div class="col-sm-10">
-              <select required ng-model='InfoResource.share_level' name='shareLevelOpt' ng-change='showHideDeps()' class='form-control' style='display: inline-block !important;width: auto;' ng-model='InfoResource.share_level'>
+              <select ng-model='InfoResource.share_level' name='shareLevelOpt' ng-change='showHideDeps()' class='form-control' style='display: inline-block !important;width: auto;' ng-model='InfoResource.share_level'>
                 <option ng-repeat="shareLevel in  shareLevelList" value='{{shareLevel.id}}'>{{shareLevel.dict_name}}</option>
               </select>
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[depShow]">指定部门名称：
                 <div style='display:inline-block' isteven-multi-select input-model="deptList" output-model="outputDeptList" helper-elements="all none filter" button-label="dep_name" item-label="dep_name" tick-property="ticked" max-height="250px"></div>
               </span>
+              <p ng-show="!InfoResource.share_level && submitted && !resItemAddBtn" class="help-block">请选择共享级别</p>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
             <label for="" class="col-sm-2 control-label">
               <span class='require-sign'>*</span>共享类型:</label>
             <div class="col-sm-10">
-              <select required  ng-model='InfoResource.share_type' class='custom-form-control'>
+              <select ng-model='InfoResource.share_type' class='custom-form-control'>
                 <option ng-repeat="shareType in  shareTypeList" value='{{shareType.dict_code}}'>{{shareType.dict_name}}</option>
               </select>
+              <p ng-show="!InfoResource.share_type && submitted && !resItemAddBtn" class="help-block">请选择共享类型</p>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
             <label for="" class="col-sm-2 control-label">
               <span class='require-sign'>*</span>共享条件:</label>
             <div class="col-sm-10">
-              <textarea class="form-control" name='share_limit' required ng-maxlength="256" rows='3' placeholder='有条件共享类可注明共享条件和共享范围；不予共享类注明相关的法律、行政法规和党中央、国务院政策依据。' ng-model='InfoResource.share_limit'></textarea>
+              <textarea class="form-control" name='share_limit' ng-maxlength="256" rows='3' placeholder='有条件共享类可注明共享条件和共享范围；不予共享类注明相关的法律、行政法规和党中央、国务院政策依据。' ng-model='InfoResource.share_limit'></textarea>
               <p ng-show="InfoResourceForm.share_limit.$error.maxlength" class="help-block">您输入的内容太长。</p>
-              <p ng-show="InfoResourceForm.share_limit.$error.required && submitted" class="help-block">请输入指标详细解释</p>
+              <p ng-show="!InfoResource.share_limit && submitted && !resItemAddBtn" class="help-block">请输入共享条件</p>
               <span class='pull-right'>(最多256个汉字)</span>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
             <label for="" class="col-sm-2 control-label">
               <span class='require-sign'>*</span>共享方式:</label>
             <div class="col-sm-10">
-              <select ng-model='InfoResource.share_method' required name='share_method' ng-change='showHideShareMethodOther()' class='form-control' style='display: inline-block !important;width: auto;'>
+              <select ng-model='InfoResource.share_method' name='share_method' ng-change='showHideShareMethodOther()' class='form-control' style='display: inline-block !important;width: auto;'>
                 <option ng-repeat="shareMethod in  shareMethodList" value='{{shareMethod.id}}'>{{shareMethod.dict_name}}</option>
               </select>
 
@@ -212,19 +214,21 @@
                 <input type='text' ng-maxlength='256' name='share_method_other' class='custom-form-control' ng-model='InfoResource.share_method_other' placeholder='请输入其他类信息' />
               </span>
               <p ng-show="InfoResourceForm.share_method_other.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
+              <p ng-show="!InfoResource.share_method && submitted && !resItemAddBtn" class="help-block">请选择共享方式</p>
             </div>
           </div>
 
-          <div class="form-group">
+        <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
             <label for="" class="col-sm-2 control-label" style='padding-left:0'><span class='require-sign'>*</span>是否面向社会开放:</label>
             <div class="col-sm-10">
-              <select ng-model='InfoResource.social_open_flag' readonly='{{socialOpenFlag}}' class='custom-form-control' required>
+              <select ng-model='InfoResource.social_open_flag' readonly='{{socialOpenFlag}}' class='custom-form-control'>
                 <option ng-selected="socialOpen.dict_code == InfoResource.social_open_flag" ng-repeat="socialOpen in  socialOpenList" value='{{socialOpen.dict_code}}'>{{socialOpen.dict_name}}</option>
               </select>
+              <p ng-show="(InfoResource.social_open_flag != 0 && InfoResource.social_open_flag != 1) && submitted && !resItemAddBtn" class="help-block">请选择是否面向社会开放</p>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
             <label for="" class="col-sm-2 control-label">
               开放条件:</label>
             <div class="col-sm-10">
@@ -295,41 +299,55 @@
     <div class="panel-body">
       <div><button class='btn btn-success' ng-click='addResourceItem(1)'>新增</button></div>
       <div style='overflow-x:scroll;height:490px;'>
-      <div class='container'>
-        <table class='table table-hover table-striped table-bordered'>
-          <thead>
-            <tr>
-              <th width='40px'>序号</th>
-              <th width='100px'>操作</th>
-              <th width='80px'>信息项名称</th>
-              <th width='100px'>数据类型</th>
-              <th width='80px'>数据精度</th>
-              <th width='80px'>数据长度</th>
-              <th width='80px'>计量单位</th>
-              <th width='80px'>计算方法</th>
-              <th width='80px'>更新周期</th>
-              <th width='80px'>是否涉密</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat='rescoureItem in ResourceItemList | orderBy:"item_ord" '>
-              <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
-              <td>{{$index+1}}</td>
-              <td><a class='delete btn btn-danger btn-xs' ng-click='deleteItem($index)' ><i class='fa fa-trash'></i>&nbsp;删除</a>
-              <a class='edit btn btn-success btn-xs' ng-click='updateItem(rescoureItem)'><i class='fa fa-pencil'></i>&nbsp;修改</a></td>
-              <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
-              <td title='{{rescoureItem.item_type}}'>{{rescoureItem.item_type_name}}</td>
-              <td title='{{rescoureItem.data_precision}}'>{{rescoureItem.data_precision}}</td>
-              <td title='{{rescoureItem.data_length}}'>{{rescoureItem.data_length}}</td>
-              <td title='{{rescoureItem.meter_unit}}'>{{rescoureItem.meter_unit}}</td>
-              <td title='{{rescoureItem.calculate_method}}'>{{rescoureItem.calculate_method}}</td>
-              <td title='{{rescoureItem.shareFreqDictName}}'>{{rescoureItem.update_period_name}}</td>
-              <td title='{{rescoureItem.secret_flag}}'>{{rescoureItem.secret_flag_name}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class='container'>
+          <table class='table table-hover table-striped table-bordered'>
+            <thead>
+              <tr>
+                <th width='40px'>序号</th>
+                <th width='100px'>操作</th>
+                <th width='80px'>信息项名称</th>
+                <th width='100px'>数据类型</th>
+                <th width='80px'>数据精度</th>
+                <th width='80px'>数据长度</th>
+                <th width='80px'>计量单位</th>
+                <th width='80px'>计算方法</th>
+                <th width='80px'>更新周期</th>
+                <th width='80px'>是否涉密</th>
+                <th width='80px'>共享级别</th>
+                <th width='80px'>共享类型</th>
+                <th width='80px'>共享条件</th>
+                <th width='120px'>是否面向社会开放</th>
+                <th width='80px'>开放条件</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='rescoureItem in ResourceItemList | orderBy:"item_ord" '>
+                <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
+                <td>{{$index+1}}</td>
+                <td>
+                  <a class='delete btn btn-danger btn-xs' ng-click='deleteItem($index)'>
+                    <i class='fa fa-trash'></i>&nbsp;删除</a>
+                  <a class='edit btn btn-success btn-xs' ng-click='updateItem(rescoureItem)'>
+                    <i class='fa fa-pencil'></i>&nbsp;修改</a>
+                </td>
+                <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
+                <td title='{{rescoureItem.item_type}}'>{{rescoureItem.item_type_name}}</td>
+                <td title='{{rescoureItem.data_precision}}'>{{rescoureItem.data_precision}}</td>
+                <td title='{{rescoureItem.data_length}}'>{{rescoureItem.data_length}}</td>
+                <td title='{{rescoureItem.meter_unit}}'>{{rescoureItem.meter_unit}}</td>
+                <td title='{{rescoureItem.calculate_method}}'>{{rescoureItem.calculate_method}}</td>
+                <td title='{{rescoureItem.shareFreqDictName}}'>{{rescoureItem.update_period_name}}</td>
+                <td title='{{rescoureItem.secret_flag_name}}'>{{rescoureItem.secret_flag_name}}</td>
+                <td title='{{rescoureItem.share_level_name}}'>{{rescoureItem.share_level_name}}</td>
+                <td title='{{rescoureItem.share_type_name}}'>{{rescoureItem.share_type_name}}</td>
+                <td title='{{rescoureItem.share_limit}}'>{{rescoureItem.share_limit}}</td>
+                <td title='{{rescoureItem.social_open_flag_name}}'>{{rescoureItem.social_open_flag_name}}</td>
+                <td title='{{rescoureItem.social_open_limit}}'>{{rescoureItem.social_open_limit}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
       <div class="pull-right">
         <div class="btn btn-group">
           <button class="btn btn-default " type='button' ng-click='ResItemListShow = false'>取消</button>
@@ -365,13 +383,13 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="" class="col-sm-2 control-label"><span class='require-sign'>*</span>数据类型:</label>
-          <div class="col-sm-10">
-            <select ng-model='data.item_type' ng-options="o as o.dict_name for o in  itemTypeList track by o.id" class='custom-form-control' >
-            </select>
-          </div>
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          <span class='require-sign'>*</span>数据类型:</label>
+        <div class="col-sm-10">
+          <select ng-model='ResourceItem.item_type_obj' required ng-options="o as o.dict_name for o in  itemTypeList track by o.id" class='custom-form-control'></select>
         </div>
+      </div>
 
         <div class="form-group">
           <label for="standard" class="col-sm-2 control-label">
@@ -445,18 +463,71 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="" class="col-sm-2 control-label"><span class='require-sign'>*</span>是否涉密:</label>
-          <div class="col-sm-10">
-            <!-- <span ng-repeat="qsflag in  secretFlagList">
-              <input type="checkbox" value="{{dataLevel.id}}" ng-checked="dataLevelSelection.indexOf(dataLevel.id) > -1" ng-click="toggleDataLevelSelection(dataLevel)">
-              {{dataLevel.dict_name}}
-            </span> -->
-
-            <select ng-model='data.secret_flag' required ng-options="qsflag as qsflag.dict_name for qsflag in  secretFlagList track by qsflag.id" class='custom-form-control' >
-            </select>
-          </div>
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          <span class='require-sign'>*</span>是否涉密:</label>
+        <div class="col-sm-10">
+          <select ng-model='ResourceItem.secret_flag_obj'  required  ng-options="qsflag as qsflag.dict_name for qsflag in  secretFlagList track by qsflag.id" class='custom-form-control'></select>
         </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          <span class='require-sign'>*</span>共享级别:</label>
+        <div class="col-sm-10">
+          <select ng-model='ResourceItem.share_level_obj' required
+          ng-options="sharelv as sharelv.dict_name for sharelv in  shareLevelList track by sharelv.id"
+          class='custom-form-control'></select>
+          <span ng-class="{true: 'ng-show', false: 'ng-hide'}[parent.depShow]">指定部门名称：
+            <div style='display:inline-block' isteven-multi-select input-model="deptList" output-model="ResourceItem.itemoutputDeptList" helper-elements="all none filter" button-label="dep_name" item-label="dep_name" max-height="250px" tick-property="ticked"></div>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          <span class='require-sign'>*</span>共享类型:</label>
+        <div class="col-sm-10">
+          <select ng-model='ResourceItem.share_type_obj' required
+          ng-options="shareType as shareType.dict_name for shareType in  shareTypeList track by shareType.dict_code"
+          class='custom-form-control'></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          <span class='require-sign'>*</span>共享条件:</label>
+        <div class="col-sm-10">
+          <textarea ng-model='ResourceItem.share_limit' class="form-control" name='share_limit' ng-maxlength="256" rows='3' placeholder='有条件共享类可注明共享条件和共享范围；不予共享类注明相关的法律、行政法规和党中央、国务院政策依据。' ></textarea>
+          <p ng-show="addItemForm.share_limit.$error.maxlength" class="help-block">您输入的内容太长。</p>
+          <span class='pull-right'>(最多256个汉字)</span>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}">
+        <label for="" class="col-sm-2 control-label" style='padding-left:0'>
+          <span class='require-sign'>*</span>是否面向社会开放:</label>
+        <div class="col-sm-10">
+          <select ng-model='ResourceItem.social_open_flag_obj'
+          ng-options="openFlag as openFlag.dict_name for openFlag in  socialOpenList track by openFlag.dict_code"
+          readonly='{{parent.socialOpenFlag}}' class='custom-form-control' required>
+          </select>
+          <!-- <select ng-model='ResourceItem.social_open_flag_obj' readonly='{{parent.socialOpenFlag}}' class='custom-form-control' required>
+            <option ng-selected="socialOpen.dict_code == ResourceItem.social_open_flag" ng-repeat="socialOpen in  socialOpenList" value='{{socialOpen.dict_code}}'>{{socialOpen.dict_name}}</option>
+          </select> -->
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          开放条件:</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" ng-model='ResourceItem.social_open_limit' placeholder='描述对数据开放利用的约束条件' name='social_open_limit' ng-maxlength="256" rows='3' placeholder='有条件共享类可注明共享条件和共享范围；不予共享类注明相关的法律、行政法规和党中央、国务院政策依据。'
+          ></textarea>
+          <p ng-show="addItemForm.social_open_limit.$error.maxlength" class="help-block">您输入的内容太长。</p>
+          <span class='pull-right'>(最多256个汉字)</span>
+        </div>
+      </div>
 
         <div class="form-group">
           <label for="" class="col-sm-2 control-label">
