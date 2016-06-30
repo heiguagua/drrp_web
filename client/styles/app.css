@@ -1513,9 +1513,6 @@ input.ng-touched.ng-invalid {
 #dep-resource .row {
   height: 450px;
 }
-#dep-resource .table-patch {
-  table-layout: fixed;
-}
 #dep-resource .table-patch td,
 #dep-resource .table-patch th {
   width: 20px;
@@ -1535,4 +1532,8 @@ input.ng-touched.ng-invalid {
 }
 #dep-resource .table-patch .numberAndDateStyle {
   text-align: right;
+}
+#dep-resource table.table.table-striped.table-hover.table-bordered.table-patch {
+  width: 750px;
+  margin-left: 100px;
 }

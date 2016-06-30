@@ -8,6 +8,7 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
     var dep_id = ((LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') ? null : LoginUser.dep_id);
     var dep_name= ((LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') ? null : LoginUser.dep_name);
     $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
 

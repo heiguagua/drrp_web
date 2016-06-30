@@ -5,6 +5,7 @@
   AdminDepResource.controller('Admin.DepResource.Controller.Main', ['$scope', 'AdminDepResource.Service.Http', '$state',
   function($scope,  Http, $state) {
     $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
 
