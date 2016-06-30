@@ -56,7 +56,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
       }
     ]);
     /** Config Router */
-    $urlRouterProvider.otherwise('/welcome');
+    $urlRouterProvider.otherwise('/login');
     $stateProvider
       .state('welcome', {
         url: '/welcome',
