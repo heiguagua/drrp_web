@@ -1444,13 +1444,12 @@ input.ng-touched.ng-invalid {
   word-wrap: break-word;
 }
 #data-quota-detail .table {
-  width: 100%;
-  max-width: 100%;
   margin-bottom: 20px;
   margin-top: -9px;
 }
 #data-quota-detail .table-patch td,
 #data-quota-detail .table-patch th {
+  max-width: 100px;
   word-break: keep-all;
   word-wrap: normal;
   white-space: nowrap;
@@ -1509,5 +1508,31 @@ input.ng-touched.ng-invalid {
   text-align: left;
 }
 #admin-department .table-patch .numberAndDateStyle {
+  text-align: right;
+}
+#dep-resource .row {
+  height: 450px;
+}
+#dep-resource .table-patch {
+  table-layout: fixed;
+}
+#dep-resource .table-patch td,
+#dep-resource .table-patch th {
+  width: 20px;
+  word-break: keep-all;
+  word-wrap: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  vertical-align: middle;
+}
+#dep-resource .table-patch th {
+  text-align: center;
+}
+#dep-resource .table-patch td {
+  text-align: left;
+}
+#dep-resource .table-patch .numberAndDateStyle {
   text-align: right;
 }

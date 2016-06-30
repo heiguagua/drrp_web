@@ -12,6 +12,7 @@ var app = angular.module('app', [
   'Admin',
   'Admin.User',
   'Admin.Department',
+  'Admin.DepResource',
   'Department',
   'DataQuota',
   'DataQuotaList',
@@ -77,9 +78,14 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         controller: 'Admin.Controller.Main'
       })
       .state('main.admin.department', {
-        url: '/dashboard',
+        url: '/department',
         templateUrl: 'views/admin/department.html',
         controller: 'Admin.Department.Controller.Main'
+      })
+      .state('main.admin.dep-resource', {
+        url: '/dep-resource',
+        templateUrl: 'views/admin/dep-resource.html',
+        controller: 'Admin.DepResource.Controller.Main'
       })
       .state('main.admin.user', {
         url: '/user',

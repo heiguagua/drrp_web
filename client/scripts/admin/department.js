@@ -30,8 +30,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     // init
     getDepartmentList(_httpParams);
     function getDepTotal(){
-      Http.getDepTotal({
-      }).then(function(result) {
+      Http.getDepTotal().then(function(result) {
         $scope.depTotal = result.data.body[0].number;
         $scope.Paging.totalItems = $scope.depTotal;
       });
