@@ -6,6 +6,7 @@ var app = angular.module('app', [
   'ui.bootstrap',
   'treeControl',
   'isteven-multi-select',
+  'Welcome',
   'Login',
   'Main',
   'Dashboard',
@@ -55,8 +56,13 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
       }
     ]);
     /** Config Router */
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/welcome');
     $stateProvider
+      .state('welcome', {
+        url: '/welcome',
+        templateUrl: 'views/common/welcome.html',
+        controller: 'Welcome.Controller.Main'
+      })
       .state('login', {
         url: '/login',
         templateUrl: 'views/common/login.html',
@@ -198,7 +204,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
 app.run(['$rootScope', function($rootScope){
   $rootScope.$on('$stateChangeStart',
     function(event, toState, toParams, fromState, fromParams){
-      if(toState.name!=='login'){
+      if(toState.name!=='login' && toState.name!=='welcome'){
         if(!sessionStorage.token){
           window.location.href='/build';
         };
