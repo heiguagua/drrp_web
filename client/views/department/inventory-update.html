@@ -198,11 +198,11 @@
             </div>
           </div>
 
-          <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
+          <div class="form-group" >
             <label for="" class="col-sm-2 control-label">
               <span class='require-sign'>*</span>共享方式:</label>
             <div class="col-sm-10">
-              <select ng-model='InfoResource.share_method' name='share_method' ng-change='showHideShareMethodOther()' class='form-control' style='display: inline-block !important;width: auto;'>
+              <select ng-model='InfoResource.share_method' name='share_method' required ng-change='showHideShareMethodOther()' class='form-control' style='display: inline-block !important;width: auto;'>
                 <option ng-repeat="shareMethod in  shareMethodList" value='{{shareMethod.id}}'>{{shareMethod.dict_name}}</option>
               </select>
 
@@ -214,7 +214,7 @@
                 <input type='text' ng-maxlength='256' name='share_method_other' class='custom-form-control' ng-model='InfoResource.share_method_other' placeholder='请输入其他类信息' />
               </span>
               <p ng-show="InfoResourceForm.share_method_other.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
-              <p ng-show="!InfoResource.share_method && submitted && !resItemAddBtn" class="help-block">请选择共享方式</p>
+              <p ng-show="!InfoResource.share_method && submitted" class="help-block">请选择共享方式</p>
             </div>
           </div>
 

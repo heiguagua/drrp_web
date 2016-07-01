@@ -70,9 +70,15 @@ DInventory.controller('Department.Inventory.Controller.Main', ['$cookies', '$sco
       //_httpParams.dep_name = DEP_NAME;
       $scope.promise = Http.getDepartInfoResList(_httpParams).then(function(result) {
         console.log(result);
-        $scope.infoResourceList = result.data.body[0].results;
-        $scope.resourceCount = result.data.body[0].count[0].resource_count;
-        $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        if (200 == result.data.head.status) {
+          $scope.infoResourceList = result.data.body[0].results;
+          $scope.resourceCount = result.data.body[0].count[0].resource_count;
+          $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        }
+        else{
+          $scope.infoResourceList = [];
+        }
+
       });
     }
 
@@ -258,40 +264,7 @@ DInventory.controller('Department.Inventory.Controller.Main', ['$cookies', '$sco
   }
 ])
 
-/** Inventory Controller */
-DInventory.controller('Department.Inventory.Controller.detail', ['$scope', '$q', 'Department.Inventory.Service.Http', '$stateParams', '$state',
-  function($scope, $q, Http, $stateParams, $state) {
-    console.log($stateParams.item);
-    $scope.InfoItemShow = false;
-    Http.getDepartInfoResList({
-      resource_id: $stateParams.item
-    }).then(function(ResourceRes) {
-      $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
-      Http.getInfoItemList({
-        resource_id: $scope.InfoResourceDetail.id
-      }).then(function(result) {
-        if (result.data.body.length == 0) {
-          $scope.InfoItemShow = false;
-        } else {
-          $scope.InfoItemShow = true;
-          $scope.InfoItems = result.data.body;
 
-          _($scope.InfoItems).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              shareFreqDictName.push(config.dict_name);
-            })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-        }
-
-
-      })
-    })
-
-
-  }
-])
 
 DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$scope', '$stateParams', '$state', '$q', '$uibModal', 'Department.Inventory.Service.Component', 'Department.Inventory.Service.Http',
   function($cookies, $scope, $stateParams, $state, $q, $uibModal, Component, Http) {
@@ -523,24 +496,35 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
 
         // 获取所有信息项
-        // Http.getInfoItemList({
-        //   resource_id: $scope.InfoResource.id
-        // }).then(function(result) {
-        //   $scope.ResourceItemList = result.data.body;
-        //   // 拼接信息资源所有信息项的多选项
-        //   _($scope.ResourceItemList).forEach(function(item) {
-        //     var shareFreqDictName = [];
-        //     _(item.config).forEach(function(config) {
-        //       var itemConfig = {};
-        //       itemConfig.InfoItemId = item.item_name;
-        //       itemConfig.sys_dict_id = config.id;
-        //       shareFreqDictName.push(config.dict_name);
-        //       $scope.ResourceItemConfigList.push(itemConfig);
-        //     })
-        //     item.update_period_name = shareFreqDictName.toString();
-        //   })
-        //   console.log($scope.ResourceItemConfigList);
-        // })
+        Http.getInfoItemList({
+          resource_id: $scope.InfoResource.id
+        }).then(function(result) {
+          $scope.ResourceItemList = result.data.body;
+          // 拼接信息资源所有信息项的多选项
+          _($scope.ResourceItemList).forEach(function(item) {
+            var shareFreqDictName = [];
+            _(item.config).forEach(function(config) {
+              var itemConfig = {};
+              itemConfig.InfoItemId = item.item_name;
+              itemConfig.sys_dict_id = config.id;
+              shareFreqDictName.push(config.dict_name);
+              $scope.ResourceItemConfigList.push(itemConfig);
+            })
+            item.update_period_name = shareFreqDictName.toString();
+
+            // 获取指定部门开放列表
+            var itemShareDeps = _.map(item.itemdepconfig, 'id');
+            _(itemShareDeps).forEach(function(value) {
+              var share_dep = {};
+              share_dep.InfoItemId = item.item_name;
+              share_dep.apply_dep = value;
+              $scope.ResourceItemApplyInfo.push(share_dep);
+            });
+          })
+          console.log($scope.ResourceItemConfigList);
+
+
+        })
       })
 
 
@@ -1339,6 +1323,8 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
       });
       return promise;
     }
+
+
     return {
       saveInfoResource: saveInfoResource,
       getDepartmentList: getDepartmentList,
@@ -1410,8 +1396,6 @@ DInventory.service('Department.Inventory.Service.Component', ['$uibModal', '$sta
     }
   }
 ])
-
-
 DInventory.directive('fileModel', ['$parse', function($parse) {
   return {
     restrict: 'A',

@@ -4,19 +4,8 @@
       <a class='btn btn-xs pull-right' onclick='history.go(-1)'>返回</a>
     </div>
     <div class="panel-body">
-      <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" ng-class="{true: 'active', false: 'inactive'}[!InfoItem.show]">
-          <a ng-click='InfoItem.show = false' aria-controls="info" role="tab" data-toggle="tab">信息资源</a>
-        </li>
-        <li role="presentation" ng-class="{true: 'active', false: 'inactive'}[InfoItem.show]" ng-show='InfoItemShow'>
-          <a ng-click='InfoItem.show = true' aria-controls="exampleData" role="tab" data-toggle="tab">信息项</a>
-        </li>
-      </ul>
-
-      <!-- Tab panes -->
-      <div class="tab-content container-fluid">
-        <div role="tabpanel" class="tab-pane" ng-class="{true: 'active', false: 'inactive'}[!InfoItem.show]" id="invntDetail">
+      <uib-tabset class='quota-detail' active="active">
+        <uib-tab index="0" heading="信息资源">
           <div class='row'>
             <label class='col-sm-2 text-right'>信息资源名称:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.resource_name}}'><pre>{{InfoResourceDetail.resource_name}}</pre></div>
@@ -73,15 +62,15 @@
             <label class='col-sm-2 text-right' >计算方法:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.calculate_method}}'>{{InfoResourceDetail.calculate_method}}</div>
           </div>
-          <div class='row'>
+          <div class='row' ng-show='!InfoItemShow'>
             <label class='col-sm-2 text-right'>共享级别:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.share_level_name}}'>{{InfoResourceDetail.share_level_name}}</div>
           </div>
-          <div class='row'>
+          <div class='row' ng-show='!InfoItemShow'>
             <label class='col-sm-2 text-right'>共享类型:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.share_type_name}}'>{{InfoResourceDetail.share_type_name}}</div>
           </div>
-          <div class='row'>
+          <div class='row' ng-show='!InfoItemShow'>
             <label class='col-sm-2 text-right'>共享条件:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.share_limit}}'>{{InfoResourceDetail.share_limit}}</div>
           </div>
@@ -93,11 +82,11 @@
             <label class='col-sm-2 text-right'>共享方式说明:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.share_method_desc}}'>{{InfoResourceDetail.share_method_desc}}</div>
           </div>
-          <div class='row'>
+          <div class='row' ng-show='!InfoItemShow'>
             <label class='col-sm-2 text-right'>是否面向社会开放:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.social_open_flag_name}}'>{{InfoResourceDetail.social_open_flag_name}}</div>
           </div>
-          <div class='row'>
+          <div class='row' ng-show='!InfoItemShow'>
             <label class='col-sm-2 text-right'>开放条件:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.social_open_limit}}'>{{InfoResourceDetail.social_open_limit}}</div>
           </div>
@@ -121,9 +110,8 @@
             <label class='col-sm-2 text-right'>创建时间:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}'>{{InfoResourceDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}</div>
           </div>
-
-        </div>
-        <div role="tabpanel" class="tab-pane" ng-class="{true: 'active', false: 'inactive'}[InfoItem.show]" id="exampleData">
+        </uib-tab>
+        <uib-tab ng-show="InfoResourceDetail.resource_format_name ==='数据库类'" index='1' heading="信息项">
           <!-- Table -->
           <table class='table table-hover table-bordered table-striped '>
             <thead class='text-center'>
@@ -137,6 +125,11 @@
                 <th width='80px'>计算方法</th>
                 <th width='80px'>更新周期</th>
                 <th width='80px'>是否涉密</th>
+                <th width='80px'>共享级别</th>
+                <th width='80px'>共享类型</th>
+                <th width='80px'>共享条件</th>
+                <th width='120px'>是否面向社会开放</th>
+                <th width='80px'>开放条件</th>
               </tr>
             </thead>
             <tbody>
@@ -151,11 +144,24 @@
                 <td title='{{rescoureItem.calculate_method}}'>{{rescoureItem.calculate_method}}</td>
                 <td title='{{rescoureItem.update_period_name}}'>{{rescoureItem.update_period_name}}</td>
                 <td title='{{rescoureItem.secret_flag_name}}'>{{rescoureItem.secret_flag_name}}</td>
+                <td title='{{rescoureItem.share_level_name}}'>{{rescoureItem.share_level_name}}</td>
+                <td title='{{rescoureItem.share_type_name}}'>{{rescoureItem.share_type_name}}</td>
+                <td title='{{rescoureItem.share_limit}}'>{{rescoureItem.share_limit}}</td>
+                <td title='{{rescoureItem.social_open_flag_name}}'>{{rescoureItem.social_open_flag_name}}</td>
+                <td title='{{rescoureItem.social_open_limit}}'>{{rescoureItem.social_open_limit}}</td>
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
+        </uib-tab>
+        <uib-tab ng-show="InfoResourceDetail.resource_format_name ==='数据库类'" index='2' heading="示例数据">
+          示例数据
+        </uib-tab>
+        <uib-tab class='req-requirement-relationship' heading="需求关联拓扑">
+          <div>
+            <wiserv-reqdep-relationship/>
+          </div>
+        </uib-tab>
+      </uib-tabset>
     </div>
   </div>
 

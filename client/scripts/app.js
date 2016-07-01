@@ -19,6 +19,7 @@ var app = angular.module('app', [
   'DataQuotaList',
   'DataQuotaDetail',
   'Department.Inventory',
+  'Department.InventoryDetail',
   'Department.Audit',
   'Department.Requirement',
   'DepartmentShare'
@@ -150,7 +151,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         url: '/detail/:item',
         cache:'false',
         templateUrl: 'views/department/inventory-detail.html',
-        controller: 'Department.Inventory.Controller.detail'
+        controller: 'Department.InventoryDetail.Controller'
       })
       .state('main.department.share', {
         url: '/share',
