@@ -105,15 +105,15 @@
                 <label class='col-sm-3 text-right'>计算方法:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.calculate_method}}'>{{InfoResourceDetail.calculate_method}}</div>
               </div>
-              <div class='row' ng-show='!InfoItemShow'>
+              <div class='row' >
                 <label class='col-sm-3 text-right'>共享级别:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_level_name}}'>{{InfoResourceDetail.share_level_name}}</div>
               </div>
-              <div class='row' ng-show='!InfoItemShow'>
+              <div class='row' >
                 <label class='col-sm-3 text-right'>共享类型:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_type_name}}'>{{InfoResourceDetail.share_type_name}}</div>
               </div>
-              <div class='row' ng-show='!InfoItemShow'>
+              <div class='row' >
                 <label class='col-sm-3 text-right'>共享条件:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_limit}}'>{{InfoResourceDetail.share_limit}}</div>
               </div>
@@ -125,11 +125,11 @@
                 <label class='col-sm-3 text-right'>共享方式说明:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_method_desc}}'>{{InfoResourceDetail.share_method_desc}}</div>
               </div>
-              <div class='row' ng-show='!InfoItemShow'>
+              <div class='row' >
                 <label class='col-sm-3 text-right'>是否面向社会开放:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.social_open_flag_name}}'>{{InfoResourceDetail.social_open_flag_name}}</div>
               </div>
-              <div class='row' ng-show='!InfoItemShow'>
+              <div class='row' >
                 <label class='col-sm-3 text-right'>开放条件:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.social_open_limit}}'>{{InfoResourceDetail.social_open_limit}}</div>
               </div>
@@ -169,11 +169,6 @@
                     <th width='80px'>计算方法</th>
                     <th width='80px'>更新周期</th>
                     <th width='80px'>是否涉密</th>
-                    <th width='80px'>共享级别</th>
-                    <th width='80px'>共享类型</th>
-                    <th width='80px'>共享条件</th>
-                    <th width='120px'>是否面向社会开放</th>
-                    <th width='80px'>开放条件</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -188,11 +183,6 @@
                     <td title='{{rescoureItem.calculate_method}}'>{{rescoureItem.calculate_method}}</td>
                     <td title='{{rescoureItem.update_period_name}}'>{{rescoureItem.update_period_name}}</td>
                     <td title='{{rescoureItem.secret_flag_name}}'>{{rescoureItem.secret_flag_name}}</td>
-                    <td title='{{rescoureItem.share_level_name}}'>{{rescoureItem.share_level_name}}</td>
-                    <td title='{{rescoureItem.share_type_name}}'>{{rescoureItem.share_type_name}}</td>
-                    <td title='{{rescoureItem.share_limit}}'>{{rescoureItem.share_limit}}</td>
-                    <td title='{{rescoureItem.social_open_flag_name}}'>{{rescoureItem.social_open_flag_name}}</td>
-                    <td title='{{rescoureItem.social_open_limit}}'>{{rescoureItem.social_open_limit}}</td>
 
                   </tr>
                 </tbody>

@@ -2,8 +2,8 @@
 'use strict';
 var DInventoryDetail = angular.module('Department.InventoryDetail', ['ui.router', 'ngCookies', 'cgBusy']);
 
-DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', '$q', 'Department.InventoryDetail.Service.Http', '$stateParams', '$state',
-  function($scope, $q, Http, $stateParams, $state) {
+DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', '$q', 'Department.InventoryDetail.Service.Http', '$stateParams', '$state','$sce',
+  function($scope, $q, Http, $stateParams, $state,$sce) {
     console.log($stateParams.item);
     $scope.InfoItemShow = false;
     Http.getDepartInfoResList({
@@ -35,7 +35,10 @@ DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', 
       resource_id: $stateParams.item
     }).then(function(result) {
       $scope.DataQuotaExample = result.data.body;
+      $scope.detailFrame = $sce.trustAsResourceUrl('http://www.sohu.com');
+
     });
+
 
     // // 获取需求拓扑图
     $scope.ResourceReqByDepTotals = Http.getResourceRequirementByDepTotals({

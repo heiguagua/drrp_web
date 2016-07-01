@@ -10,7 +10,7 @@
         <input type="file" file-model="myFile" ng-model='fileName' name='fileName' class='upload-btn'/>
       </div>
       <span class='help-info'>选择需要上传的数据excel文件，<a target="_self" ng-href="{{downloadUrl}}" download="template.xls" >下载模板</a></span>
-      <p class='help-block' ng-show='parentIvntObj.fileNameError'>请上传.xls和.xlsx格式的文件</p>
+      <p class='help-block' ng-show='parentIvntObj.fileNameError'>请上传.zip格式的文件</p>
       <div style='margin-top:50px;' class='pull-right'>
         <button class='btn btn-default' type='button' ng-click='toIndex()'>返回</button>
         <button class='btn btn-success' ng-click="uploadFile()" ng-disabled="parentIvntObj.fileNameError">开始上传</button>

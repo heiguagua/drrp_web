@@ -24,7 +24,7 @@ DepartmentShare.controller('DepartmentShare.Controller.Main', [ '$scope', 'Depar
       $scope.sharePromise = Http.shareInfoResourceList(_httpParams).then(function(result) {
         $scope.depShareList = result.data.body[0].results;
         $scope.resourceCount = result.data.body[0].count[0].resource_count;
-        $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
       });
     }
 

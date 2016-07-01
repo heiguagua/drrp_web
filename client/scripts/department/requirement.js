@@ -268,7 +268,7 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
     $scope.ModalPaging.currentPage = 1;
     $scope.ModalPaging.maxSize = 5;
     $scope.ModalPaging.itemsPerPage = 10;
-	
+
 
     var _httpConfirmParams = {};
     _httpConfirmParams.limit = 10;
@@ -308,8 +308,13 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
     function getDeptInfoResourceList() {
       Http.getDeptInfoResourceList(_httpModalParams).then(function(result) {
         console.log(result);
-        $scope.depInfoResourceList = result.data.body[0].results;
-        $scope.ModalPaging.totalItems = result.data.body[0].count;
+        if (200 == result.data.head.status) {
+          $scope.depInfoResourceList = result.data.body[0].results;
+          scope.ModalPaging.totalItems = result.data.body[0].count;
+        }
+        else{
+          $scope.depInfoResourceList = [];
+        }
       });
     }
 

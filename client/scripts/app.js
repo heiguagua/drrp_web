@@ -20,6 +20,7 @@ var app = angular.module('app', [
   'DataQuotaDetail',
   'Department.Inventory',
   'Department.InventoryDetail',
+  'Department.InventoryUpload',
   'Department.Audit',
   'Department.Requirement',
   'DepartmentShare'
@@ -145,7 +146,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         url: '/upload?ID',
         cache:'false',
         templateUrl: 'views/department/inventory-upload.html',
-        controller: 'Department.Inventory.Controller.upload'
+        controller: 'Department.InventoryUpload.Controller'
       })
       .state('main.department.detail', {
         url: '/detail/:item',
