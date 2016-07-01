@@ -180,7 +180,7 @@
                     <table class='table table-hover table-striped table-bordered table-patch'>
                       <thead class='text-center'>
                         <tr>
-                          <th width="20px" >标识</th>
+                          <th width="20px">标识</th>
                           <th width="20px">序号</th>
                           <th width="40px">信息资源名称</th>
                           <th width="40px">信息资源摘要</th>
@@ -194,7 +194,7 @@
                       </thead>
                       <tbody>
                         <tr ng-repeat='quota in DataQuotas'>
-                          <td title="{{quota.share_level_name}}">
+                          <td class="orderStyle" title="{{quota.share_level_name}}">
                             <div ng-if='quota.share_level_name =="全省开放"'>
                               <span>
                                 <i class='fa fa-eye'></i>
@@ -221,7 +221,7 @@
                               </span>
                             </div>
                           </td>
-                          <td class='numberAndDateStyle'>{{::$index+(Paging.currentPage-1)*10+1}}</td>
+                          <td class='orderStyle'>{{::$index+(Paging.currentPage-1)*10+1}}</td>
                           <td title='{{quota.resource_name}}'>
                             <a ui-sref='login'>{{quota.resource_name}}</a>
                             <a ng-hide="true" ng-if="(quota.showbutton !='1')&&(quota.showbutton !='-2')">{{quota.resource_name}}</a>

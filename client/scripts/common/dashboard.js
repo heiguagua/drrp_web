@@ -221,7 +221,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:300;height:155px;position:relative;top:-8px'></div>",
+      template: "<div style='width:300;height:175px;position:relative;top:-1px'></div>",
       link: function(scope, element, attr) {
         scope.DataquotaSummary.then(function(result) {
           if (200 == result.data.head.status) {
@@ -236,7 +236,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                 name: '资源提供部门',
                 type: 'pie',
                 // selectedMode: 'single',
-                radius: [0, '60%'],
+                radius: [0, '45%'],
                 label: {
                   normal: {
                     position: 'inner',
@@ -261,7 +261,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
               }, {
                 name: '资源总数',
                 type: 'pie',
-                radius: ['70%', '80%'],
+                radius: ['60%', '67%'],
                 data: [{
                   value: (summary) ? (summary.total_resource) : '0',
                   name: '资源总数'
@@ -284,7 +284,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:300;height:155px;position:relative;top:-8px'></div>",
+      template: "<div style='width:300;height:175px;position:relative;top:-1px'></div>",
       link: function(scope, element, attr) {
         scope.DataRequirementSummary.then(function(result) {
           if (200 == result.data.head.status) {
@@ -299,7 +299,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                 name: '涉及部门',
                 type: 'pie',
                 // selectedMode: 'single',
-                radius: [0, '60%'],
+                radius: [0, '45%'],
                 label: {
                   normal: {
                     position: 'inner',
@@ -324,7 +324,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
               }, {
                 name: '需求总数',
                 type: 'pie',
-                radius: ['70%', '80%'],
+                radius: ['60%', '67%'],
                 data: [{
                   value: (summary) ? (summary.requiement_number) : '0',
                   name: '需求总数'
