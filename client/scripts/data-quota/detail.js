@@ -2,8 +2,8 @@
 var DataQuotaDetail = angular.module('DataQuotaDetail', ['ui.router']);
 
 /** Main Controller */
-DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state', 'DataQuotaDetail.Service.Http', '$stateParams',
-  function($scope, $state, Http, $stateParams) {
+DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state', 'DataQuotaDetail.Service.Http', '$stateParams', '$sce',
+  function($scope, $state, Http, $stateParams, $sce) {
     // Data Quota Detail
     Http.getDataQuotaDetailByDepID(
       $stateParams
@@ -21,7 +21,14 @@ DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state
     $scope.DataquotaRequirementByDepTotals = Http.getDataQuotaRequirementByDepTotals(
       {resource_id: $stateParams.resource_id}
     );
+    <!-- Data Quota Example-->
+    Http.getResourceExampleByDepID({
+      resource_id: $stateParams.resource_id
+    }).then(function(result) {
+      $scope.DataQuotaExample = result.data.body;
+      $scope.detailFrame = $sce.trustAsResourceUrl('http://www.sohu.com');
 
+    });
 
   }
 ]);
@@ -46,10 +53,18 @@ DataQuotaDetail.factory('DataQuotaDetail.Service.Http', ['$http', 'API',
         path + '/info_item_requirementDeps', { params: params }
       )
     };
+    function getResourceExampleByDepID(params) {
+      return $http.get(
+        path + '/info_item_detail', {
+          params: params
+        }
+      )
+    };
     return {
       getDataQuotaDetailByDepID: getDataQuotaDetailByDepID,
       getDataQuotaExampleByDepID: getDataQuotaExampleByDepID,
-      getDataQuotaRequirementByDepTotals: getDataQuotaRequirementByDepTotals
+      getDataQuotaRequirementByDepTotals: getDataQuotaRequirementByDepTotals,
+      getResourceExampleByDepID: getResourceExampleByDepID
     }
   }
 ]);
