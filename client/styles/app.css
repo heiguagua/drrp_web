@@ -72,6 +72,175 @@ input.ng-touched.ng-invalid {
 .help-block {
   color: red;
 }
+#main-unlogin .logo {
+  display: inline-block;
+  width: 370px;
+  height: 40px;
+  margin: 3px 25px 0 -15px;
+  background: url('images/logo.png') no-repeat;
+  background-size: 370px 40px;
+}
+#main-unlogin .nav-tabs {
+  position: relative;
+  bottom: -7px;
+}
+#main-unlogin .btn-login {
+  position: relative;
+  top: 7px;
+  right: -15px;
+}
+#main-unlogin .text-center {
+  position: relative;
+  top: 15px;
+}
+#data-quota-main-unlogin .left.col-md-1.buttonType {
+  width: 45px;
+}
+#data-quota-main-unlogin .left {
+  padding-left: 10px;
+  padding-right: 0;
+}
+#data-quota-main-unlogin .left .panel-heading {
+  cursor: pointer;
+}
+#data-quota-main-unlogin .left .toggler {
+  font-size: 15px;
+  border-radius: 1px;
+  box-shadow: 10px 10px 5px #888888;
+}
+#data-quota-main-unlogin .left .panel-heading:HOVER {
+  color: #337AB9;
+}
+#data-quota-main-unlogin .left .panel-heading:ACTIVE {
+  font-weight: bolder;
+  color: #337AB9;
+}
+#data-quota-main-unlogin .left .menu {
+  margin: 10px 0;
+  padding: 0;
+  font-size: 13px;
+}
+#data-quota-main-unlogin .left .menu li {
+  padding-left: 15px;
+}
+#data-quota-main-unlogin .left .list-group .list-group-item {
+  cursor: pointer;
+}
+#data-quota-main-unlogin .left .list-group .list-group-item:HOVER {
+  background: #FBFBFB;
+  color: #337AC8;
+}
+#data-quota-main-unlogin .left [type=tabs] {
+  margin-left: 2px;
+}
+#data-quota-main-unlogin .left [type=tabs] a {
+  margin-right: 0;
+  padding: 5px 14px;
+}
+#data-quota-main-unlogin .left [type=tabs] .menu {
+  margin-top: 20px;
+}
+#data-quota-main-unlogin .right {
+  width: 926px;
+  padding-right: 0;
+  padding-left: 0;
+}
+#data-quota-main-unlogin .sidebar1 {
+  margin-right: 4px;
+  will-change: transform;
+}
+#data-quota-main-unlogin .content-collapse {
+  position: relative;
+  margin-left: -191px;
+  width: 1117px;
+}
+#data-quota-list-unlogin .input-patch {
+  position: relative;
+  top: -7px;
+  right: -12px;
+}
+#data-quota-list-unlogin .filter {
+  border-bottom: 0 solid #DDD;
+  padding: 15px 0;
+}
+#data-quota-list-unlogin .filter .indicator-filter {
+  margin: 0;
+  font-size: 13px;
+  overflow: hidden;
+}
+#data-quota-list-unlogin .filter .indicator-filter ul.pager {
+  margin: 0 0 15px;
+}
+#data-quota-list-unlogin .filter .indicator-filter ul.pager .filter-label {
+  width: 110px;
+  text-align: right;
+  display: inline-block;
+  padding-right: 12px;
+}
+#data-quota-list-unlogin .filter .indicator-filter ul.pager.dataLevelStyle {
+  margin-bottom: 0;
+}
+#data-quota-list-unlogin .table-width {
+  width: 925px;
+  padding-left: 0;
+  padding-right: 0;
+}
+#data-quota-list-unlogin .table-responsive {
+  height: 628px;
+}
+#data-quota-list-unlogin .table-patch {
+  margin-bottom: 0 !important;
+  table-layout: fixed;
+}
+#data-quota-list-unlogin .table-patch td,
+#data-quota-list-unlogin .table-patch th {
+  height: 50px;
+  max-width: 200px;
+  word-break: keep-all;
+  word-wrap: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  font-size: 13px;
+}
+#data-quota-list-unlogin .table-patch th {
+  text-align: center;
+}
+#data-quota-list-unlogin .table-patch td {
+  text-align: left;
+}
+#data-quota-list-unlogin .table-patch .numberAndDateStyle {
+  text-align: right;
+}
+#data-quota-list-unlogin .pannel-patch {
+  margin-bottom: 10px;
+}
+#data-quota-list-unlogin .panel-body {
+  padding: 5px;
+}
+#data-quota-list-unlogin .blue {
+  color: #337AB7;
+}
+#data-quota-list-unlogin .orange {
+  color: #F07746;
+}
+#data-quota-list-unlogin .icon-list {
+  font-size: 12px;
+}
+#data-quota-list-unlogin .icon-list i {
+  margin-left: 15px;
+}
+#data-quota-list-unlogin .pager li {
+  cursor: pointer;
+}
+#data-quota-list-unlogin .pager li a:ACTIVE {
+  font-weight: bold;
+}
+#data-quota-list-unlogin .pager li .active {
+  background: #E9E9E9;
+  font-weight: bolder;
+}
 #login {
   height: 100%;
   background: #EEE;
@@ -1374,15 +1543,17 @@ input.ng-touched.ng-invalid {
 #data-quota-list .filter .indicator-filter ul.pager.dataLevelStyle {
   margin-bottom: 0;
 }
-#data-quota-list .col-lg-12 {
-  padding-left: inherit;
+#data-quota-list .table-width {
+  width: 925px;
+  padding-left: 0;
+  padding-right: 0;
 }
 #data-quota-list .table-responsive {
   height: 628px;
 }
 #data-quota-list .table-patch {
   margin-bottom: 0 !important;
-  table-layout: automatic;
+  table-layout: fixed;
 }
 #data-quota-list .table-patch td,
 #data-quota-list .table-patch th {
@@ -1446,6 +1617,9 @@ input.ng-touched.ng-invalid {
 #data-quota-detail .table {
   margin-bottom: 20px;
   margin-top: -9px;
+}
+#data-quota-detail .table-patch {
+  table-layout: fixed;
 }
 #data-quota-detail .table-patch td,
 #data-quota-detail .table-patch th {

@@ -1,8 +1,8 @@
 'use strict';
 var Welcome = angular.module('Welcome', ['ui.router']);
 /** Main Controller */
-Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Service.Http',
-  function($scope, $state, Http) {
+Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Service.Http', '$stateParams',
+  function($scope, $state, Http, StateParams) {
     window.scrollTo(0,0);
     // Menu configration
     $scope.treeOptions = {
@@ -76,8 +76,8 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
    <!--listPage-->
 
     // Get the parameters form ui-router
-    var currentDepID = {resource_dep_id:""};
-    var currentDepName = {dep_name:""};
+    var currentDepID = {resource_dep_id:StateParams.resource_dep_id};
+    var currentDepName = {dep_name:StateParams.dep_name};
     // Selected department name
     $scope.currentDep = currentDepName.dep_name;
     // Params for pagin
@@ -95,7 +95,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       Http.getDataQuota(_httpParams).then(function(result) {
         $scope.DataQuotas = result.data.body[0].results;
         $scope.DataQuotasTotal = result.data.body[0].count[0].resource_count;
-        $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
       });
     };
     // Init data quota talbe
@@ -121,15 +121,6 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       (currentDepID==='') ? (_.assign(httpParams, initPaging, searchTarget)) : (_.assign(httpParams, currentDepID, initPaging, searchTarget));
       getDataQuotaList(httpParams);
     };
-    // Data quota apply info
-    $scope.DataQuotaApplyInfo = function(data_quota_id) {
-      Http.getDataQuotaApplyInfo({info_resource_id: data_quota_id}).then(function() {
-        // alert('申请中，等待审核');
-        var httpParams = {};
-        _.assign(httpParams, {limit:10, skip: ($scope.Paging.currentPage-1) * 10});
-        getDataQuotaList(httpParams);
-      });
-    };
     // Filter generator
     var SHARE_FREQUENCY = 1, //更新周期
         DATA_LEVEL = 2, //分地区数据级别
@@ -141,6 +132,11 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       'dict_category': RESOURCE_FORMAT
     }).then(function(result) {
       $scope.resourceFormats = result.data.body;
+    });
+    Http.getSystemDictByCatagory({
+      'dict_category': SOCIAL_OPEN_FLAG
+    }).then(function(result) {
+      $scope.openToSocietys = result.data.body;
     });
     Http.getSystemDictByCatagory({
       'dict_category': SECRET_FLAG
@@ -156,6 +152,11 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       'dict_category': SHARE_FREQUENCY
     }).then(function(result) {
       $scope.ShareFrequencys = result.data.body;
+    });
+    Http.getSystemDictByCatagory({
+      'dict_category': DATA_LEVEL
+    }).then(function(result) {
+      $scope.DataLevels = result.data.body;
     });
     // Handle above filter
     var filterParams = {};
@@ -189,6 +190,22 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       }
     };
 
+    /*面向社会开放*/
+
+    $scope.openToSocietyFilter = function(id, index){
+      $scope.openToSocietyActive = [];
+      $scope.openToSocietyActiveAll = '';
+      $scope.openToSocietyActive[index] = 'active';
+      //var idx = filterParams.social_open_flag.indexOf(item.id);
+      filterParams.social_open_flag = id;
+      if('ALL'===id){
+        delete filterParams.social_open_flag;
+        $scope.openToSocietyActiveAll = 'active';
+        getDataQuotaListByFilter(filterParams);
+      }else{
+        getDataQuotaListByFilter(filterParams);
+      }
+    };
     /* 更新周期（共享频率） */
     filterParams.update_period = [];
     $scope.ShareFrequencyActive = [];
@@ -216,6 +233,32 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       }
     };
 
+    /* 分地区数据级别 */
+    filterParams.area_level = [];
+    $scope.DataLevelActive = [];
+    $scope.DataLevelFilter = function(id, index){
+      if('ALL'===id){
+        filterParams.area_level = [];
+        $scope.DataLevelActiveAll = 'active';
+        $scope.DataLevelActive=[];
+        getDataQuotaListByFilter(filterParams);
+      }else{
+        var idx = filterParams.area_level.indexOf(id);
+        $scope.DataLevelActiveAll = '';
+        ($scope.DataLevelActive[index]==='active')?($scope.DataLevelActive[index]=''):($scope.DataLevelActive[index]='active');
+        if(idx > -1){
+          if(filterParams.area_level.length ===1){
+            $scope.DataLevelActiveAll = 'active';
+            filterParams.area_level = [];
+          }else{
+            filterParams.area_level.splice(idx, 1);
+          }
+        }else{
+          filterParams.area_level.push(id);
+        }
+        getDataQuotaListByFilter(filterParams);
+      };
+    };
     /*是否涉密*/
     $scope.isScretFilter = function(id, index){
       $scope.isScretActive = [];
@@ -268,12 +311,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       };
       function getDataQuota(params){
         return $http.get(
-          path + '/resource/sys_dict', { params: params }
-        )
-      };
-      function getDataQuotaApplyInfo(data){
-        return $http.post(
-          path + '/info_resource_apply_info', { data: data }
+          path + '/resource_list', { params: params }
         )
       };
       return {
@@ -283,19 +321,18 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
         menuTheme: menuTheme,
 
         getSystemDictByCatagory: getSystemDictByCatagory,
-        getDataQuotaApplyInfo: getDataQuotaApplyInfo,
         getDataQuota: getDataQuota
       }
     }
   ]);
-  Welcome.directive('wiservMainWrapper', [
+  Welcome.directive('wiservMainWrapperUnlogin', [
     function() {
       return {
         restrict: 'AE',
         link: function(scope, element, attrs) {
           element.find('.toggler').on('click', function() {
             element.find('.sidebar1').toggleClass("sidebar1-collapse");
-            element.find('.form-control').toggleClass("form-control-collapse");
+            element.find('.searchTree').toggleClass("searchTree-collapse");
             element.find('.content').toggleClass("content-collapse");
           });
         }

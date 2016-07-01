@@ -58,10 +58,10 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
       }
     ]);
     /** Config Router */
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/welcome');
     $stateProvider
       .state('welcome', {
-        url: '/welcome',
+        url: '/welcome?resource_dep_id?dep_name',
         templateUrl: 'views/common/welcome.html',
         controller: 'Welcome.Controller.Main'
       })
@@ -107,7 +107,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
       })
       .state('main.data-quota.list', {
         url: '/list/:resource_dep_id/:dep_name',
-        templateUrl: 'views/data-quota/list.html',
+        templateUrl: 'views/data-quota/list0.html',
         controller: 'DataQuotaList.Controller.Main'
       })
       .state('main.data-quota.detail', {

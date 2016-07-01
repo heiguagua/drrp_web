@@ -24,7 +24,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
       Http.getDataQuota(_httpParams).then(function(result) {
         $scope.DataQuotas = result.data.body[0].results;
         $scope.DataQuotasTotal = result.data.body[0].count[0].resource_count;
-        $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
       });
     };
     // Init data quota talbe

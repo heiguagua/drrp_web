@@ -1,4 +1,4 @@
-<div id='main'>
+<div id='main-unlogin'>
   <nav class='navbar navbar-default navbar-patch'>
     <div class='container'>
       <a class='logo pull-left'></a>
@@ -10,8 +10,8 @@
     </div>
   </nav>
 
-  <div id='data-quota-main' class="container">
-    <div class="row" wiserv-main-wrapper="" >
+  <div id='data-quota-main-unlogin' class="container">
+    <div class="row" wiserv-main-wrapper-Unlogin="" >
       <div class="left col-md-1 buttonType">
         <div class="btn-group btn-group-md">
           <button type="button" class="btn btn-primary active toggler" ng-click="typeListOpen()">机<br>构<br>类<br>型</button>
@@ -22,7 +22,7 @@
       </div>
       <div class="left col-md-2 sidebar1">
         <div class="panel panel-default">
-          <div class='panel-heading' ui-sref="main.data-quota.list" ui-sref-opts="{reload:true}">
+          <div class='panel-heading' ui-sref="welcome" ui-sref-opts="{reload:true}">
                 <i class="fa fa-refresh">{{filterName}}</i>
           </div>
 
@@ -41,7 +41,7 @@
             options="treeOptions"
             on-selection="showSelected(node)"
             selected-node="node1">
-            <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+            <span ui-sref="welcome({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
             </treecontrol>
           </div>
           <div ng-if="flag===2" class='menu' ui-tree data-drag-enabled="false">
@@ -52,7 +52,7 @@
             options="treeOptions"
             on-selection="showSelected(node)"
             selected-node="node1">
-            <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+            <span ui-sref="welcome({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
             </treecontrol>
           </div>
           <div ng-if="flag===3" class='menu' ui-tree data-drag-enabled="false">
@@ -63,7 +63,7 @@
             options="treeOptions"
             on-selection="showSelected(node)"
             selected-node="node1">
-            <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+            <span ui-sref="welcome({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
             </treecontrol>
           </div>
           <div ng-if="flag===4" class='menu' ui-tree data-drag-enabled="false">
@@ -74,19 +74,19 @@
             options="treeOptions"
             on-selection="showSelected(node)"
             selected-node="node1">
-            <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+            <span ui-sref="welcome({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
             </treecontrol>
           </div>
         </div>
       </div>
       <div class="right col-md-9 content">
-        <div id='data-quota-list'>
+        <div id='data-quota-list-unlogin'>
           <div class="panel panel-default pannel-patch">
             <div class="panel-heading">
-              <i ng-if="currentDep===''" class="fa fa-paperclip"> 条件过滤</i>
-              <i ng-if="currentDep!==''" class="fa fa-paperclip"> {{currentDep}}</i>
+              <i ng-if="currentDep===undifine" class="fa fa-paperclip"> 条件过滤</i>
+              <i ng-if="currentDep!==undifine" class="fa fa-paperclip"> {{currentDep}}</i>
               <div class="input-group col-xs-3 pull-right input-patch">
-                <input ng-model='TargetDataQuotaName' type="text" class="form-control" placeholder="请输入查询指标名称...">
+                <input ng-model='TargetDataQuotaName' type="text" class="form-control searchTree" placeholder="请输入查询指标名称...">
                 <span class="input-group-btn">
                   <button ng-click='Retrieval()' class="btn btn-default" type="button">查询</button>
                 </span>
@@ -95,6 +95,22 @@
             </div>
             <div class="panel-body">
             <div class='filter'>
+
+              <!-- 分地区数据级别 -->
+              <div class='indicator-filter'>
+                <nav class='pull-left'>
+                  <ul class="pager ">
+                    <li class="text-muted filter-label">分地区数据级别</li>
+                    <li ng-click="DataLevelFilter('ALL')">
+                      <a ng-class='DataLevelActiveAll'>全部</a>
+                    </li>
+                    <li ng-repeat='dataLevel in DataLevels' ng-click='DataLevelFilter(dataLevel.id, $index)'>
+                      <a ng-class='DataLevelActive[$index]'>{{dataLevel.dict_name}}</a>
+                    </li>
+                </ul>
+              </nav>
+              </div>
+
               <!-- 信息资源格式 -->
               <div class='indicator-filter'>
                 <nav class='pull-left'>
@@ -109,37 +125,6 @@
                   </ul>
               </nav>
               </div>
-
-              <!-- 更新周期 -->
-              <div class='indicator-filter'>
-                <nav class='pull-left'>
-                  <ul class="pager">
-                    <li class="text-muted filter-label">更新周期</li>
-                    <li ng-click="ShareFrequencyFilter('ALL')">
-                      <a ng-class='ShareFrequencyActiveAll'>全部</a>
-                    </li>
-                    <li ng-repeat='shareFrequency in ShareFrequencys' ng-click='ShareFrequencyFilter(shareFrequency.id, $index)'>
-                      <a ng-class='ShareFrequencyActive[$index]'>{{shareFrequency.dict_name}}
-                      </a>
-                    </li>
-                  </ul>
-              </nav>
-              </div>
-
-              <!-- 是否涉密 -->
-             <div class='indicator-filter'>
-               <nav class='pull-left'>
-                 <ul class="pager issecret">
-                   <li class="text-muted filter-label ">是否涉密</li>
-                   <li ng-click="isScretFilter('ALL')">
-                      <a ng-class='isScretActiveAll' >全部</a>
-                   </li>
-                   <li ng-repeat='isScret in isScrets' ng-click='isScretFilter(isScret.id, $index)'>
-                      <a ng-class='isScretActive[$index]'>{{isScret.dict_name}}</a>
-                   </li>
-                </ul>
-               </nav>
-             </div>
 
               <!-- 共享级别 -->
               <div class='indicator-filter'>
@@ -156,6 +141,22 @@
               </nav>
               </div>
 
+
+              <!-- 面向社会开放 -->
+              <div class='indicator-filter'>
+                <nav class='pull-left'>
+                  <ul class="pager dataLevelStyle">
+                    <li class="text-muted filter-label">面向社会开放</li>
+                    <li ng-click="openToSocietyFilter('ALL')">
+                      <a ng-class='openToSocietyActiveAll'>全部</a>
+                    </li>
+                    <li ng-repeat='openToSociety in openToSocietys' ng-click='openToSocietyFilter(openToSociety.dict_code,  $index)'>
+                      <a ng-class='openToSocietyActive[$index]'>{{openToSociety.dict_name}}</a>
+                    </li>
+                  </ul>
+              </nav>
+              </div>
+
            </div>
           </div>
          </div>
@@ -163,45 +164,82 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <i class="fa fa-table"> 资源列表</i>
+              <span class='icon-list'>
+                <i class='fa fa-eye'></i> 全省开放
+                <i class='fa fa-desktop blue'></i> 政务云开放
+                <i class='fa fa-lock blue'></i> 授权开放
+                <i class='fa fa-warning orange'></i> 暂不开放
+              </span>
               <span class='pull-right text-info'>共{{DataQuotasTotal}}条</span>
             </div>
-            <div class="panel-body"></div>
-            <div class="table-responsive">
-              <div class='container'>
+            <div class="panel-body">
+              <!-- <div class="table-responsive"> -->
+              <!-- <div class='container'>
                 <div class='row'>
-                  <div class='col-lg-12' >
+                  <div class='col-md-10 table-width' > -->
                     <table class='table table-hover table-striped table-bordered table-patch'>
-                       <thead class='text-center'>
-                         <tr>
-                           <th width="40px" rowspan="2">序号</th>
-                           <th width="90px" rowspan="2">信息资源名称</th>
-                           <th width="60px" rowspan="2">信息资源分类</th>
-                           <th width="60px" rowspan="2">信息资源格式</th>
-                           <th width="60px" rowspan="2">更新周期</th>
-                           <th width="60px" rowspan="2">是否涉密</th>
-                           <th width="60px" rowspan="2">共享级别</th>
-                           <th width="60px" rowspan="2">共享条件</th>
-                           <th width="60px" rowspan="2">共享方式</th>
-                         </tr>
-                       </thead>
-                       <tbody>
-                         <tr ng-repeat='quota in DataQuotas'>
+                      <thead class='text-center'>
+                        <tr>
+                          <th width="20px" >标识</th>
+                          <th width="20px">序号</th>
+                          <th width="40px">信息资源名称</th>
+                          <th width="40px">信息资源摘要</th>
+                          <th width="40px">信息资源分类</th>
+                          <th width="45px">分地区数据级别</th>
+                          <th width="40px">信息资源格式</th>
+                          <th width="30px">共享级别</th>
+                          <th width="50px">是否面向社会开放</th>
+                          <th width="20px"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat='quota in DataQuotas'>
+                          <td title="{{quota.share_level_name}}">
+                            <div ng-if='quota.share_level_name =="全省开放"'>
+                              <span>
+                                <i class='fa fa-eye'></i>
+                              </span>
+                            </div>
+                            <div ng-if='quota.share_level_name =="省政务云平台开放" '>
+                              <span>
+                                <i class='fa fa-desktop blue'></i>
+                              </span>
+                            </div>
+                            <div ng-if='quota.share_level_name =="授权开放" '>
+                              <span>
+                                <i class='fa fa-lock blue'></i>
+                                <a ng-if="quota.showbutton==='-1'" class='btn btn-default btn-xs' ng-click='DataQuotaApplyInfo(quota.id)'>申请查看</a>
+                                <a ng-if="quota.showbutton==='0'" title='申请中，等待审核'><i class='fa fa-clock-o text-info'></i></a>
+                                <a ng-if="quota.showbutton==='1'" title='申请已通过'><i class='fa fa-check-square-o text-success'></i></a>
+                                <a ng-if="quota.showbutton==='2'" title='申请未通过'><i class='fa fa-ban text-warning'></i></a>
+                              </span>
+                            </div>
+                            <div ng-if='quota.share_level_name =="暂不开放" '>
+                              <span>
+                                <i class='fa fa-warning orange'>
+                                </i>
+                              </span>
+                            </div>
+                          </td>
                           <td class='numberAndDateStyle'>{{::$index+(Paging.currentPage-1)*10+1}}</td>
-                          <td title='{{quota.resource_name}}'>{{quota.resource_name}}</td>
+                          <td title='{{quota.resource_name}}'>
+                            <a ui-sref='login'>{{quota.resource_name}}</a>
+                            <a ng-hide="true" ng-if="(quota.showbutton !='1')&&(quota.showbutton !='-2')">{{quota.resource_name}}</a>
+                          </td>
+                          <td title='{{quota.summary}}'>{{quota.summary}}</td>
                           <td title='{{quota.category_name}}'>{{quota.category_name}}</td>
-                          <td title='{{quota.resource_format_name}}'>{{quota.resource_format_name}}</td>
-                          <td title='{{quota.update_period}}'>{{quota.update_period}}</td>
-                          <td title='{{quota.secret_flag_name}}'>{{quota.secret_flag_name}}</td>
+                          <td title='{{quota.area_level}}'>{{quota.area_level}}</td>
+                          <td title='{{quota.resource_format_name}}' >{{quota.resource_format_name}}</td>
                           <td title='{{quota.share_level_name}}'>{{quota.share_level_name}}</td>
-                          <td title="{{quota.share_limit}}">{{quota.share_limit}}</td>
-                          <td title='{{quota.share_method_name}}'>{{quota.share_method_name}}</td>
-
-                         </tr>
-                       </tbody>
-                     </table>
-                  </div>
+                          <td title="{{quota.social_open_flag_name}}">{{quota.social_open_flag_name}}</td>
+                          <td title="更多..."> <a ui-sref='login'>更多...</a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  <!-- </div>
                 </div>
-              </div>
+              </div> -->
+              <!-- </div> -->
             </div>
 
             <uib-pagination class='pull-right' total-items='Paging.totalItems' ng-model='Paging.currentPage' ng-change='Paging.pageChanged()' items-per-page='Paging.itemsPerPage'  next-text='下一页' previous-text='上一页'></uib-pagination>
