@@ -551,6 +551,13 @@ DepartmentReq.controller('Department.Requirement.Controller.detail', ['$scope', 
             } else {
               $scope.InfoItemShow = true;
               $scope.InfoItems = ResItems.data.body;
+              _($scope.InfoItems).forEach(function(item) {
+                var shareFreqDictName = [];
+                _(item.config).forEach(function(config) {
+                  shareFreqDictName.push(config.dict_name);
+                })
+                item.update_period_name = shareFreqDictName.toString();
+              })
             }
           })
         }

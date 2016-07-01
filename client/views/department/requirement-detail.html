@@ -48,11 +48,14 @@
               <dt>响应人</dt>
               <dd title='{{ReqDetail.responser}}'>{{ReqDetail.responser}}</dd>
 
+              <dt>响应结果</dt>
+              <dd title=''><span ng-if='ReqDetail.status == "1"'>通过</span><span ng-if='ReqDetail.status == "2"'>不通过</span></dd>
+
               <dt>内容说明</dt>
               <dd title='{{ReqDetail.response_content}}'>{{ReqDetail.response_content}}</dd>
             </dl>
           </uib-tab>
-          <uib-tab class='req-requirement-relationship' index='1' heading="资源信息">
+          <uib-tab class='req-requirement-relationship' index='1' heading="资源信息" ng-show='InfoItemShow'>
             <div style='padding:15px 0'>
               <div class='row'>
                 <label class='col-sm-2 text-right'>信息资源名称:</label>
