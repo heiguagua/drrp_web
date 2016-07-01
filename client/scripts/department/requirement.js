@@ -310,7 +310,7 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
         console.log(result);
         if (200 == result.data.head.status) {
           $scope.depInfoResourceList = result.data.body[0].results;
-          scope.ModalPaging.totalItems = result.data.body[0].count;
+          $scope.ModalPaging.totalItems = result.data.body[0].count;
         }
         else{
           $scope.depInfoResourceList = [];

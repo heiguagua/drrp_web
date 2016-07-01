@@ -1213,6 +1213,11 @@ input.ng-touched.ng-invalid {
 .confirm-req-modal .table-resource-list td .items-list table {
   table-layout: fixed;
 }
+.confirm-req-modal .table-resource-list td .items-list table tr td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 #department-requirement-detail {
   margin-bottom: 50px;
   font-size: 13px;
