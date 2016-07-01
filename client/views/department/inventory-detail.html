@@ -111,7 +111,7 @@
             <div class='col-sm-10' title='{{InfoResourceDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}'>{{InfoResourceDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}</div>
           </div>
         </uib-tab>
-        <uib-tab ng-show="InfoResourceDetail.resource_format_name ==='数据库类'" index='1' heading="信息项">
+        <uib-tab ng-show="InfoItemShow" index='1' heading="信息项">
           <!-- Table -->
           <table class='table table-hover table-bordered table-striped '>
             <thead class='text-center'>
@@ -143,7 +143,7 @@
             </tbody>
           </table>
         </uib-tab>
-        <uib-tab ng-show="InfoResourceDetail.resource_format_name ==='数据库类'" index='2' heading="示例数据">
+        <uib-tab ng-show="InfoItemShow" index='2' heading="示例数据">
           <iframe width="100%" height="400" ng-src="{{detailFrame}}"></iframe>
         </uib-tab>
         <uib-tab class='req-requirement-relationship' heading="需求关联拓扑">

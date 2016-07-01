@@ -1238,6 +1238,19 @@ input.ng-touched.ng-invalid {
   border-top: 1px solid #CCC;
   margin-top: 16px;
 }
+#department-requirement-detail pre {
+  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  word-break: initial;
+  word-wrap: break-word;
+  color: inherit;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  margin: 0;
+}
 #department-requirement-publish {
   margin-bottom: 50px;
 }

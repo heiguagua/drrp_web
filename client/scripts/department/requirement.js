@@ -527,12 +527,37 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
 DepartmentReq.controller('Department.Requirement.Controller.detail', ['$scope', '$stateParams', 'Department.Requirement.Service.Http', 'Department.Requirement.Service.Component',
     function($scope, $stateParams, Http, Component) {
       console.log($stateParams.ID);
+      $scope.InfoItemShow = false;
       Http.getReqDetail({
         requiement_id: $stateParams.ID
       }).then(function(result) {
         console.log(result.data.body[0]);
         $scope.ReqDetail = result.data.body[0];
+        if($scope.ReqDetail) {
+          // 查询需求对应的资源
+          Http.getDepartInfoResList({
+            resource_id: $scope.ReqDetail.resource_id
+          }).then(function(ResourceRes) {
+            $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
+          })
+
+          // 查询需求对应的信息项
+          Http.getReqResourceItemList({
+            resource_id: $scope.ReqDetail.resource_id,
+            requiement_id: $stateParams.ID
+          }).then(function(ResItems) {
+            if (ResItems.data.body.length == 0) {
+              $scope.InfoItemShow = false;
+            } else {
+              $scope.InfoItemShow = true;
+              $scope.InfoItems = ResItems.data.body;
+            }
+          })
+        }
       })
+
+
+
     }
   ])
   /* HTTP Factory */
@@ -651,6 +676,20 @@ DepartmentReq.factory('Department.Requirement.Service.Http', ['$http', 'API',
         }
       )
     }
+    function getDepartInfoResList(params) {
+      return $http.get(
+        path + '/info_resource_list', {
+          params: params
+        }
+      )
+    }
+    function getReqResourceItemList(params) {
+      return $http.get(
+        path + '/reqResourceItem', {
+          params: params
+        }
+      )
+    }
 
     return {
       getDepartmentRequirementList: getDepartmentRequirementList,
@@ -666,7 +705,9 @@ DepartmentReq.factory('Department.Requirement.Service.Http', ['$http', 'API',
       getSystemDictByCatagory: getSystemDictByCatagory,
       getReqUpdatePeriod: getReqUpdatePeriod,
       getReqAreaLevel: getReqAreaLevel,
-      getInfoItemList: getInfoItemList
+      getInfoItemList: getInfoItemList,
+      getDepartInfoResList: getDepartInfoResList,
+      getReqResourceItemList: getReqResourceItemList
     }
   }
 ]);
