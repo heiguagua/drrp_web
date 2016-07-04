@@ -1650,6 +1650,9 @@ input.ng-touched.ng-invalid {
 #data-quota-detail .quota-detail .list-group {
   margin-top: 6px;
 }
+#data-quota-detail .tab-content {
+  padding: 15px 0;
+}
 #data-quota-detail .list-patch {
   overflow: hidden;
   word-wrap: break-word;
