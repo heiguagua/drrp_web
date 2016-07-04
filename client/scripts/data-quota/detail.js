@@ -72,7 +72,7 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
   function(){
     return {
       restrict: 'AE',
-      template: "<div style='width:500px;height:400px;position:relative;top:20px'></div>",
+      template: "<div style='width:900px;height:400px;position:relative;top:20px'></div>",
       link: function(scope, element, attr){
         scope.DataquotaRequirementByDepTotals.then(function(result) {
           if (200 == result.data.head.status) {
