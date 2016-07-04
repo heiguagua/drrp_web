@@ -178,7 +178,7 @@
                     </span>
                     <span ng-if='depInfo.resource_format_name != "数据库类"'><input type='checkbox' ng-checked="resourceSelection.indexOf(depInfo.id) > -1" ng-click="toggleResourceSelection(depInfo.id)"  /></span>
                   </td>
-                  <td title='{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
+                  <td class='text-center' title='{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
                   <td title='{{depInfo.resource_name}}'>{{depInfo.resource_name}}</td>
                   <td title='{{depInfo.resource_format_name}}'>{{depInfo.resource_format_name}}</td>
                   <tr ng-if='depInfoResourceList[$index].resource_format_name == "数据库类"' ng-class="{true: 'ng-show', false: 'ng-hide'}[$index == collapseIndex]">
@@ -202,7 +202,7 @@
                           <tbody>
                             <tr ng-repeat='rescoureItem in InfoItems | orderBy:"-create_time" '>
                               <td><input type='checkbox' value='{{rescoureItem.id}}' ng-checked="resourceItemSelection.indexOf(rescoureItem.id) > -1" ng-click="toggleResItemSelection(depInfo.id, rescoureItem)" /></td>
-                              <td>{{$index+1}}</td>
+                              <td class='text-center'>{{$index+1}}</td>
                               <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
                               <td title='{{rescoureItem.item_type_name}}'>{{rescoureItem.item_type_name}}</td>
                               <td title='{{rescoureItem.data_precision}}'>{{rescoureItem.data_precision}}</td>

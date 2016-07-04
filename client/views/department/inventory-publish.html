@@ -323,7 +323,7 @@
             <tbody>
               <tr ng-repeat='rescoureItem in ResourceItemList | orderBy:"item_ord" '>
                 <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
-                <td>{{$index+1}}</td>
+                <td class='text-center'>{{$index+1}}</td>
                 <td>
                   <a class='delete btn btn-danger btn-xs' ng-click='deleteItem($index)'>
                     <i class='fa fa-trash'></i>&nbsp;删除</a>

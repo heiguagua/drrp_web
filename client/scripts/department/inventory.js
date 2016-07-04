@@ -495,6 +495,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
               var itemConfig = {};
               itemConfig.InfoItemId = item.item_name;
               itemConfig.sys_dict_id = config.id;
+              itemConfig.parent_id = item.parent_id;
               shareFreqDictName.push(config.dict_name);
               $scope.ResourceItemConfigList.push(itemConfig);
             })
@@ -612,6 +613,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
               var itemConfig = {};
               itemConfig.InfoItemId = item.item_name;
               itemConfig.sys_dict_id = config.id;
+              itemConfig.parent_id = item.parent_id;
               shareFreqDictName.push(config.dict_name);
               $scope.ResourceItemConfigList.push(itemConfig);
             })
@@ -712,6 +714,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           var sys_dict = {};
           sys_dict.InfoItemId = $scope.ResourceItem.item_name;
           sys_dict.sys_dict_id = item.id;
+          sys_dict.parent_id = $scope.ResourceItem.parent_id;
           $scope.ResourceItemConfigList.push(sys_dict);
           shareFreqDictName.push(item.dict_name);
         });
@@ -843,7 +846,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         var shareFreqDictName = [];
         // 删除本条信息项已选中的多选项
         _.remove($scope.ResourceItemConfigList, function(config) {
-          return config.InfoItemId == $scope.ResourceItem.item_name;
+          return config.InfoItemId == $scope.ResourceItem.item_name && config.parent_id == $scope.ResourceItem.parent_id;
         });
 
         _.remove($scope.ResourceItemList, function(item) {
@@ -854,6 +857,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           var sys_dict = {};
           sys_dict.InfoItemId = $scope.ResourceItem.item_name;
           sys_dict.sys_dict_id = item.id;
+          sys_dict.parent_id = $scope.ResourceItem.parent_id;
           $scope.ResourceItemConfigList.push(sys_dict);
           shareFreqDictName.push(item.dict_name);
         });
