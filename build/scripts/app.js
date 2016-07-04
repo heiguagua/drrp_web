@@ -219,7 +219,7 @@ app.run(['$rootScope', function($rootScope){
 var Config = angular.module('Config', []);
 
 Config.constant('API', {
-  path: 'http://localhost:8080/drrp/api'
+   path: 'http://localhost:8080/drrp/api'
 
 });
 
