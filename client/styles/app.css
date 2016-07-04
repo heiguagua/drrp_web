@@ -768,8 +768,13 @@ input.ng-touched.ng-invalid {
 #department-inventory-detail .tab-content #invntDetail .text-right {
   text-align: right;
 }
-#department-inventory-detail .tab-content #exampleData table tr th {
-  text-align: center;
+#department-inventory-detail .tab-content wiserv-example-data table {
+  table-layout: auto !important;
+}
+#department-inventory-detail .tab-content wiserv-example-data table tr td {
+  overflow: inherit;
+  white-space: inherit;
+  text-overflow: inherit;
 }
 #department-inventory-upload {
   margin-bottom: 50px;

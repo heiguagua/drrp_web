@@ -7,7 +7,7 @@
     border: 1px solid #DDD;
     border-top: none;
     padding: 20px 15px 10px;
-    font-size:13px;
+    font-size: 13px;
     .data-title {
       text-align: center;
     }
@@ -35,9 +35,16 @@
         text-align: right;
       }
     }
-    #exampleData{
-      table tr th{
-        text-align: center;
+    wiserv-example-data {
+      table {
+        table-layout: auto !important;
+        tr {
+          td {
+            overflow: inherit;
+            white-space: inherit;
+            text-overflow: inherit;
+          }
+        }
       }
     }
   }
