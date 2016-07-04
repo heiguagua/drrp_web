@@ -17,18 +17,14 @@ DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state
       $scope.DataQuotaExample = result.data.body;
     });
 
+    // 示例数据
+    $scope.DataExamples = Http.getResourceExampleDatas({
+      resource_id: $stateParams.resource_id
+    });
     <!--informationResource required by deps-->
     $scope.DataquotaRequirementByDepTotals = Http.getDataQuotaRequirementByDepTotals(
       {resource_id: $stateParams.resource_id}
     );
-    <!-- Data Quota Example-->
-    Http.getResourceExampleByDepID({
-      resource_id: $stateParams.resource_id
-    }).then(function(result) {
-      $scope.DataQuotaExample = result.data.body;
-      $scope.detailFrame = $sce.trustAsResourceUrl('http://www.sohu.com');
-
-    });
 
   }
 ]);
@@ -38,6 +34,13 @@ DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state
 DataQuotaDetail.factory('DataQuotaDetail.Service.Http', ['$http', 'API',
   function($http, API) {
     var path = API.path;
+    function getResourceExampleDatas(params) {
+      return $http.get(
+        path + '/info_resource_examples', {
+          params: params
+        }
+      )
+    };
     function getDataQuotaDetailByDepID(params){
       return $http.get(
         path + '/info_resource_detail', { params: params }
@@ -53,18 +56,27 @@ DataQuotaDetail.factory('DataQuotaDetail.Service.Http', ['$http', 'API',
         path + '/info_item_requirementDeps', { params: params }
       )
     };
-    function getResourceExampleByDepID(params) {
-      return $http.get(
-        path + '/info_item_detail', {
-          params: params
-        }
-      )
-    };
     return {
+      getResourceExampleDatas: getResourceExampleDatas,
       getDataQuotaDetailByDepID: getDataQuotaDetailByDepID,
       getDataQuotaExampleByDepID: getDataQuotaExampleByDepID,
       getDataQuotaRequirementByDepTotals: getDataQuotaRequirementByDepTotals,
-      getResourceExampleByDepID: getResourceExampleByDepID
+    }
+  }
+]);
+
+DataQuotaDetail.directive('wiservExampleDataShow', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:500px;height:400px;position:relative;top: -9px;'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.DataExamples.then(function(result) {
+          console.log(result);
+          element.html(result.data.body[0].file_content);
+        })
+      }
     }
   }
 ]);
