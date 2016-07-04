@@ -89,7 +89,7 @@
         </div>
         <div class='panel-body' cg-busy="{promise:mainAuditPromise,message:'加载中',backdrop:backdrop,delay:delay,minDuration:minDuration}">
           <!-- Table -->
-          <table class='table table-hover table-striped'>
+          <table class='table table-hover table-striped table-bordered'>
             <thead>
               <tr>
                 <th width='30%'>申请日期</th>
@@ -99,7 +99,7 @@
             </thead>
             <tbody>
               <tr ng-repeat='invtItem in toAuditList'>
-                <td title='{{invtItem.apply_time |date:"yyyy-MM-dd"}}'>{{invtItem.apply_time |date:"yyyy-MM-dd"}}</td>
+                <td class='text-right' title='{{invtItem.apply_time |date:"yyyy-MM-dd"}}'>{{invtItem.apply_time |date:"yyyy-MM-dd"}}</td>
                 <td title='{{invtItem.resource_name}}'>
                   <a ui-sref='main.department.audit.info({AUDITID:invtItem.audit_id,RESOURCEID:invtItem.resource_id,APPLYTIME:invtItem.apply_time,APPLYDEP:invtItem.dep_name})'>
                     <pre>{{invtItem.resource_name}}</pre>
@@ -123,7 +123,7 @@
         </div>
         <div class='panel-body' cg-busy="{promise:mainReqPromise,message:'加载中',backdrop:backdrop,delay:delay,minDuration:minDuration}">
           <!-- Table -->
-          <table class='table table-hover table-striped'>
+          <table class='table table-hover table-striped table-bordered'>
             <thead>
               <tr>
                 <th width='20%'>响应日期</th>
@@ -134,8 +134,8 @@
             </thead>
             <tbody>
               <tr ng-repeat='resItem in requireToConfirmList'>
-                <td title='{{resItem.response_time |date:"yyyy-MM-dd"}}'>{{resItem.response_time |date:"yyyy-MM-dd"}}</td>
-                <td title='{{resItem.create_time| date:"yyyy-MM-dd"}}'>{{resItem.create_time| date:"yyyy-MM-dd"}}</td>
+                <td class='text-right' title='{{resItem.response_time |date:"yyyy-MM-dd"}}'>{{resItem.response_time |date:"yyyy-MM-dd"}}</td>
+                <td class='text-right' title='{{resItem.create_time| date:"yyyy-MM-dd"}}'>{{resItem.create_time| date:"yyyy-MM-dd"}}</td>
                 <td title='{{resItem.requiement_name}}'>
                   <a ui-sref='main.department.requirement.detail({ID:resItem.id})'>{{resItem.requiement_name}}</a>
                 </td>

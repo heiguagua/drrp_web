@@ -72,6 +72,178 @@ input.ng-touched.ng-invalid {
 .help-block {
   color: red;
 }
+#main-unlogin .logo {
+  display: inline-block;
+  width: 370px;
+  height: 40px;
+  margin: 3px 25px 0 -15px;
+  background: url('images/logo.png') no-repeat;
+  background-size: 370px 40px;
+}
+#main-unlogin .nav-tabs {
+  position: relative;
+  bottom: -7px;
+}
+#main-unlogin .btn-login {
+  position: relative;
+  top: 7px;
+  right: -15px;
+}
+#main-unlogin .text-center {
+  position: relative;
+  top: 15px;
+}
+#data-quota-main-unlogin .left.col-md-1.buttonType {
+  width: 45px;
+}
+#data-quota-main-unlogin .left {
+  padding-left: 10px;
+  padding-right: 0;
+}
+#data-quota-main-unlogin .left .panel-heading {
+  cursor: pointer;
+}
+#data-quota-main-unlogin .left .toggler {
+  font-size: 15px;
+  border-radius: 1px;
+  box-shadow: 10px 10px 5px #888888;
+}
+#data-quota-main-unlogin .left .panel-heading:HOVER {
+  color: #337AB9;
+}
+#data-quota-main-unlogin .left .panel-heading:ACTIVE {
+  font-weight: bolder;
+  color: #337AB9;
+}
+#data-quota-main-unlogin .left .menu {
+  margin: 10px 0;
+  padding: 0;
+  font-size: 13px;
+}
+#data-quota-main-unlogin .left .menu li {
+  padding-left: 15px;
+}
+#data-quota-main-unlogin .left .list-group .list-group-item {
+  cursor: pointer;
+}
+#data-quota-main-unlogin .left .list-group .list-group-item:HOVER {
+  background: #FBFBFB;
+  color: #337AC8;
+}
+#data-quota-main-unlogin .left [type=tabs] {
+  margin-left: 2px;
+}
+#data-quota-main-unlogin .left [type=tabs] a {
+  margin-right: 0;
+  padding: 5px 14px;
+}
+#data-quota-main-unlogin .left [type=tabs] .menu {
+  margin-top: 20px;
+}
+#data-quota-main-unlogin .right {
+  width: 926px;
+  padding-right: 0;
+  padding-left: 0;
+}
+#data-quota-main-unlogin .sidebar1 {
+  margin-right: 4px;
+  will-change: transform;
+}
+#data-quota-main-unlogin .content-collapse {
+  position: relative;
+  margin-left: -191px;
+  width: 1117px;
+}
+#data-quota-list-unlogin .input-patch {
+  position: relative;
+  top: -7px;
+  right: -12px;
+}
+#data-quota-list-unlogin .filter {
+  border-bottom: 0 solid #DDD;
+  padding: 15px 0;
+}
+#data-quota-list-unlogin .filter .indicator-filter {
+  margin: 0;
+  font-size: 13px;
+  overflow: hidden;
+}
+#data-quota-list-unlogin .filter .indicator-filter ul.pager {
+  margin: 0 0 15px;
+}
+#data-quota-list-unlogin .filter .indicator-filter ul.pager .filter-label {
+  width: 110px;
+  text-align: right;
+  display: inline-block;
+  padding-right: 12px;
+}
+#data-quota-list-unlogin .filter .indicator-filter ul.pager.dataLevelStyle {
+  margin-bottom: 0;
+}
+#data-quota-list-unlogin .table-width {
+  width: 925px;
+  padding-left: 0;
+  padding-right: 0;
+}
+#data-quota-list-unlogin .table-responsive {
+  height: 628px;
+}
+#data-quota-list-unlogin .table-patch {
+  margin-bottom: 0 !important;
+  table-layout: fixed;
+}
+#data-quota-list-unlogin .table-patch td,
+#data-quota-list-unlogin .table-patch th {
+  height: 50px;
+  max-width: 200px;
+  word-break: keep-all;
+  word-wrap: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  font-size: 13px;
+}
+#data-quota-list-unlogin .table-patch th {
+  text-align: center;
+}
+#data-quota-list-unlogin .table-patch td {
+  text-align: left;
+}
+#data-quota-list-unlogin .table-patch .orderStyle {
+  text-align: center;
+}
+#data-quota-list-unlogin .table-patch .numberAndDateStyle {
+  text-align: right;
+}
+#data-quota-list-unlogin .pannel-patch {
+  margin-bottom: 10px;
+}
+#data-quota-list-unlogin .panel-body {
+  padding: 5px;
+}
+#data-quota-list-unlogin .blue {
+  color: #337AB7;
+}
+#data-quota-list-unlogin .orange {
+  color: #F07746;
+}
+#data-quota-list-unlogin .icon-list {
+  font-size: 12px;
+}
+#data-quota-list-unlogin .icon-list i {
+  margin-left: 15px;
+}
+#data-quota-list-unlogin .pager li {
+  cursor: pointer;
+}
+#data-quota-list-unlogin .pager li a:ACTIVE {
+  font-weight: bold;
+}
+#data-quota-list-unlogin .pager li .active {
+  background: #E9E9E9;
+  font-weight: bolder;
+}
 #login {
   height: 100%;
   background: #EEE;
@@ -142,8 +314,7 @@ input.ng-touched.ng-invalid {
   right: -15px;
 }
 #main .text-center {
-  position: relative;
-  top: 15px;
+  text-align: center;
 }
 #dashboard .left {
   padding: 0;
@@ -162,8 +333,17 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
   vertical-align: middle;
 }
+#dashboard .table-patch th {
+  text-align: center;
+}
+#dashboard .table-patch td {
+  text-align: left;
+}
+#dashboard .table-patch .numberAndDateStyle {
+  text-align: right;
+}
 #dashboard .first-section .panel {
-  height: 310px;
+  height: 325px;
 }
 #dashboard .first-section .list-number {
   font-size: 15px;
@@ -214,7 +394,7 @@ input.ng-touched.ng-invalid {
   margin-bottom: 40px;
 }
 #dashboard .third-section .panel {
-  height: 325px;
+  height: 310px;
 }
 #dashboard .third-section .panel .nav-tabs {
   bottom: 5px !important;
@@ -255,6 +435,9 @@ input.ng-touched.ng-invalid {
 #department-summary .panel-list .panel table {
   table-layout: fixed;
 }
+#department-summary .panel-list .panel table tr th {
+  text-align: center;
+}
 #department-summary .panel-list .panel table tr td {
   overflow: hidden;
   white-space: nowrap;
@@ -270,6 +453,7 @@ input.ng-touched.ng-invalid {
   background: none;
   padding: 0;
   font-size: inherit;
+  font-family: inherit;
   margin: 0;
 }
 #department-summary .panel-list .panel-follow-depart .panel-body {
@@ -410,7 +594,7 @@ input.ng-touched.ng-invalid {
   height: 530px;
 }
 #department-inventory .indicator-list .scroll table {
-  table-layout: auto;
+  table-layout: fixed;
   font-size: 13px;
 }
 #department-inventory .indicator-list .scroll table tr th {
@@ -452,6 +636,10 @@ input.ng-touched.ng-invalid {
 }
 #department-inventory .indicator-list table tr.has-item {
   background: #FFF;
+  color: #F07746;
+}
+#department-inventory .indicator-list table tr.has-item td pre {
+  color: #F07746 !important;
 }
 #department-inventory .indicator-list table tr td {
   overflow: hidden;
@@ -478,7 +666,12 @@ input.ng-touched.ng-invalid {
   background: none;
   padding: 0;
   font-size: inherit;
+  font-family: inherit;
   margin: 0;
+}
+#department-inventory .indicator-list table tr .orderBy {
+  text-align: center;
+  vertical-align: middle;
 }
 #department-inventory .indicator-list table tr span i {
   font-size: 18px;
@@ -568,10 +761,19 @@ input.ng-touched.ng-invalid {
   background: none;
   padding: 0;
   font-size: inherit;
+  font-family: inherit;
   margin: 0;
 }
 #department-inventory-detail .tab-content #invntDetail .text-right {
   text-align: right;
+}
+#department-inventory-detail .tab-content wiserv-example-data table {
+  table-layout: auto !important;
+}
+#department-inventory-detail .tab-content wiserv-example-data table tr td {
+  overflow: inherit;
+  white-space: inherit;
+  text-overflow: inherit;
 }
 #department-inventory-upload {
   margin-bottom: 50px;
@@ -579,6 +781,18 @@ input.ng-touched.ng-invalid {
 #department-inventory-upload .popover {
   max-width: 700px;
   width: 700px;
+}
+#department-inventory-upload .help-info {
+  padding-left: 90px;
+  padding-top: 10px;
+  display: block;
+}
+#department-inventory-upload .upload-btn {
+  display: inline;
+  width: 72px;
+}
+#department-inventory-upload .help-block {
+  padding-left: 90px;
 }
 #department-share {
   margin-bottom: 50px;
@@ -651,7 +865,7 @@ input.ng-touched.ng-invalid {
   height: 530px;
 }
 #department-share .indicator-list .scroll table {
-  table-layout: auto;
+  table-layout: fixed;
   font-size: 13px;
 }
 #department-share .indicator-list .scroll table tr th {
@@ -696,6 +910,10 @@ input.ng-touched.ng-invalid {
 }
 #department-share .indicator-list table tr.has-item {
   background: #FFF;
+  color: #F07746;
+}
+#department-share .indicator-list table tr.has-item td pre {
+  color: #F07746 !important;
 }
 #department-share .indicator-list table tr td {
   overflow: hidden;
@@ -713,7 +931,12 @@ input.ng-touched.ng-invalid {
   background: none;
   padding: 0;
   font-size: inherit;
+  font-family: inherit;
   margin: 0;
+}
+#department-share .indicator-list table tr .orderBy {
+  text-align: center;
+  vertical-align: middle;
 }
 #department-share .indicator-list table tr span i {
   font-size: 18px;
@@ -820,6 +1043,9 @@ input.ng-touched.ng-invalid {
   table-layout: fixed;
   font-size: 13px;
 }
+#department-requirement .indicator-list table tr th {
+  text-align: center;
+}
 #department-requirement .indicator-list table tr td {
   overflow: hidden;
   white-space: nowrap;
@@ -923,6 +1149,9 @@ input.ng-touched.ng-invalid {
   table-layout: fixed;
   font-size: 13px;
 }
+#department-requirement-confirm .indicator-list table tr th {
+  text-align: center;
+}
 #department-requirement-confirm .indicator-list table tr td {
   overflow: hidden;
   white-space: nowrap;
@@ -950,7 +1179,7 @@ input.ng-touched.ng-invalid {
   font-size: 12px;
   color: #777;
 }
-.confirm-req-modal .table > tbody > tr > td {
+.confirm-req-modal .table.req-detail > tbody > tr > td {
   border: none;
   word-wrap: break-word;
 }
@@ -959,6 +1188,50 @@ input.ng-touched.ng-invalid {
 }
 .confirm-req-modal .multiSelect .checkboxLayer {
   max-width: 96%;
+}
+.confirm-req-modal .infoListDropdown {
+  padding: 15px 10px;
+  border: 1px solid #DDD;
+  position: absolute;
+  width: 96%;
+  background: #fcf8e3;
+  z-index: 999;
+  box-shadow: 0 4px 14px #DDD;
+  -webkit-box-shadow: 0 4px 14px #DDD;
+  transition-property: height;
+  transition-duration: 2s;
+  -moz-transition-property: height;
+  /* Firefox 4 */
+  -moz-transition-duration: 2s;
+  /* Firefox 4 */
+  -webkit-transition-property: height;
+  /* Safari and Chrome */
+  -webkit-transition-duration: 2s;
+  /* Safari and Chrome */
+  -o-transition-property: height;
+  /* Opera */
+  -o-transition-duration: 2s;
+  /* Opera */
+}
+.confirm-req-modal .infoListDropdown .pager {
+  text-align: left;
+  margin: 0;
+  padding-bottom: 12px;
+}
+.confirm-req-modal .table-resource-list {
+  table-layout: fixed;
+}
+.confirm-req-modal .table-resource-list td .items-list {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+.confirm-req-modal .table-resource-list td .items-list table {
+  table-layout: fixed;
+}
+.confirm-req-modal .table-resource-list td .items-list table tr td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #department-requirement-detail {
   margin-bottom: 50px;
@@ -979,6 +1252,19 @@ input.ng-touched.ng-invalid {
   padding: 15px 0;
   border-top: 1px solid #CCC;
   margin-top: 16px;
+}
+#department-requirement-detail pre {
+  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  word-break: initial;
+  word-wrap: break-word;
+  color: inherit;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  margin: 0;
 }
 #department-requirement-publish {
   margin-bottom: 50px;
@@ -1023,7 +1309,7 @@ input.ng-touched.ng-invalid {
   height: 530px;
 }
 #department-audit .indicator-list .scroll table {
-  table-layout: auto;
+  table-layout: fixed;
   font-size: 13px;
 }
 #department-audit .indicator-list .scroll table tr th {
@@ -1082,7 +1368,12 @@ input.ng-touched.ng-invalid {
   background: none;
   padding: 0;
   font-size: inherit;
+  font-family: inherit;
   margin: 0;
+}
+#department-audit .indicator-list table tr .orderBy {
+  text-align: center;
+  vertical-align: middle;
 }
 #department-audit .indicator-list table tr span {
   padding: 0 15px;
@@ -1123,6 +1414,7 @@ input.ng-touched.ng-invalid {
   background: none;
   padding: 0;
   font-size: inherit;
+  font-family: inherit;
   margin: 0;
 }
 #department-audit-info .audit-wrap .audit-info .apply-dep-info {
@@ -1136,6 +1428,9 @@ input.ng-touched.ng-invalid {
 }
 #department-audit-info .audit-wrap .audit-info table.no-border tr td {
   border: none;
+}
+#department-audit-info .audit-wrap .audit-info table tr th {
+  text-align: center;
 }
 #department-audit-info .audit-wrap .step-number {
   background-color: #35aa47;
@@ -1198,11 +1493,20 @@ input.ng-touched.ng-invalid {
 #department-user .user-list {
   clear: right;
 }
+#data-quota-main .left.col-md-1.buttonType {
+  width: 45px;
+}
 #data-quota-main .left {
-  padding-left: 0;
+  padding-left: 10px;
+  padding-right: 0;
 }
 #data-quota-main .left .panel-heading {
   cursor: pointer;
+}
+#data-quota-main .left .toggler {
+  font-size: 15px;
+  border-radius: 1px;
+  box-shadow: 10px 10px 5px #888888;
 }
 #data-quota-main .left .panel-heading:HOVER {
   color: #337AB9;
@@ -1237,11 +1541,18 @@ input.ng-touched.ng-invalid {
   margin-top: 20px;
 }
 #data-quota-main .right {
+  width: 926px;
   padding-right: 0;
   padding-left: 0;
 }
-#data-quota-list .table {
-  margin-bottom: 0 !important;
+#data-quota-main .sidebar1 {
+  margin-right: 4px;
+  will-change: transform;
+}
+#data-quota-main .content-collapse {
+  position: relative;
+  margin-left: -191px;
+  width: 1117px;
 }
 #data-quota-list .input-patch {
   position: relative;
@@ -1266,14 +1577,20 @@ input.ng-touched.ng-invalid {
   display: inline-block;
   padding-right: 12px;
 }
-#data-quota-list .filter .indicator-filter ul.pager.issecret {
+#data-quota-list .filter .indicator-filter ul.pager.dataLevelStyle {
   margin-bottom: 0;
 }
-#data-quota-list .col-lg-12 {
-  padding-left: inherit;
+#data-quota-list .table-width {
+  width: 925px;
+  padding-left: 0;
+  padding-right: 0;
+}
+#data-quota-list .table-responsive {
+  height: 628px;
 }
 #data-quota-list .table-patch {
-  table-layout: automatic;
+  margin-bottom: 0 !important;
+  table-layout: fixed;
 }
 #data-quota-list .table-patch td,
 #data-quota-list .table-patch th {
@@ -1284,8 +1601,19 @@ input.ng-touched.ng-invalid {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 13px;
   vertical-align: middle;
+  font-size: 13px;
+}
+#data-quota-list .table-patch th {
+  text-align: center;
+}
+#data-quota-list .table-patch td {
+  text-align: left;
+}
+#data-quota-list .table-patch .numberAndDateStyle {
+  text-align: right;
+}
+#data-quota-list .table-patch .orderStyle {
   text-align: center;
 }
 #data-quota-list .pannel-patch {
@@ -1306,13 +1634,6 @@ input.ng-touched.ng-invalid {
 #data-quota-list .icon-list i {
   margin-left: 15px;
 }
-#data-quota-list .table-responsive {
-  height: 628px;
-}
-#data-quota-list .table-responsive td {
-  max-width: 165px;
-  text-overflow: ellipsis;
-}
 #data-quota-list .pager li {
   cursor: pointer;
 }
@@ -1323,24 +1644,29 @@ input.ng-touched.ng-invalid {
   background: #E9E9E9;
   font-weight: bolder;
 }
-#data-quota-list .quota-detail {
+#data-quota-detail .quota-detail {
   font-size: 13px;
 }
-#data-quota-list .quota-detail .list-group {
+#data-quota-detail .quota-detail .list-group {
   margin-top: 6px;
 }
-#data-quota-list .list-patch {
+#data-quota-detail .tab-content {
+  padding: 15px 0;
+}
+#data-quota-detail .list-patch {
   overflow: hidden;
   word-wrap: break-word;
 }
-#data-quota-list .table {
-  width: 100%;
-  max-width: 100%;
+#data-quota-detail .table {
   margin-bottom: 20px;
   margin-top: -9px;
 }
-#data-quota-list .table-patch td,
-#data-quota-list .table-patch th {
+#data-quota-detail .table-patch {
+  table-layout: fixed;
+}
+#data-quota-detail .table-patch td,
+#data-quota-detail .table-patch th {
+  max-width: 100px;
   word-break: keep-all;
   word-wrap: normal;
   white-space: nowrap;
@@ -1348,9 +1674,17 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
   font-size: 13px;
   vertical-align: middle;
+}
+#data-quota-detail .table-patch th {
   text-align: center;
 }
-#data-quota-list .quota-example .table-responsive {
+#data-quota-detail .table-patch td {
+  text-align: left;
+}
+#data-quota-detail .table-patch .orderStyle {
+  text-align: center;
+}
+#data-quota-detail .quota-example .table-responsive {
   margin-top: 0;
 }
 #admin-user .row {
@@ -1366,6 +1700,17 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
   font-size: 14px;
   vertical-align: middle;
+}
+#admin-user .table-patch th {
+  text-align: center;
+}
+#admin-user .table-patch td {
+  text-align: left;
+}
+#admin-user .table-patch .numberAndDateStyle {
+  text-align: right;
+}
+#admin-user .table-patch .orderStyle {
   text-align: center;
 }
 #admin-department .table-patch td,
@@ -1378,5 +1723,43 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
   font-size: 14px;
   vertical-align: middle;
+}
+#admin-department .table-patch th {
   text-align: center;
+}
+#admin-department .table-patch td {
+  text-align: left;
+}
+#admin-department .table-patch .numberAndDateStyle {
+  text-align: right;
+}
+#admin-department .table-patch .orderStyle {
+  text-align: center;
+}
+#dep-resource .row {
+  height: 450px;
+}
+#dep-resource .table-patch td,
+#dep-resource .table-patch th {
+  width: 20px;
+  word-break: keep-all;
+  word-wrap: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  vertical-align: middle;
+}
+#dep-resource .table-patch th {
+  text-align: center;
+}
+#dep-resource .table-patch td {
+  text-align: left;
+}
+#dep-resource .table-patch .numberAndDateStyle {
+  text-align: right;
+}
+#dep-resource table.table.table-striped.table-hover.table-bordered.table-patch {
+  width: 750px;
+  margin-left: 100px;
 }

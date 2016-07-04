@@ -100,6 +100,9 @@
               <select ng-model='InfoResource.resource_format' required name='resource_format' class='form-control' style='display: inline-block !important;width: auto;' ng-change='showHideResAddBtn()'>
                 <option ng-repeat='resourceFormat in resourceFormatList' value='{{resourceFormat.id}}'>{{resourceFormat.dict_name}}</option>
               </select>
+              <span ng-class="{true: 'ng-hide', false: 'ng-show'}[resFormatOtherShow || resItemAddBtn || resItemUpdateBtn]">
+                <label>格式说明：</label><input  type='text' class='custom-form-control' name='resource_format_desc' ng-model='InfoResource.resource_format_desc' />
+              </span>
               <span  ng-class="{true: 'ng-show', false: 'ng-hide'}[resFormatOtherShow]"><input type='text' class='custom-form-control' name='resource_format_other' ng-maxlength='256' placeholder='请输入其他信息资源格式' ng-model='InfoResource.resource_format_other' /></span>
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[resItemAddBtn]"><a class='btn btn-default' ng-click='ResItemListShow = true'><i class='fa fa-plus'></i>&nbsp;信息项</a></span>
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[resItemUpdateBtn]"><a class='btn btn-default' ng-click='editItems(InfoResource.id)'><i class='fa fa-pencil'></i>&nbsp;信息项</a></span>
@@ -169,6 +172,7 @@
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[depShow]">指定部门名称：
                 <div style='display:inline-block' isteven-multi-select input-model="deptList" output-model="outputDeptList" helper-elements="all none filter" button-label="dep_name" item-label="dep_name" tick-property="ticked" max-height="250px"></div>
               </span>
+              <p ng-show="!InfoResource.share_level && submitted" class="help-block">请选择共享级别</p>
             </div>
           </div>
 
@@ -179,6 +183,7 @@
               <select required  ng-model='InfoResource.share_type' class='custom-form-control'>
                 <option ng-repeat="shareType in  shareTypeList" value='{{shareType.dict_code}}'>{{shareType.dict_name}}</option>
               </select>
+              <p ng-show="!InfoResource.share_type && submitted && !resItemAddBtn" class="help-block">请选择共享类型</p>
             </div>
           </div>
 
@@ -188,31 +193,38 @@
             <div class="col-sm-10">
               <textarea class="form-control" name='share_limit' required ng-maxlength="256" rows='3' placeholder='有条件共享类可注明共享条件和共享范围；不予共享类注明相关的法律、行政法规和党中央、国务院政策依据。' ng-model='InfoResource.share_limit'></textarea>
               <p ng-show="InfoResourceForm.share_limit.$error.maxlength" class="help-block">您输入的内容太长。</p>
-              <p ng-show="InfoResourceForm.share_limit.$error.required && submitted" class="help-block">请输入指标详细解释</p>
+              <p ng-show="InfoResourceForm.share_limit.$error.required && submitted" class="help-block">请输入共享条件</p>
               <span class='pull-right'>(最多256个汉字)</span>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" >
             <label for="" class="col-sm-2 control-label">
               <span class='require-sign'>*</span>共享方式:</label>
             <div class="col-sm-10">
               <select ng-model='InfoResource.share_method' required name='share_method' ng-change='showHideShareMethodOther()' class='form-control' style='display: inline-block !important;width: auto;'>
                 <option ng-repeat="shareMethod in  shareMethodList" value='{{shareMethod.id}}'>{{shareMethod.dict_name}}</option>
               </select>
+
+              <span>
+                <label>共享方式说明：</label><input ng-class="{true: 'ng-hide', false: 'ng-show'}[shareMethodOtherShow]" type='text' class='custom-form-control' name='share_method_desc' ng-model='InfoResource.share_method_desc' />
+              </span>
+
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[shareMethodOtherShow]">
                 <input type='text' ng-maxlength='256' name='share_method_other' class='custom-form-control' ng-model='InfoResource.share_method_other' placeholder='请输入其他类信息' />
               </span>
               <p ng-show="InfoResourceForm.share_method_other.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
+              <p ng-show="!InfoResource.share_method && submitted" class="help-block">请选择共享方式</p>
             </div>
           </div>
 
           <div class="form-group">
             <label for="" class="col-sm-2 control-label" style='padding-left:0'><span class='require-sign'>*</span>是否面向社会开放:</label>
             <div class="col-sm-10">
-              <select ng-model='InfoResource.social_open_flag' readonly='{{socialOpenFlag}}' class='custom-form-control' required>
+              <select ng-model='InfoResource.social_open_flag' readonly='{{socialOpenFlag}}' class='custom-form-control'>
                 <option ng-selected="socialOpen.dict_code == InfoResource.social_open_flag" ng-repeat="socialOpen in  socialOpenList" value='{{socialOpen.dict_code}}'>{{socialOpen.dict_name}}</option>
               </select>
+              <p ng-show="(InfoResource.social_open_flag != 0 && InfoResource.social_open_flag != 1) && submitted && !resItemAddBtn" class="help-block">请选择是否面向社会开放</p>
             </div>
           </div>
 
@@ -304,9 +316,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat='rescoureItem in ResourceItemList | orderBy:"-create_time" '>
+            <tr ng-repeat='rescoureItem in ResourceItemList | orderBy:"item_ord" '>
               <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
-              <td>{{$index+1}}</td>
+              <td class='text-center'>{{$index+1}}</td>
               <td><a class='delete btn btn-danger btn-xs' ng-click='deleteItem($index)' ><i class='fa fa-trash'></i>&nbsp;删除</a>
               <a class='edit btn btn-success btn-xs' ng-click='updateItem(rescoureItem)'><i class='fa fa-pencil'></i>&nbsp;修改</a></td>
               <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
@@ -327,7 +339,7 @@
           <button class="btn btn-default " type='button' ng-click='ResItemListShow = false'>取消</button>
         </div>
         <div class="btn btn-group">
-          <button class="btn btn-success "  type='submit' ng-click='ResItemListShow = false'>保存</button>
+          <button class="btn btn-success "  type='submit' ng-click='ResItemListShow = false'>确认</button>
         </div>
       </div>
     </div>
@@ -357,12 +369,23 @@
           </div>
         </div>
 
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          <span class='require-sign'>*</span>数据类型:</label>
+        <div class="col-sm-10">
+          <select ng-model='data.item_type' required ng-options="o as o.dict_name for o in  itemTypeList track by o.id" class='custom-form-control'></select>
+        </div>
+      </div>
+
         <div class="form-group">
-          <label for="" class="col-sm-2 control-label"><span class='require-sign'>*</span>数据类型:</label>
-          <div class="col-sm-10">
-            <select ng-model='data.item_type' ng-options="o as o.dict_name for o in  itemTypeList track by o.id" class='custom-form-control' >
-            </select>
-          </div>
+          <label for="standard" class="col-sm-2 control-label">
+            标准规范:</label>
+            <div class="col-sm-10">
+              <input type="text" name='field_standard' class="form-control" ng-model='ResourceItem.field_standard' >
+              <span class='help-info'>
+                信息项参考的国家或者行业、机构的标准规范
+              </span>
+            </div>
         </div>
 
         <div class="form-group">
@@ -439,10 +462,20 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="" class="col-sm-2 control-label">
+            父节点信息项:</label>
+          <div class="col-sm-10">
+            <select ng-model='data.parent_id'  ng-options="srcItem as srcItem.item_name for srcItem in parent.ItemsList track by srcItem.item_name" class='custom-form-control'></select>
+            <p ng-show="(data.parent_id.item_name == ResourceItem.item_name) && ResourceItem.item_name"  class="help-block">不能选择自身作为父级信息项。</p>
+            <p ng-show="parent.childParentConflict"  class="help-block">所选信息项不能与自己互为父节点。</p>
+          </div>
+        </div>
+
     </div>
     <div class='modal-footer'>
       <button class='btn btn-default' type='button' ng-click='Modal.cancel()'>取消</button>
-      <button class='btn btn-success' ng-disabled="addItemForm.$invalid" ng-click="Modal.confirm()">保存</button>
+      <button class='btn btn-success' ng-disabled="parent.childParentConflict || (data.parent_id.item_name == ResourceItem.item_name) || addItemForm.$invalid" ng-click="Modal.confirm()">确认</button>
     </div>
   </div>
 </form>

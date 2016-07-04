@@ -53,6 +53,10 @@
             <label class='col-sm-2 text-right'>信息资源格式:</label>
             <div class='col-sm-10'>{{InfoResourceDetail.resource_format_name}}</div>
           </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>格式说明:</label>
+            <div class='col-sm-10'>{{InfoResourceDetail.resource_format_desc}}</div>
+          </div>
           <div class='row' ng-show='!InfoItemShow'>
             <label class='col-sm-2 text-right' >更新周期:</label>
             <div class='col-sm-10'>{{InfoResourceDetail.update_period}}</div>
@@ -86,6 +90,10 @@
             <div class='col-sm-10'>{{InfoResourceDetail.share_method_name}}</div>
           </div>
           <div class='row'>
+            <label class='col-sm-2 text-right'>共享方式说明:</label>
+            <div class='col-sm-10'>{{InfoResourceDetail.share_method_desc}}</div>
+          </div>
+          <div class='row'>
             <label class='col-sm-2 text-right'>是否面向社会开放:</label>
             <div class='col-sm-10'>{{InfoResourceDetail.social_open_flag_name}}</div>
           </div>
@@ -117,7 +125,7 @@
         </div>
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active', false: 'inactive'}[InfoItem.show]" id="exampleData">
           <!-- Table -->
-          <table class='table table-hover table-striped '>
+          <table class='table table-hover table-striped table-bordered'>
             <thead>
               <tr>
                 <th width='40px'>序号</th>
@@ -129,12 +137,17 @@
                 <th width='80px'>计算方法</th>
                 <th width='80px'>更新周期</th>
                 <th width='80px'>是否涉密</th>
+                <th width='80px'>共享级别</th>
+                <th width='80px'>共享类型</th>
+                <th width='80px'>共享条件</th>
+                <th width='120px'>是否面向社会开放</th>
+                <th width='80px'>开放条件</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat='rescoureItem in InfoItems | orderBy:"-create_time" '>
                 <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
-                <td>{{$index+1}}</td>
+                <td class='text-center'>{{$index+1}}</td>
                 <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
                 <td title='{{rescoureItem.item_type_name}}'>{{rescoureItem.item_type_name}}</td>
                 <td title='{{rescoureItem.data_precision}}'>{{rescoureItem.data_precision}}</td>
@@ -143,6 +156,11 @@
                 <td title='{{rescoureItem.calculate_method}}'>{{rescoureItem.calculate_method}}</td>
                 <td title='{{rescoureItem.update_period_name}}'>{{rescoureItem.update_period_name}}</td>
                 <td title='{{rescoureItem.secret_flag_name}}'>{{rescoureItem.secret_flag_name}}</td>
+                <td title='{{rescoureItem.share_level_name}}'>{{rescoureItem.share_level_name}}</td>
+                <td title='{{rescoureItem.share_type_name}}'>{{rescoureItem.share_type_name}}</td>
+                <td title='{{rescoureItem.share_limit}}'>{{rescoureItem.share_limit}}</td>
+                <td title='{{rescoureItem.social_open_flag_name}}'>{{rescoureItem.social_open_flag_name}}</td>
+                <td title='{{rescoureItem.social_open_limit}}'>{{rescoureItem.social_open_limit}}</td>
               </tr>
             </tbody>
           </table>

@@ -6,17 +6,21 @@ var app = angular.module('app', [
   'ui.bootstrap',
   'treeControl',
   'isteven-multi-select',
+  'Welcome',
   'Login',
   'Main',
   'Dashboard',
   'Admin',
   'Admin.User',
   'Admin.Department',
+  'Admin.DepResource',
   'Department',
   'DataQuota',
   'DataQuotaList',
   'DataQuotaDetail',
   'Department.Inventory',
+  'Department.InventoryDetail',
+  'Department.InventoryUpload',
   'Department.Audit',
   'Department.Requirement',
   'DepartmentShare'
@@ -24,6 +28,7 @@ var app = angular.module('app', [
 
 app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
   function($stateProvider, $urlRouterProvider, $httpProvider, $provide) {
+
     /** HTTP Interceptor */
     $httpProvider.interceptors.push(['$q',
       function($q) {
@@ -53,8 +58,13 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
       }
     ]);
     /** Config Router */
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/welcome');
     $stateProvider
+      .state('welcome', {
+        url: '/welcome?resource_dep_id?dep_name',
+        templateUrl: 'views/common/welcome.html',
+        controller: 'Welcome.Controller.Main'
+      })
       .state('login', {
         url: '/login',
         templateUrl: 'views/common/login.html',
@@ -76,9 +86,14 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         controller: 'Admin.Controller.Main'
       })
       .state('main.admin.department', {
-        url: '/dashboard',
+        url: '/department',
         templateUrl: 'views/admin/department.html',
         controller: 'Admin.Department.Controller.Main'
+      })
+      .state('main.admin.dep-resource', {
+        url: '/dep-resource',
+        templateUrl: 'views/admin/dep-resource.html',
+        controller: 'Admin.DepResource.Controller.Main'
       })
       .state('main.admin.user', {
         url: '/user',
@@ -92,7 +107,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
       })
       .state('main.data-quota.list', {
         url: '/list/:resource_dep_id/:dep_name',
-        templateUrl: 'views/data-quota/list.html',
+        templateUrl: 'views/data-quota/list0.html',
         controller: 'DataQuotaList.Controller.Main'
       })
       .state('main.data-quota.detail', {
@@ -127,11 +142,17 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         templateUrl: 'views/department/inventory-update.html',
         controller: 'Department.Inventory.Controller.publish'
       })
+      .state('main.department.inventory.upload', {
+        url: '/upload?ID',
+        cache:'false',
+        templateUrl: 'views/department/inventory-upload.html',
+        controller: 'Department.InventoryUpload.Controller'
+      })
       .state('main.department.detail', {
         url: '/detail/:item',
         cache:'false',
         templateUrl: 'views/department/inventory-detail.html',
-        controller: 'Department.Inventory.Controller.detail'
+        controller: 'Department.InventoryDetail.Controller'
       })
       .state('main.department.share', {
         url: '/share',
@@ -168,10 +189,15 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         templateUrl: 'views/department/audit.html',
         controller: 'Department.Audit.Controller.Main'
       })
-      .state('main.department.audit.info', {
-        url: '/info/:AUDITID/:RESOURCEID/:APPLYTIME/:APPLYDEP',
+      .state('main.department.auditinfo', {
+        url: '/auditinfo/:AUDITID/:RESOURCEID/:APPLYTIME/:APPLYDEP',
         templateUrl: 'views/department/audit-info.html',
         controller: 'Department.Audit.Controller.info'
+      })
+      .state('main.department.auditdetail', {
+        url: '/auditdetail/:AUDITSTATUS/:RESOURCEID/:APPLYTIME/:APPLYDEP/:OPINION',
+        templateUrl: 'views/department/audit-detail.html',
+        controller: 'Department.Audit.Controller.detail'
       })
 
   }
@@ -180,7 +206,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
 app.run(['$rootScope', function($rootScope){
   $rootScope.$on('$stateChangeStart',
     function(event, toState, toParams, fromState, fromParams){
-      if(toState.name!=='login'){
+      if(toState.name!=='login' && toState.name!=='welcome'){
         if(!sessionStorage.token){
           window.location.href='/build';
         };
@@ -194,6 +220,7 @@ var Config = angular.module('Config', []);
 
 Config.constant('API', {
   path: 'http://localhost:8080/drrp/api'
+
 });
 
 'use strict';
@@ -205,7 +232,9 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     $scope.Modal = {}; // Clean scope of modal
     $scope.previousDepNames = [];
     $scope.areaNames = [];
+    $scope.themeNames = [];
     $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
 
@@ -227,8 +256,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     // init
     getDepartmentList(_httpParams);
     function getDepTotal(){
-      Http.getDepTotal({
-      }).then(function(result) {
+      Http.getDepTotal().then(function(result) {
         $scope.depTotal = result.data.body[0].number;
         $scope.Paging.totalItems = $scope.depTotal;
       });
@@ -246,6 +274,11 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
       dict_category:"9"
     }).then(function(result) {
       $scope.areaNames = result.data.body;
+    });
+    Http.getSysDict({
+      dict_category:"17"
+    }).then(function(result) {
+      $scope.themeNames = result.data.body;
     });
 
     $scope.placeholder = {};
@@ -531,6 +564,70 @@ AdminDepartment.service('AdminDepartment.Service.Component', ['$uibModal','$stat
   }
 ])
 
+  'use strict';
+  var AdminDepResource = angular.module('Admin.DepResource', ['ui.router']);
+
+  /** DepartmentReq Controller */
+  AdminDepResource.controller('Admin.DepResource.Controller.Main', ['$scope', 'AdminDepResource.Service.Http', '$state',
+  function($scope,  Http, $state) {
+    $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
+    $scope.Paging.maxSize = 5;
+    $scope.Paging.itemsPerPage = 10;
+
+    var _httpParams = {};
+    _httpParams.limit =10;
+    _httpParams.skip = 0;
+    $scope.Paging.pageChanged = function() {
+      _httpParams.skip = ($scope.Paging.currentPage - 1)*_httpParams.limit;
+      getDepRelRescount(_httpParams);
+    }
+
+    function getDepsTotal() {
+      Http.getDepCount().then(function(result) {
+        $scope.depTotal = result.data.body[0].number;
+        $scope.Paging.totalItems = $scope.depTotal;
+      });
+    }
+    function getDepRelRescount(params) {
+      Http.getDepRelRescount(params).then(function(result) {
+        $scope.depRecouces = result.data.body;
+      });
+    }
+    //init;
+    getDepsTotal();
+    getDepRelRescount(_httpParams);
+
+
+
+  }
+  ])
+
+  /* HTTP */
+AdminDepResource.factory('AdminDepResource.Service.Http', ['$http', 'API',
+  function($http, API) {
+    var path = API.path;
+
+    function getDepCount() {
+      return $http.get(
+        path + '/sys_dep/count'
+      )
+    };
+    function getDepRelRescount(params) {
+      return $http.get(
+        path + '/deprelrescount',{
+          params: params
+        }
+      )
+    }
+
+    return {
+      getDepRelRescount: getDepRelRescount,
+      getDepCount: getDepCount
+    }
+  }
+]);
+
 'use strict';
 var Admin = angular.module('Admin', ['ui.router','ngCookies']);
 
@@ -556,6 +653,7 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
     var dep_id = ((LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') ? null : LoginUser.dep_id);
     var dep_name= ((LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') ? null : LoginUser.dep_name);
     $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
 
@@ -1259,7 +1357,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:300;height:155px;position:relative;top:-8px'></div>",
+      template: "<div style='width:300;height:175px;position:relative;top:-1px'></div>",
       link: function(scope, element, attr) {
         scope.DataquotaSummary.then(function(result) {
           if (200 == result.data.head.status) {
@@ -1274,7 +1372,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                 name: '资源提供部门',
                 type: 'pie',
                 // selectedMode: 'single',
-                radius: [0, '60%'],
+                radius: [0, '45%'],
                 label: {
                   normal: {
                     position: 'inner',
@@ -1299,7 +1397,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
               }, {
                 name: '资源总数',
                 type: 'pie',
-                radius: ['70%', '80%'],
+                radius: ['60%', '67%'],
                 data: [{
                   value: (summary) ? (summary.total_resource) : '0',
                   name: '资源总数'
@@ -1322,7 +1420,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:300;height:155px;position:relative;top:-8px'></div>",
+      template: "<div style='width:300;height:175px;position:relative;top:-1px'></div>",
       link: function(scope, element, attr) {
         scope.DataRequirementSummary.then(function(result) {
           if (200 == result.data.head.status) {
@@ -1337,7 +1435,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                 name: '涉及部门',
                 type: 'pie',
                 // selectedMode: 'single',
-                radius: [0, '60%'],
+                radius: [0, '45%'],
                 label: {
                   normal: {
                     position: 'inner',
@@ -1362,7 +1460,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
               }, {
                 name: '需求总数',
                 type: 'pie',
-                radius: ['70%', '80%'],
+                radius: ['60%', '67%'],
                 data: [{
                   value: (summary) ? (summary.requiement_number) : '0',
                   name: '需求总数'
@@ -1583,18 +1681,385 @@ Login.factory('Login.Service.Http', ['$http', 'API',
 var Main = angular.module('Main', ['ui.router', 'ngCookies']);
 
 /** Main Controller */
-Main.controller('Main.Controller.Main', ['$scope', '$cookies',
-  function($scope, $cookies) {
+Main.controller('Main.Controller.Main', ['$scope', '$cookies', 'Main.Service.Http', '$state',
+  function($scope, $cookies, Http, $state) {
     $scope.User = JSON.parse($cookies.get('User'));
+    $scope.logout = function() {
+      console.log($scope.User);
+      if(sessionStorage.token){
+        sessionStorage.removeItem('token');
+        Http.logout().then(function(result) {
+          $state.go("welcome");
+        })
+      }
+
+    }
   }
 ]);
+
+/* HTTP Factory */
+Main.factory('Main.Service.Http', ['$http', 'API',
+  function($http, API) {
+    var path = API.path;
+    function logout() {
+      return $http.get(
+        path + '/loginOut'
+      )
+    };
+    return {
+      logout: logout
+    }
+  }
+]);
+
+'use strict';
+var Welcome = angular.module('Welcome', ['ui.router']);
+/** Main Controller */
+Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Service.Http', '$stateParams',
+  function($scope, $state, Http, StateParams) {
+    window.scrollTo(0,0);
+    // Menu configration
+    $scope.treeOptions = {
+      nodeChildren: "nodes",
+      dirSelectable: false,
+      injectClasses: {
+        ul: "a1",
+        li: "a2",
+        liSelected: "a7",
+        iExpanded: "a2",
+        iCollapsed: "a4",
+        iLeaf: "a5",
+        label: "a6",
+        labelSelected: "a8"
+      }
+    }
+    function showType(){
+      $scope.flag = 1;
+      $scope.filterName = "机构类型";
+      Http.menu().then(function(result) {
+        if (200 === result.data.head.status) {
+          $scope.list = result.data.body;
+        }
+      });
+    }
+    //init
+    showType();
+    $scope.typeListOpen = function () {
+      showType();
+    };
+
+    $scope.ocupationListOpen = function () {
+      $scope.filterName = "机构职能";
+      $scope.flag = 2;
+      // OcupationMenu Generator
+      Http.menuRole().then(function(result) {
+        if (200 === result.data.head.status) {
+          $scope.OcupationList = result.data.body;
+        }
+      });
+    };
+
+    $scope.areaListOpen = function () {
+      $scope.filterName = "区域";
+      $scope.flag = 3;
+      // AreaMenu Generator
+      Http.menuArea().then(function(result) {
+        if (200 === result.data.head.status) {
+          $scope.areaList = result.data.body;
+        }
+      });
+    };
+
+    $scope.themeListOpen = function () {
+      $scope.filterName = "主题类";
+      $scope.flag = 4;
+      // themeMenu Generator
+      Http.menuTheme().then(function(result) {
+        if (200 === result.data.head.status) {
+          $scope.themeList = result.data.body;
+        }
+      });
+    };
+
+    $scope.comparator = false;
+    $scope.showSelected = function(sel) {
+         $scope.selectedNode = sel;
+    };
+
+
+   <!--listPage-->
+
+    // Get the parameters form ui-router
+    var currentDepID = {resource_dep_id:StateParams.resource_dep_id};
+    var currentDepName = {dep_name:StateParams.dep_name};
+    // Selected department name
+    $scope.currentDep = currentDepName.dep_name;
+    // Params for pagin
+    var initPaging = {limit:10, skip: 0};
+    $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
+    $scope.Paging.itemsPerPage = 10;
+    $scope.Paging.pageChanged = function() {
+      var httpParams = {};
+      _.assign(httpParams, currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10});
+      getDataQuotaList(httpParams);
+    };
+    // Get data quota list
+    function getDataQuotaList(_httpParams){
+      Http.getDataQuota(_httpParams).then(function(result) {
+        $scope.DataQuotas = result.data.body[0].results;
+        $scope.DataQuotasTotal = result.data.body[0].count[0].resource_count;
+        $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
+      });
+    };
+    // Init data quota talbe
+    (function initDataQuotaList(){
+        /* Init selected status for filter */
+        $scope.resourceFormatActiveAll = $scope.ShareLevelActiveAll = $scope.openToSocietyActiveAll = $scope.ShareFrequencyActiveAll = $scope.DataLevelActiveAll = $scope.isScretActiveAll= 'active';
+        /* Init ajax parameters*/
+        var httpParams = {};
+        (currentDepID==='') ? (httpParams = initPaging) : (httpParams = _.assign(httpParams, currentDepID, initPaging));
+        getDataQuotaList(httpParams);
+    })();
+    // Fetch data quota list by filter
+    function getDataQuotaListByFilter(params){
+      var httpParams = {};
+      (currentDepID.dep_name==='') ? (httpParams = initPaging) : (httpParams = _.assign(httpParams, currentDepID, initPaging));
+      _.assign(httpParams, params);
+      getDataQuotaList(httpParams);
+    };
+    // Search for Data Quota Name
+    $scope.Retrieval = function(){
+      var httpParams = {};
+      var searchTarget = {resource_name: $scope.TargetDataQuotaName};
+      (currentDepID==='') ? (_.assign(httpParams, initPaging, searchTarget)) : (_.assign(httpParams, currentDepID, initPaging, searchTarget));
+      getDataQuotaList(httpParams);
+    };
+    // Filter generator
+    var SHARE_FREQUENCY = 1, //更新周期
+        DATA_LEVEL = 2, //分地区数据级别
+        SHARE_LEVEL = 3, //共享级别
+        RESOURCE_FORMAT = 11, //信息资源格式
+        SOCIAL_OPEN_FLAG  = 14, //面向社会开放
+        SECRET_FLAG = 5  //是否涉密
+    Http.getSystemDictByCatagory({
+      'dict_category': RESOURCE_FORMAT
+    }).then(function(result) {
+      $scope.resourceFormats = result.data.body;
+    });
+    Http.getSystemDictByCatagory({
+      'dict_category': SOCIAL_OPEN_FLAG
+    }).then(function(result) {
+      $scope.openToSocietys = result.data.body;
+    });
+    Http.getSystemDictByCatagory({
+      'dict_category': SECRET_FLAG
+    }).then(function(result) {
+      $scope.isScrets = result.data.body;
+    });
+    Http.getSystemDictByCatagory({
+      'dict_category': SHARE_LEVEL
+    }).then(function(result) {
+      $scope.ShareLevels = result.data.body;
+    });
+    Http.getSystemDictByCatagory({
+      'dict_category': SHARE_FREQUENCY
+    }).then(function(result) {
+      $scope.ShareFrequencys = result.data.body;
+    });
+    Http.getSystemDictByCatagory({
+      'dict_category': DATA_LEVEL
+    }).then(function(result) {
+      $scope.DataLevels = result.data.body;
+    });
+    // Handle above filter
+    var filterParams = {};
+
+    /*信息资源格式*/
+    $scope.resourceFormatFilter = function(id, index){
+      $scope.resourceFormatActive = [];
+      $scope.resourceFormatActiveAll = '';
+      $scope.resourceFormatActive[index] = 'active';
+      filterParams.re_format = id;
+      if('ALL'===id){
+        delete filterParams.re_format;
+        $scope.resourceFormatActiveAll = 'active';
+        getDataQuotaListByFilter(filterParams);
+      }else{
+        getDataQuotaListByFilter(filterParams);
+      }
+    };
+    /* 共享级别 */
+    $scope.ShareLevelFilter = function(id, index){
+      $scope.ShareLevelActive = [];
+      $scope.ShareLevelActiveAll = '';
+      $scope.ShareLevelActive[index] = 'active';
+      filterParams.share_level = id;
+      if('ALL'===id){
+        delete filterParams.share_level;
+        $scope.ShareLevelActiveAll = 'active';
+        getDataQuotaListByFilter(filterParams);
+      }else{
+        getDataQuotaListByFilter(filterParams);
+      }
+    };
+
+    /*面向社会开放*/
+
+    $scope.openToSocietyFilter = function(id, index){
+      $scope.openToSocietyActive = [];
+      $scope.openToSocietyActiveAll = '';
+      $scope.openToSocietyActive[index] = 'active';
+      //var idx = filterParams.social_open_flag.indexOf(item.id);
+      filterParams.social_open_flag = id;
+      if('ALL'===id){
+        delete filterParams.social_open_flag;
+        $scope.openToSocietyActiveAll = 'active';
+        getDataQuotaListByFilter(filterParams);
+      }else{
+        getDataQuotaListByFilter(filterParams);
+      }
+    };
+    /* 更新周期（共享频率） */
+    filterParams.update_period = [];
+    $scope.ShareFrequencyActive = [];
+    $scope.ShareFrequencyFilter = function(id, index){
+      if('ALL'===id){
+        filterParams.update_period = [];
+        $scope.ShareFrequencyActiveAll = 'active';
+        $scope.ShareFrequencyActive = [];
+        getDataQuotaListByFilter(filterParams);
+      }else{
+        $scope.ShareFrequencyActiveAll = '';
+        var idx = filterParams.update_period.indexOf(id);
+        ($scope.ShareFrequencyActive[index]==='active')?($scope.ShareFrequencyActive[index]=''):($scope.ShareFrequencyActive[index]='active');
+        if(idx > -1){
+          if(filterParams.update_period.length ===1){
+            $scope.ShareFrequencyActiveAll = 'active';
+            filterParams.update_period = [];
+          }else{
+            filterParams.update_period.splice(idx, 1);
+          }
+        }else{
+          filterParams.update_period.push(id);
+        }
+        getDataQuotaListByFilter(filterParams);
+      }
+    };
+
+    /* 分地区数据级别 */
+    filterParams.area_level = [];
+    $scope.DataLevelActive = [];
+    $scope.DataLevelFilter = function(id, index){
+      if('ALL'===id){
+        filterParams.area_level = [];
+        $scope.DataLevelActiveAll = 'active';
+        $scope.DataLevelActive=[];
+        getDataQuotaListByFilter(filterParams);
+      }else{
+        var idx = filterParams.area_level.indexOf(id);
+        $scope.DataLevelActiveAll = '';
+        ($scope.DataLevelActive[index]==='active')?($scope.DataLevelActive[index]=''):($scope.DataLevelActive[index]='active');
+        if(idx > -1){
+          if(filterParams.area_level.length ===1){
+            $scope.DataLevelActiveAll = 'active';
+            filterParams.area_level = [];
+          }else{
+            filterParams.area_level.splice(idx, 1);
+          }
+        }else{
+          filterParams.area_level.push(id);
+        }
+        getDataQuotaListByFilter(filterParams);
+      };
+    };
+    /*是否涉密*/
+    $scope.isScretFilter = function(id, index){
+      $scope.isScretActive = [];
+      $scope.isScretActiveAll = '';
+      $scope.isScretActive[index] = 'active';
+      filterParams.issecret = id;
+      if('ALL'===id){
+        delete filterParams.issecret;
+        $scope.isScretActiveAll = 'active';
+        getDataQuotaListByFilter(filterParams);
+      }else{
+        getDataQuotaListByFilter(filterParams);
+      }
+    };
+
+
+  }])
+
+  /* DataQuota Http Factory */
+  Welcome.factory('Welcome.Service.Http', ['$http', 'API',
+    function($http, API) {
+      var path = API.path;
+
+      function menu(params) {
+        return $http.get(
+          path + '/menu', { params: params }
+        )
+      };
+      function menuRole(params) {
+        return $http.get(
+          path + '/menu_role', { params: params }
+        )
+      };
+      function menuArea(params) {
+        return $http.get(
+          path + '/menu_area', { params: params }
+        )
+      };
+      function menuTheme(params) {
+        return $http.get(
+          path + '/menu_theme', { params: params }
+        )
+      };
+
+      //listPage
+      function getSystemDictByCatagory(params) {
+        return $http.get(
+          path + '/sys_dict', { params: params }
+        )
+      };
+      function getDataQuota(params){
+        return $http.get(
+          path + '/resource_list', { params: params }
+        )
+      };
+      return {
+        menu: menu,
+        menuRole: menuRole,
+        menuArea: menuArea,
+        menuTheme: menuTheme,
+
+        getSystemDictByCatagory: getSystemDictByCatagory,
+        getDataQuota: getDataQuota
+      }
+    }
+  ]);
+  Welcome.directive('wiservMainWrapperUnlogin', [
+    function() {
+      return {
+        restrict: 'AE',
+        link: function(scope, element, attrs) {
+          element.find('.toggler').on('click', function() {
+            element.find('.sidebar1').toggleClass("sidebar1-collapse");
+            element.find('.searchTree').toggleClass("searchTree-collapse");
+            element.find('.content').toggleClass("content-collapse");
+          });
+        }
+      }
+    }
+  ]);
 
 'use strict';
 var DataQuotaDetail = angular.module('DataQuotaDetail', ['ui.router']);
 
 /** Main Controller */
-DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state', 'DataQuotaDetail.Service.Http', '$stateParams',
-  function($scope, $state, Http, $stateParams) {
+DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state', 'DataQuotaDetail.Service.Http', '$stateParams', '$sce',
+  function($scope, $state, Http, $stateParams, $sce) {
     // Data Quota Detail
     Http.getDataQuotaDetailByDepID(
       $stateParams
@@ -1608,6 +2073,15 @@ DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state
       $scope.DataQuotaExample = result.data.body;
     });
 
+    // 示例数据
+    $scope.DataExamples = Http.getResourceExampleDatas({
+      resource_id: $stateParams.resource_id
+    });
+    <!--informationResource required by deps-->
+    $scope.DataquotaRequirementByDepTotals = Http.getDataQuotaRequirementByDepTotals(
+      {resource_id: $stateParams.resource_id}
+    );
+
   }
 ]);
 
@@ -1616,6 +2090,13 @@ DataQuotaDetail.controller('DataQuotaDetail.Controller.Main', ['$scope', '$state
 DataQuotaDetail.factory('DataQuotaDetail.Service.Http', ['$http', 'API',
   function($http, API) {
     var path = API.path;
+    function getResourceExampleDatas(params) {
+      return $http.get(
+        path + '/info_resource_examples', {
+          params: params
+        }
+      )
+    };
     function getDataQuotaDetailByDepID(params){
       return $http.get(
         path + '/info_resource_detail', { params: params }
@@ -1626,9 +2107,108 @@ DataQuotaDetail.factory('DataQuotaDetail.Service.Http', ['$http', 'API',
         path + '/info_item_detail', { params: params }
       )
     };
+    function getDataQuotaRequirementByDepTotals(params){
+      return $http.get(
+        path + '/info_item_requirementDeps', { params: params }
+      )
+    };
     return {
+      getResourceExampleDatas: getResourceExampleDatas,
       getDataQuotaDetailByDepID: getDataQuotaDetailByDepID,
-      getDataQuotaExampleByDepID: getDataQuotaExampleByDepID
+      getDataQuotaExampleByDepID: getDataQuotaExampleByDepID,
+      getDataQuotaRequirementByDepTotals: getDataQuotaRequirementByDepTotals,
+    }
+  }
+]);
+
+DataQuotaDetail.directive('wiservExampleDataShow', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:500px;height:400px;position:relative;top: -9px;'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.DataExamples.then(function(result) {
+          console.log(result);
+          element.html(result.data.body[0].file_content);
+        })
+      }
+    }
+  }
+]);
+DataQuotaDetail.directive('requirementDepatmentRelationship',[
+  function(){
+    return {
+      restrict: 'AE',
+      template: "<div style='width:900px;height:400px;position:relative;top:20px'></div>",
+      link: function(scope, element, attr){
+        scope.DataquotaRequirementByDepTotals.then(function(result) {
+          if (200 == result.data.head.status) {
+            var dataquotaRequirement = result.data.body[0];
+            var deptotal = _.size(dataquotaRequirement.depNames) ;
+            var resourceName = dataquotaRequirement.resourceName;
+            var depNames = dataquotaRequirement.depNames;
+            var obj = {name: resourceName, x: 500, y:100 };
+            var obj1 = {source: resourceName,target: "" };
+            var data1 = [{name: resourceName, x: 500, y:100 }];
+            var links1 = [{source: resourceName,target: "" }];
+            if(deptotal){
+               _(depNames).forEach(function (value,key){
+                 console.log(key+":"+value);
+                 obj.name = value;
+                 obj.x = 600;
+                 obj.y = 100 + (key+1)*20;
+                 data1.push(obj);
+                 obj1.target = value ;
+                 links1.push(obj1);
+               });
+               console.log(data1);
+               console.log(links1);
+             }
+             var myChart = echarts.init((element.find('div'))[0]);
+             var option = {
+               title: {
+                 text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
+               },
+               tooltip: {},
+               animationDurationUpdate: 1500,
+               animationEasingUpdate: 'quinticInOut',
+               series : [
+                 {
+                   type: 'graph',
+                   layout: 'none',
+                   symbolSize: 50,
+                   roam: true,
+                   label: {
+                     normal: {
+                       show: true
+                     }
+                   },
+                   edgeSymbol: ['circle', 'arrow'],
+                   edgeSymbolSize: [4, 10],
+                   edgeLabel: {
+                     normal: {
+                       textStyle: {
+                         fontSize: 20
+                       }
+                     }
+                   },
+                   data: data1,
+                   links: links1,
+                   lineStyle: {
+                     normal: {
+                       opacity: 0.9,
+                       width: 2,
+                       curveness: 0.3
+                     }
+                   }
+                 }
+               ]
+             };
+             myChart.setOption(option);
+          }
+        });
+      }
     }
   }
 ]);
@@ -1659,7 +2239,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
       Http.getDataQuota(_httpParams).then(function(result) {
         $scope.DataQuotas = result.data.body[0].results;
         $scope.DataQuotasTotal = result.data.body[0].count[0].resource_count;
-        $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
       });
     };
     // Init data quota talbe
@@ -1900,28 +2480,62 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
         labelSelected: "a8"
       }
     }
+    function showType(){
+      $scope.flag = 1;
+      $scope.filterName = "机构类型";
+      Http.menu().then(function(result) {
+        if (200 === result.data.head.status) {
+          $scope.list = result.data.body;
+        }
+      });
+    }
+    //init
+    showType();
+    $scope.typeListOpen = function () {
+      showType();
+		};
+
+    $scope.ocupationListOpen = function () {
+      $scope.filterName = "机构职能";
+      $scope.flag = 2;
+      // OcupationMenu Generator
+      Http.menuRole().then(function(result) {
+        if (200 === result.data.head.status) {
+          $scope.OcupationList = result.data.body;
+        }
+      });
+    };
+
+    $scope.areaListOpen = function () {
+      $scope.filterName = "区域";
+      $scope.flag = 3;
+      // AreaMenu Generator
+      Http.menuArea().then(function(result) {
+        if (200 === result.data.head.status) {
+          $scope.areaList = result.data.body;
+        }
+      });
+    };
+
+    $scope.themeListOpen = function () {
+      $scope.filterName = "主题类";
+      $scope.flag = 4;
+      // themeMenu Generator
+      Http.menuTheme().then(function(result) {
+        if (200 === result.data.head.status) {
+          $scope.themeList = result.data.body;
+        }
+      });
+    };
+
+
+
     $scope.comparator = false;
     $scope.showSelected = function(sel) {
          $scope.selectedNode = sel;
-     };
-    // TypeMenu Generator
-    Http.menu().then(function(result) {
-      if (200 === result.data.head.status) {
-        $scope.list = result.data.body;
-      }
-    });
-    // OcupationMenu Generator
-    Http.menuRole().then(function(result) {
-      if (200 === result.data.head.status) {
-        $scope.OcupationList = result.data.body;
-      }
-    });
-    // AreaMenu Generator
-    Http.menuArea().then(function(result) {
-      if (200 === result.data.head.status) {
-        $scope.areaList = result.data.body;
-      }
-    });
+    };
+
+
   }
 ]);
 
@@ -1945,10 +2559,30 @@ DataQuota.factory('DataQuota.Service.Http', ['$http', 'API',
         path + '/menu_area', { params: params }
       )
     };
+    function menuTheme(params) {
+      return $http.get(
+        path + '/menu_theme', { params: params }
+      )
+    };
     return {
       menu: menu,
       menuRole: menuRole,
-      menuArea: menuArea
+      menuArea: menuArea,
+      menuTheme: menuTheme
+    }
+  }
+]);
+DataQuota.directive('wiservMainWrapper', [
+  function() {
+    return {
+      restrict: 'AE',
+      link: function(scope, element, attrs) {
+        element.find('.toggler').on('click', function() {
+          element.find('.sidebar1').toggleClass("sidebar1-collapse");
+          element.find('.form-control').toggleClass("form-control-collapse");
+          element.find('.content').toggleClass("content-collapse");
+        });
+      }
     }
   }
 ]);
@@ -1962,6 +2596,7 @@ Audit.controller('Department.Audit.Controller.Main', ['$scope', '$q', 'Departmen
     $scope.InfoResource = {};
 
     $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
 
@@ -1981,7 +2616,7 @@ Audit.controller('Department.Audit.Controller.Main', ['$scope', '$q', 'Departmen
       $scope.auditPromise = Http.getAuditList(_httpParams).then(function(result) {
         $scope.auditList = result.data.body[0].results;
         $scope.resourceCount = result.data.body[0].count[0].resource_count;
-        $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
       });
     }
 
@@ -2052,6 +2687,39 @@ Audit.controller('Department.Audit.Controller.info', ['$scope', '$state', '$q', 
   }
 ])
 
+Audit.controller('Department.Audit.Controller.detail', ['$scope', '$state', '$q', 'Department.Audit.Service.Http', '$stateParams',
+  function( $scope, $state, $q, Http, $stateParams) {
+    $scope.TabItemShow = true;
+    $scope.TabRequireShow = true;
+    $scope.AuditInfo = {};
+    $scope.AuditInfo.audit_opinion = '';
+
+    // 根据id查询信息资源详情
+    Http.getDepartInfoResList({
+      resource_id : $stateParams.RESOURCEID
+    }).then(function(ResourceRes) {
+      $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
+      $scope.InfoResourceDetail.apply_dep_name = $stateParams.APPLYDEP;
+      $scope.InfoResourceDetail.apply_time = $stateParams.APPLYTIME;
+      $scope.InfoResourceDetail.audit_status = $stateParams.AUDITSTATUS;
+      $scope.InfoResourceDetail.audit_opinion = $stateParams.OPINION;
+    })
+
+
+    $scope.InfoItemShow = false;
+    Http.getInfoItemList({
+      resource_id: $stateParams.RESOURCEID
+    }).then(function(result) {
+      if (result.data.body.length == 0) {
+        $scope.InfoItemShow = false;
+      } else {
+        $scope.InfoItemShow = true;
+        $scope.InfoItems = result.data.body;
+      }
+    })
+  }
+])
+
 /* HTTP */
 Audit.factory('Department.Audit.Service.Http', ['$http', '$q', 'API',
   function($http, $q, API) {
@@ -2113,6 +2781,290 @@ Audit.factory('Department.Audit.Service.Http', ['$http', '$q', 'API',
   }
 ]);
 
+/** Inventory Controller */
+'use strict';
+var DInventoryDetail = angular.module('Department.InventoryDetail', ['ui.router', 'ngCookies', 'cgBusy']);
+
+DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', '$q', 'Department.InventoryDetail.Service.Http', '$stateParams', '$state', '$sce', 'API',
+  function($scope, $q, Http, $stateParams, $state, $sce, API) {
+    var path = API.path;
+    console.log($stateParams.item);
+    $scope.InfoItemShow = false;
+    Http.getDepartInfoResList({
+      resource_id: $stateParams.item
+    }).then(function(ResourceRes) {
+      $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
+      Http.getInfoItemList({
+        resource_id: $scope.InfoResourceDetail.id
+      }).then(function(result) {
+        if (result.data.body.length == 0) {
+          $scope.InfoItemShow = false;
+        } else {
+          $scope.InfoItemShow = true;
+          $scope.InfoItems = result.data.body;
+
+          _($scope.InfoItems).forEach(function(item) {
+            var shareFreqDictName = [];
+            _(item.config).forEach(function(config) {
+              shareFreqDictName.push(config.dict_name);
+            })
+            item.update_period_name = shareFreqDictName.toString();
+          })
+        }
+      })
+    })
+
+    // Data Quota Example
+    $scope.DataExamples = Http.getResourceExampleDatas({
+      resource_id: $stateParams.item
+    });
+
+
+    // // 获取需求拓扑图
+    $scope.ResourceReqByDepTotals = Http.getResourceRequirementByDepTotals({
+      resource_id: $stateParams.item
+    });
+
+  }
+])
+
+DInventoryDetail.factory('Department.InventoryDetail.Service.Http', ['$http', '$q', 'API',
+  function($http, $q, API) {
+    var path = API.path;
+
+    function getResourceExampleDatas(params) {
+      return $http.get(
+        path + '/info_resource_examples', {
+          params: params
+        }
+      )
+    };
+
+    function getResourceRequirementByDepTotals(params) {
+      return $http.get(
+        path + '/info_item_requirementDeps', {
+          params: params
+        }
+      )
+    };
+
+    function getDepartInfoResList(params) {
+      return $http.get(
+        path + '/info_resource_list', {
+          params: params
+        }
+      )
+    }
+
+    function getInfoItemList(params) {
+      return $http.get(
+        path + '/allitem_detail', {
+          params: params
+        }
+      )
+    }
+    return {
+      getResourceExampleDatas: getResourceExampleDatas,
+      getResourceRequirementByDepTotals: getResourceRequirementByDepTotals,
+      getDepartInfoResList: getDepartInfoResList,
+      getInfoItemList: getInfoItemList
+    }
+  }
+])
+
+DInventoryDetail.directive('wiservExampleData', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:500px;height:400px;position:relative;top:20px'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.DataExamples.then(function(result) {
+          console.log(result);
+          element.html(result.data.body[0].file_content);
+        })
+      }
+    }
+  }
+]);
+DInventoryDetail.directive('wiservReqdepRelationship', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:900px;height:400px;position:relative;top:20px'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.ResourceReqByDepTotals.then(function(result) {
+          if (200 == result.data.head.status) {
+            var dataquotaRequirement = result.data.body[0];
+            var deptotal = _.size(dataquotaRequirement.depNames) ;
+            var resourceName = dataquotaRequirement.resourceName;
+            var depNames = dataquotaRequirement.depNames;
+            var obj = {name: resourceName, x: 500, y:100 };
+            var obj1 = {source: resourceName,target: "" };
+            var data1 = [{name: resourceName, x: 500, y:100 }];
+            var links1 = [{source: resourceName,target: "" }];
+            if(deptotal){
+               _(depNames).forEach(function (value,key){
+                 console.log(key+":"+value);
+                 obj.name = value;
+                 obj.x = 600;
+                 obj.y = 100 + (key+1)*20;
+                 data1.push(obj);
+                 obj1.target = value ;
+                 links1.push(obj1);
+               });
+               console.log(data1);
+               console.log(links1);
+             }
+             var myChart = echarts.init((element.find('div'))[0]);
+             var option = {
+               title: {
+                 text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
+               },
+               tooltip: {},
+               animationDurationUpdate: 1500,
+               animationEasingUpdate: 'quinticInOut',
+               series : [
+                 {
+                   type: 'graph',
+                   layout: 'none',
+                   symbolSize: 50,
+                   roam: true,
+                   label: {
+                     normal: {
+                       show: true
+                     }
+                   },
+                   edgeSymbol: ['circle', 'arrow'],
+                   edgeSymbolSize: [4, 10],
+                   edgeLabel: {
+                     normal: {
+                       textStyle: {
+                         fontSize: 20
+                       }
+                     }
+                   },
+                   data: data1,
+                   links: links1,
+                   lineStyle: {
+                     normal: {
+                       opacity: 0.9,
+                       width: 2,
+                       curveness: 0.3
+                     }
+                   }
+                 }
+               ]
+             };
+             myChart.setOption(option);
+          }
+        });
+      }
+    }
+  }
+]);
+
+// upload file
+'use strict';
+var DInventoryUpload = angular.module('Department.InventoryUpload', ['ui.router', 'ngCookies', 'cgBusy']);
+
+DInventoryUpload.controller('Department.InventoryUpload.Controller', ['$scope', '$q', 'Department.InventoryUpload.Service.Http', '$stateParams', '$state', '$sce', 'API',
+  function($scope, $q, Http, $stateParams, $state, $sce, API) {
+    $scope.uploadPromise = null;
+
+    $scope.htmlPopover = $sce.trustAsHtml("<table class='table table-hover table-striped '>" +
+      "<thead><tr><th>序号</th><th>城市</th><th>GDP(亿元)</th><th>增长</th>" +
+      "<th>地方公共财政收入(亿元)</th><th>增长</th><th>城镇登记失业率</th>" +
+      "<th>农村居民人均纯收入(元)</th><th>增长</th></tr></thead>" +
+      "<tbody><tr><td>1</td><td>成都</td><td>9000</td><td>8.54%</td><td>8000</td><td>7.51%</td>" +
+      "<td>1.39</td><td>5678</td><td>3.40%</td></tr>" +
+      "</tbody></table>");
+
+    $scope.uploadFile = function() {
+      var file = $scope.myFile;
+      console.log('file is ');
+      console.dir(file);
+      if (!file) {
+        alert('您还未选择文件');
+        return;
+      }
+      $scope.uploadPromise = Http.uploadFile(file).then(function(result) {
+        if (200 == result.data.head.status) {
+          alert('上传成功！');
+          $state.go("main.department.inventory", {}, {
+            reload: true
+          });
+        }
+        else {
+          alert('上传失败，上传文件格式有误！');
+        }
+      });
+    }
+
+    $scope.downloadUrl = API.path + '/download';
+
+    $scope.toIndex = function() {
+      $state.go("main.department.inventory", {}, {
+        reload: true
+      });
+    }
+  }
+])
+
+
+/* HTTP */
+DInventoryUpload.factory('Department.InventoryUpload.Service.Http', ['$http', '$q', 'API',
+  function($http, $q, API) {
+    var path = API.path;
+
+    function uploadFile(file) {
+      var fd = new FormData();
+      var uploadUrl = path + '/upload/zipFile';
+      fd.append('file', file);
+      var promise = $http.post(uploadUrl, fd, {
+        transformRequest: angular.identity,
+        headers: {
+          'Content-Type': undefined
+        }
+      });
+      return promise;
+    }
+    return {
+      uploadFile: uploadFile
+    }
+  }])
+
+
+  DInventoryUpload.directive('fileModel', ['$parse', function($parse) {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        var model = $parse(attrs.fileModel);
+        var modelSetter = model.assign;
+        scope.parentIvntObj = {};
+        element.bind('change', function() {
+          var rgx = /(zip)/i;
+          var fileSuffix = element[0].files[0].name;
+          scope.parentIvntObj.fileName = fileSuffix;
+          var ext = fileSuffix.substring(fileSuffix.lastIndexOf(".") + 1);
+          if (!rgx.test(ext)) {
+            scope.$apply(function() {
+              scope.parentIvntObj.fileNameError = true;
+            })
+
+          } else {
+            scope.parentIvntObj.fileNameError = false;
+            scope.$apply(function() {
+              modelSetter(scope, element[0].files[0]);
+            });
+          }
+
+        });
+      }
+    };
+  }]);
+
 'use strict';
 var DInventory = angular.module('Department.Inventory', ['ui.router', 'ngCookies', 'cgBusy']);
 
@@ -2131,6 +3083,7 @@ DInventory.controller('Department.Inventory.Controller.Main', ['$cookies', '$sco
     $scope.DepartInfoResource = {};
 
     $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
 
@@ -2184,9 +3137,15 @@ DInventory.controller('Department.Inventory.Controller.Main', ['$cookies', '$sco
       //_httpParams.dep_name = DEP_NAME;
       $scope.promise = Http.getDepartInfoResList(_httpParams).then(function(result) {
         console.log(result);
-        $scope.infoResourceList = result.data.body[0].results;
-        $scope.resourceCount = result.data.body[0].count[0].resource_count;
-        $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        if (200 == result.data.head.status) {
+          $scope.infoResourceList = result.data.body[0].results;
+          $scope.resourceCount = result.data.body[0].count[0].resource_count;
+          $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
+        }
+        else{
+          $scope.infoResourceList = [];
+        }
+
       });
     }
 
@@ -2242,7 +3201,7 @@ DInventory.controller('Department.Inventory.Controller.Main', ['$cookies', '$sco
     // filter by resource format
     $scope.resFormatMainSelection = [];
     $scope.getInfoResourceByResFormat = function(item) {
-      var idx = $scope.shareFreqSelection.indexOf(item.id);
+      var idx = $scope.resFormatMainSelection.indexOf(item.id);
       if (idx > -1) {
         $scope.resFormatMainSelection = [];
       } else {
@@ -2372,40 +3331,7 @@ DInventory.controller('Department.Inventory.Controller.Main', ['$cookies', '$sco
   }
 ])
 
-/** Inventory Controller */
-DInventory.controller('Department.Inventory.Controller.detail', ['$scope', '$q', 'Department.Inventory.Service.Http', '$stateParams', '$state',
-  function($scope, $q, Http, $stateParams, $state) {
-    console.log($stateParams.item);
-    $scope.InfoItemShow = false;
-    Http.getDepartInfoResList({
-      resource_id : $stateParams.item
-    }).then(function(ResourceRes) {
-      $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
-      Http.getInfoItemList({
-        resource_id: $scope.InfoResourceDetail.id
-      }).then(function(result) {
-        if (result.data.body.length == 0) {
-          $scope.InfoItemShow = false;
-        } else {
-          $scope.InfoItemShow = true;
-          $scope.InfoItems = result.data.body;
 
-          _($scope.InfoItems).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              shareFreqDictName.push(config.dict_name);
-            })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-        }
-
-
-      })
-    })
-
-
-  }
-])
 
 DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$scope', '$stateParams', '$state', '$q', '$uibModal', 'Department.Inventory.Service.Component', 'Department.Inventory.Service.Http',
   function($cookies, $scope, $stateParams, $state, $q, $uibModal, Component, Http) {
@@ -2435,6 +3361,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     $scope.InfoResource.social_open_limit = '';
     $scope.InfoResource.linkman = '';
     $scope.InfoResource.contact_phone = '';
+    $scope.InfoResource.resource_format_desc = '';
+    $scope.InfoResource.share_method_desc = '';
     // item list
     $scope.ResourceItemList = [];
     $scope.ResourceItemConfigList = [];
@@ -2442,14 +3370,13 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     // resource name duplicate check
     $scope.resNameExist = false;
     $scope.checkResName = function() {
-      if($scope.InfoResource.resource_name && $scope.InfoResource.resource_name != '') {
+      if ($scope.InfoResource.resource_name && $scope.InfoResource.resource_name != '') {
         Http.checkResName({
           resource_name: $scope.InfoResource.resource_name
         }).then(function(res) {
-          if(res.data.body[0].isexists == 'true') {
+          if (res.data.body[0].isexists == 'true') {
             $scope.resNameExist = true;
-          }
-          else{
+          } else {
             $scope.resNameExist = false;
           }
         })
@@ -2504,7 +3431,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       var InfoResource_RelationConfig = [];
       var InfoResourceApplyInfo = [];
       var InfoItem_RelationConfig = [];
-      if($scope.resNameExist) {
+      if ($scope.resNameExist) {
         isValid = false;
       }
       if ($scope.shareFreqSelection.length == 0 && !$scope.resItemAddBtn) { // 未选择更新周期
@@ -2513,10 +3440,12 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       if ($scope.resItemAddBtn && ($scope.ResourceItemList.length == 0)) { // 未添加信息项
         isValid = false;
       }
-      if($scope.InfoResource.category == $scope.InfoResource.rel_category) {// 信息资源分类和关联及类目名称相同
+      if ($scope.InfoResource.category == $scope.InfoResource.rel_category) { // 信息资源分类和关联及类目名称相同
         isValid = false;
       }
-
+      if($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
+        isValid = false;
+      }
       if (isValid) {
         InfoResourceAddObj.InfoResource = $scope.InfoResource;
         _($scope.dataLevelSelection).forEach(function(value) {
@@ -2579,7 +3508,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     if ($stateParams.item) { // 选择修改
       // 根据id查询信息资源详情
       Http.getDepartInfoResList({
-        resource_id : $stateParams.item
+        resource_id: $stateParams.item
       }).then(function(ResourceRes) {
         $scope.InfoResource = ResourceRes.data.body[0].results[0];
 
@@ -2633,6 +3562,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
               var itemConfig = {};
               itemConfig.InfoItemId = item.item_name;
               itemConfig.sys_dict_id = config.id;
+              itemConfig.parent_id = item.parent_id;
               shareFreqDictName.push(config.dict_name);
               $scope.ResourceItemConfigList.push(itemConfig);
             })
@@ -2658,7 +3588,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       var InfoItem_RelationConfig = [];
 
 
-      if($scope.resNameExist) {
+      if ($scope.resNameExist) {
         isValid = false;
       }
       if ($scope.shareFreqSelection.length == 0 && !$scope.resItemUpdateBtn) { // 未选择更新周期
@@ -2667,7 +3597,10 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       if ($scope.resItemAddBtn && ($scope.ResourceItemList.length == 0) || $scope.resItemUpdateBtn && ($scope.ResourceItemList.length == 0)) { // 未添加信息项
         isValid = false;
       }
-      if($scope.InfoResource.category == $scope.InfoResource.rel_category) {// 信息资源分类和关联及类目名称相同
+      if ($scope.InfoResource.category == $scope.InfoResource.rel_category) { // 信息资源分类和关联及类目名称相同
+        isValid = false;
+      }
+      if($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
         isValid = false;
       }
 
@@ -2732,23 +3665,29 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
     $scope.editItems = function(id) {
       $scope.ResourceItemConfigList = [];
+      $scope.ResourceItemList = [];
+      $scope.parent = {};
+      // $scope.parent.itemoutputDeptList = [];
       Http.getInfoItemList({
         resource_id: id
       }).then(function(result) {
-        $scope.ResourceItemList = result.data.body;
-        // 拼接信息资源所有信息项的多选项
-        _($scope.ResourceItemList).forEach(function(item) {
-          var shareFreqDictName = [];
-          _(item.config).forEach(function(config) {
-            var itemConfig = {};
-            itemConfig.InfoItemId = item.item_name;
-            itemConfig.sys_dict_id = config.id;
-            shareFreqDictName.push(config.dict_name);
-            $scope.ResourceItemConfigList.push(itemConfig);
+        if (200 == result.data.head.status) {
+          $scope.ResourceItemList = result.data.body;
+          // 拼接信息资源所有信息项的多选项
+          _($scope.ResourceItemList).forEach(function(item) {
+            var shareFreqDictName = [];
+            _(item.config).forEach(function(config) {
+              var itemConfig = {};
+              itemConfig.InfoItemId = item.item_name;
+              itemConfig.sys_dict_id = config.id;
+              itemConfig.parent_id = item.parent_id;
+              shareFreqDictName.push(config.dict_name);
+              $scope.ResourceItemConfigList.push(itemConfig);
+            })
+            item.update_period_name = shareFreqDictName.toString();
           })
-          item.update_period_name = shareFreqDictName.toString();
-        })
-        console.log($scope.ResourceItemConfigList);
+        }
+
       })
       $scope.ResItemListShow = true;
     }
@@ -2760,10 +3699,12 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.ResourceItem = {};
       $scope.ResourceItem.meter_unit = '';
       $scope.ResourceItem.calculate_method = '';
+      $scope.ResourceItem.field_standard = '';
       $scope.ResourceItem.shareFreqItemSelection = [];
       $scope.ResourceItem.shareFreqItemObjSelection = [];
       $scope.parent = {};
       $scope.parent.itemNameExist = false;
+      $scope.parent.childParentConflict = false;
 
       $scope.data = {};
       $scope.data.item_type = $scope.itemTypeList[0];
@@ -2779,24 +3720,40 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         $scope.ResourceItem.secret_flag_name = n.dict_name;
       })
 
+      $scope.$watch('data.parent_id', function(n) {
+        $scope.parent.childParentConflict = false;
+        if (n) {
+          _($scope.ResourceItemList).forEach(function(item) {
+            if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+              $scope.parent.childParentConflict = true;
+              return;
+            }
+          });
+          $scope.ResourceItem.parent_id = n.item_name;
+        }
+        else{
+          $scope.ResourceItem.parent_id = '';
+        }
+      })
+
+
       $scope.checkItemName = function() {
-        if($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+        if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
           console.log($scope.ResourceItem);
           console.log($scope.ResourceItemList);
           $scope.parent.itemNameExist = false;
           _($scope.ResourceItemList).forEach(function(item) {
-            if(($scope.ResourceItem.item_name == item.item_name) &&  $scope.ResourceItem !== item) {
+            if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
               $scope.parent.itemNameExist = true;
             }
           })
-          if(!$scope.parent.itemNameExist) {
+          if (!$scope.parent.itemNameExist) {
             Http.checkItemName({
               item_name: $scope.ResourceItem.item_name
             }).then(function(res) {
-              if(res.data.body[0].isexists == 'true') {
+              if (res.data.body[0].isexists == 'true') {
                 $scope.parent.itemNameExist = true;
-              }
-              else{
+              } else {
                 $scope.parent.itemNameExist = false;
               }
             })
@@ -2806,6 +3763,11 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
       }
 
+      console.log($scope.ResourceItemList);
+      $scope.parent.ItemsList = $scope.ResourceItemList;
+      _.remove($scope.parent.ItemsList, function(item) {
+        return item.item_name == '';
+      });
       Component.popModal($scope, 'Department.Inventory.Controller.publish', '新增', 'item-add-modal').result.then(function(res) {
         console.log($scope.ResourceItem);
         $scope.itemAdded = false;
@@ -2819,6 +3781,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           var sys_dict = {};
           sys_dict.InfoItemId = $scope.ResourceItem.item_name;
           sys_dict.sys_dict_id = item.id;
+          sys_dict.parent_id = $scope.ResourceItem.parent_id;
           $scope.ResourceItemConfigList.push(sys_dict);
           shareFreqDictName.push(item.dict_name);
         });
@@ -2835,12 +3798,23 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       console.log(InfoItem);
       $scope.Modal = {};
       $scope.itemUpdated = false;
-      $scope.ResourceItem = InfoItem;
-      $scope.ResourceItem.shareFreqItemSelection = _.map(InfoItem.config,'id');
+      $scope.ResourceItem = angular.copy(InfoItem);
+      $scope.ResourceItem.shareFreqItemSelection = _.map(InfoItem.config, 'id');
       $scope.ResourceItem.shareFreqItemObjSelection = InfoItem.config;
+
       $scope.shareFreqEmpty = false;
       $scope.parent = {};
       $scope.parent.itemNameExist = false;
+      $scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
+      var hasEmpty = false;
+      _($scope.parent.ItemsList).forEach(function(item) {
+        if (item.item_name == '') {
+          hasEmpty = true;
+        }
+      })
+      if(!hasEmpty) {
+        $scope.parent.ItemsList.push({'item_name':''});
+      }
 
       $scope.data = {};
 
@@ -2870,6 +3844,13 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         }
       })
 
+      _($scope.parent.ItemsList).forEach(function(resourceItem) {
+        if (InfoItem.parent_id == resourceItem.item_name) {
+          $scope.data.parent_id = resourceItem;
+          console.log($scope.data.parent_id);
+        }
+      })
+
       $scope.$watch('data.item_type', function(n) {
         console.log($scope.data.item_type);
         if (n) {
@@ -2884,24 +3865,40 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         $scope.ResourceItem.secret_flag_name = n.dict_name;
       })
 
+      $scope.$watch('data.parent_id', function(n) {
+
+        $scope.parent.childParentConflict = false;
+        if (n) {
+          _($scope.ResourceItemList).forEach(function(item) {
+            if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+              $scope.parent.childParentConflict = true;
+              return;
+            }
+          });
+          $scope.ResourceItem.parent_id = n.item_name;
+        } else {
+          $scope.ResourceItem.parent_id = '';
+        }
+        console.log($scope.parent.childParentConflict);
+      })
+
       $scope.checkItemName = function() {
-        if($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+        if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
           console.log($scope.ResourceItem);
           console.log($scope.ResourceItemList);
           $scope.parent.itemNameExist = false;
           _($scope.ResourceItemList).forEach(function(item) {
-            if(($scope.ResourceItem.item_name == item.item_name) &&  $scope.ResourceItem !== item) {
+            if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
               $scope.parent.itemNameExist = true;
             }
           })
-          if(!$scope.parent.itemNameExist) {
+          if (!$scope.parent.itemNameExist) {
             Http.checkItemName({
               item_name: $scope.ResourceItem.item_name
             }).then(function(res) {
-              if(res.data.body[0].isexists == 'true') {
+              if (res.data.body[0].isexists == 'true') {
                 $scope.parent.itemNameExist = true;
-              }
-              else{
+              } else {
                 $scope.parent.itemNameExist = false;
               }
             })
@@ -2916,18 +3913,24 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         var shareFreqDictName = [];
         // 删除本条信息项已选中的多选项
         _.remove($scope.ResourceItemConfigList, function(config) {
-          return config.InfoItemId == $scope.ResourceItem.item_name;
+          return config.InfoItemId == $scope.ResourceItem.item_name && config.parent_id == $scope.ResourceItem.parent_id;
+        });
+
+        _.remove($scope.ResourceItemList, function(item) {
+          return item == InfoItem;
         });
 
         _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
           var sys_dict = {};
           sys_dict.InfoItemId = $scope.ResourceItem.item_name;
           sys_dict.sys_dict_id = item.id;
+          sys_dict.parent_id = $scope.ResourceItem.parent_id;
           $scope.ResourceItemConfigList.push(sys_dict);
           shareFreqDictName.push(item.dict_name);
         });
         $scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
         $scope.ResourceItem.update_period_name = shareFreqDictName.toString();
+        $scope.ResourceItemList.push($scope.ResourceItem);
         console.log($scope.ResourceItemList);
       })
     }
@@ -2937,7 +3940,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       var deleteFlag = confirm('确定删除本条信息项？');
       console.log(index);
       if (deleteFlag && index > -1) {
-        $scope.ResourceItemList.splice(index,1);
+        $scope.ResourceItemList.splice(index, 1);
       }
     }
 
@@ -2946,8 +3949,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     // show or hide department
     $scope.depShow = false;
     $scope.showHideDeps = function(ev) {
-      if (LEVEL_ALL_OPEN != $scope.InfoResource.share_level) {// 不为全开放
-        if (LEVEL_AUTH == $scope.InfoResource.share_level) {// 授权开放
+      if (LEVEL_ALL_OPEN != $scope.InfoResource.share_level) { // 不为全开放
+        if (LEVEL_AUTH == $scope.InfoResource.share_level) { // 授权开放
           $scope.depShow = true;
           $scope.socialOpenFlag = false;
         } else {
@@ -2987,6 +3990,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         $scope.resFormatOtherShow = false;
         $scope.shareFreqSelection = [];
         $scope.InfoResource.secret_flag = '';
+        $scope.InfoResource.share_level = '';
         $scope.InfoResource.meter_unit = "";
         $scope.InfoResource.calculate_method = '';
       } else if (RESOURCE_FORMAT_OTHER == $scope.InfoResource.resource_format) {
@@ -3052,6 +4056,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
   }
 
 ])
+
 
 
 /* HTTP */
@@ -3160,6 +4165,7 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
         }
       )
     }
+
     function checkResName(params) {
       return $http.get(
         path + '/info_resource_name', {
@@ -3175,6 +4181,21 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
         }
       )
     }
+
+    function uploadFile(file, id) {
+      var fd = new FormData();
+      var uploadUrl = path + '/upload/excel?data_quota_id=' + id;
+      fd.append('file', file);
+      var promise = $http.post(uploadUrl, fd, {
+        transformRequest: angular.identity,
+        headers: {
+          'Content-Type': undefined
+        }
+      });
+      return promise;
+    }
+
+
     return {
       saveInfoResource: saveInfoResource,
       getDepartmentList: getDepartmentList,
@@ -3190,7 +4211,8 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
       updateInfoItem: updateInfoItem,
       getItemUpdatePeriod: getItemUpdatePeriod,
       checkResName: checkResName,
-      checkItemName: checkItemName
+      checkItemName: checkItemName,
+      uploadFile: uploadFile
     }
   }
 ]);
@@ -3228,7 +4250,7 @@ DInventory.service('Department.Inventory.Service.Component', ['$uibModal', '$sta
           scope.shareFreqEmpty = true;
           return;
         }
-        if(scope.parent.itemNameExist) {
+        if (scope.parent.itemNameExist) {
           return;
         }
         modalInstance.close(scope.Modal);
@@ -3245,35 +4267,6 @@ DInventory.service('Department.Inventory.Service.Component', ['$uibModal', '$sta
     }
   }
 ])
-
-
-DInventory.directive('fileModel', ['$parse', function($parse) {
-  return {
-    restrict: 'A',
-    link: function(scope, element, attrs) {
-      var model = $parse(attrs.fileModel);
-      var modelSetter = model.assign;
-      scope.parentIvntObj = {};
-      element.bind('change', function() {
-        var rgx = /(xls|xlsx)/i;
-        var fileSuffix = element[0].files[0].name;
-        var ext = fileSuffix.substring(fileSuffix.lastIndexOf(".") + 1);
-        if (!rgx.test(ext)) {
-          scope.$apply(function() {
-            scope.parentIvntObj.fileNameError = true;
-          })
-
-        } else {
-          scope.parentIvntObj.fileNameError = false;
-          scope.$apply(function() {
-            modelSetter(scope, element[0].files[0]);
-          });
-        }
-
-      });
-    }
-  };
-}]);
 
 'use strict';
 var Department = angular.module('Department', ['ui.router']);
@@ -3516,6 +4509,7 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
     $scope.DeptRequirement = {};
 
     $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
 
@@ -3649,17 +4643,16 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
     // delete requirement
     $scope.deleteReq = function(id) {
       var deleteFlag = confirm('确定删除本条需求？删除后将不可恢复。');
-      if(deleteFlag) {
+      if (deleteFlag) {
         Http.deleteRequirement({
           requiement_id: id
         }).then(function(result) {
-            if (200 == result.data.head.status) {
-              alert('删除成功！');
-              getDeptRequirementList();
-            }
-            else {
-              alert('删除失败！');
-            }
+          if (200 == result.data.head.status) {
+            alert('删除成功！');
+            getDeptRequirementList();
+          } else {
+            alert('删除失败！');
+          }
         })
       }
     }
@@ -3679,7 +4672,7 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
       $scope.dataLevelReqSelection = [];
 
       _($scope.deptList).forEach(function(outItem) {
-        if(item.response_dep_id == outItem.id) {
+        if (item.response_dep_id == outItem.id) {
           outItem.ticked = true;
           $scope.reqParent.outputDeptList.push(outItem);
         }
@@ -3749,6 +4742,13 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
 /** DepartmentReq Controller */
 DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies', '$scope', '$stateParams', 'Department.Requirement.Service.Http', 'Department.Requirement.Service.Component',
   function($cookies, $scope, $stateParams, Http, Component) {
+    var RESOURCE_FORMAT = 11;
+    $scope.closeShow = false;
+    $scope.showIndex = -1;
+
+    $scope.resParent = {};
+    $scope.resParent.dropListShow = false;
+
     $scope.Modal = {};
     $scope.DeptRequirementConfirm = {};
 
@@ -3759,18 +4759,41 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
     $scope.Paging = {};
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
+    $scope.Paging.currentPage = 1;
+
+    // 模态框信息资源列表分页
+    $scope.ModalPaging = {};
+    $scope.ModalPaging.currentPage = 1;
+    $scope.ModalPaging.maxSize = 5;
+    $scope.ModalPaging.itemsPerPage = 10;
+
 
     var _httpConfirmParams = {};
     _httpConfirmParams.limit = 10;
     _httpConfirmParams.skip = 0;
+
+    var _httpModalParams = {};
+    _httpModalParams.limit = 10;
+    _httpModalParams.skip = 0;
 
     $scope.Paging.pageChanged = function() {
       _httpConfirmParams.skip = ($scope.Paging.currentPage - 1) * _httpConfirmParams.limit;
       getDeptRequirementConfirmList(_httpConfirmParams);
     }
 
+    // 模态框中信息资源分页
+    $scope.ModalPaging.pageChanged = function() {
+      _httpModalParams.skip = ($scope.ModalPaging.currentPage - 1) * _httpModalParams.limit;
+      Http.getDeptInfoResourceList(_httpModalParams).then(function(result) {
+        console.log(result);
+        $scope.depInfoResourceList = result.data.body[0].results;
+        $scope.ModalPaging.totalItems = result.data.body[0].count;
+      });
+    }
+
     // init
     getDeptRequirementConfirmList();
+    getDeptInfoResourceList();
 
     function getDeptRequirementConfirmList() {
       _httpConfirmParams.response_dep_id = DEP_ID;
@@ -3780,6 +4803,19 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       })
     }
 
+    function getDeptInfoResourceList() {
+      Http.getDeptInfoResourceList(_httpModalParams).then(function(result) {
+        console.log(result);
+        if (200 == result.data.head.status) {
+          $scope.depInfoResourceList = result.data.body[0].results;
+          $scope.ModalPaging.totalItems = result.data.body[0].count;
+        }
+        else{
+          $scope.depInfoResourceList = [];
+        }
+      });
+    }
+
     $scope.searchDeptReqConfirmByName = function() {
       _httpConfirmParams.requiement_name = $scope.DeptRequirementConfirm.req_name_filter;
       _httpConfirmParams.limit = 10;
@@ -3787,20 +4823,138 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       getDeptRequirementConfirmList();
     }
 
-    Http.getDeptInfoResourceList().then(function(result) {
-      console.log(result);
-      $scope.depInfoResourceList = result.data.body;
-
-      //  $scope.Paging.totalItems = data.head.total;
+    // 获取信息资源格式字典
+    Http.getSystemDictByCatagory({
+      'dict_category': RESOURCE_FORMAT
+    }).then(function(result) {
+      $scope.resourceFormatList = result.data.body;
     });
+
+
+    // filter by resource format
+    $scope.resFormatMainSelection = [];
+    $scope.getInfoResourceByResFormat = function(item) {
+      var idx = $scope.resFormatMainSelection.indexOf(item.id);
+      if (idx > -1) {
+        $scope.resFormatMainSelection = [];
+      } else {
+        $scope.resFormatMainSelection = item.id;
+      }
+      _httpModalParams.resource_format = $scope.resFormatMainSelection;
+      _httpModalParams.limit = 10;
+      _httpModalParams.skip = 0;
+      getDeptInfoResourceList(_httpModalParams);
+    }
+
+    // resource format all
+    $scope.getResFormatAll = function() {
+      $scope.resFormatMainSelection = [];
+      _httpModalParams.resource_format = null;
+      _httpModalParams.limit = 10;
+      _httpModalParams.skip = 0;
+      getDeptInfoResourceList(_httpModalParams);
+    }
+
+    // 点击展开
+    $scope.openItems = function(index, resourceId) {
+      $scope.collapseIndex = index;
+      $scope.closeShow = true;
+      $scope.showIndex = index;
+      $scope.InfoItems = [];
+      Http.getInfoItemList({
+        resource_id: resourceId
+      }).then(function(result) {
+        if (result.data.body.length == 0) {
+          $scope.InfoItemShow = false;
+        } else {
+          $scope.InfoItemShow = true;
+          $scope.InfoItems = result.data.body;
+
+          _($scope.InfoItems).forEach(function(item) {
+            var shareFreqDictName = [];
+            _(item.config).forEach(function(config) {
+              shareFreqDictName.push(config.dict_name);
+            })
+            item.update_period_name = shareFreqDictName.toString();
+          })
+        }
+
+
+      })
+    }
+
+    // 点击收起
+    $scope.closeItems = function(index) {
+      $scope.collapseIndex = -1;
+      $scope.closeShow = false;
+      $scope.InfoItems = [];
+    }
+
+    // 选中信息资源
+    $scope.resourceSelection = [];
+    $scope.toggleResourceSelection = function(resourceId) {
+      var idx = $scope.resourceSelection.indexOf(resourceId);
+      // is currently selected
+      if (idx > -1) {
+        $scope.resourceSelection = [];
+      }
+
+      // is newly selected
+      else {
+        $scope.resourceSelection = resourceId;
+        $scope.resource_id = resourceId;
+        $scope.resourceItemSelection = []; //清空信息项
+
+      }
+      console.log($scope.resourceItemSelection);
+    };
+
+    // 选中信息项checkbox事件
+    $scope.resourceItemSelection = [];
+    $scope.toggleResItemSelection = function(resourceId, item) {
+      if($scope.resource_id != resourceId) {
+        $scope.resourceItemSelection = [];
+        $scope.resource_id = resourceId;
+      }
+      var idx = $scope.resourceItemSelection.indexOf(item.id);
+      // is currently selected
+      if (idx > -1) {
+        $scope.resourceItemSelection.splice(idx, 1);
+      }
+
+      // is newly selected
+      else {
+        $scope.resourceItemSelection.push(item.id);
+        $scope.resourceSelection = [];// 清空信息资源选中项
+      }
+      console.log($scope.resourceItemSelection);
+    };
+
+    // 保存选中的信息资源或信息项
+    $scope.saveChooseResource = function() {
+      console.log($scope.resourceItemSelection);
+      console.log($scope.resourceSelection);
+      if($scope.resourceItemSelection.length == 0 && $scope.resourceSelection.length == 0) {
+        $scope.errorMsg = '您未选中任何资源。';
+      }
+      else{
+        $scope.resParent.dropListShow = false;
+      }
+    }
 
     $scope.toConfirm = function(item) {
       // get requirement detail
       $scope.Modal.ReqDetail = item;
+      // 初始化选项状态
       $scope.Modal.ReqResponse = {};
-      $scope.confirmParent = {};
-      console.log($scope.confirmParent.outputResource);
-      if($scope.depInfoResourceList.length == 0) {
+      $scope.resourceItemSelection = [];
+      $scope.resourceSelection = [];
+      $scope.resource_id = null;
+      $scope.closeShow = false;
+      $scope.showIndex = -1;
+      $scope.collapseIndex = -1;
+
+      if ($scope.depInfoResourceList.length == 0) {
         $scope.Modal.ReqResponse.resource_id = '';
         $scope.errorMsg = '本部门还未发布任何信息资源';
         $scope.dataQuotaIdNull = true;
@@ -3810,20 +4964,34 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       // }
 
       Component.popModalConfirm($scope, '', 'confirm-req-modal').result.then(function() {
-        console.log($scope.confirmParent.outputResource[0]);
-        $scope.Modal.ReqResponse.resource_id = _.map($scope.confirmParent.outputResource,'id')[0];
-        console.log($scope.confirmParent.outputResource);
+        $scope.Modal.ReqResponse.resource_id = $scope.resource_id;
+
         console.log($scope.Modal.ReqResponse);
+        console.log($scope.resourceItemSelection);
         $scope.Modal.ReqResponse.requiement_id = item.id;
 
         Http.updateRequirement($scope.Modal.ReqResponse).then(function(result) {
           if (200 == result.data.head.status) {
             if ($scope.Modal.ReqResponse.status == 1) {
+              var http_params = [];
+              if($scope.resourceItemSelection.length == 0) {
+                var obj = {};
+                obj.requiement_id = item.id;
+                obj.resource_id = $scope.Modal.ReqResponse.resource_id,
+                obj.item_id = '';
+                http_params.push(obj);
+              }
+              else{
+                _($scope.resourceItemSelection).forEach(function(value) {
+                  var obj = {};
+                  obj.requiement_id = item.id;
+                  obj.resource_id = $scope.Modal.ReqResponse.resource_id,
+                  obj.item_id = value;
+                  http_params.push(obj);
+                });
+              }
               // 保存需求响应
-              Http.saveReqResponse({
-                requiement_id: item.id,
-                resource_id: $scope.Modal.ReqResponse.resource_id
-              }).then(function(saveResult) {
+              Http.saveReqResponse(http_params).then(function(saveResult) {
                 if (200 == saveResult.data.head.status) {
                   alert('保存成功！');
                   getDeptRequirementConfirmList();
@@ -3854,15 +5022,51 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
 ])
 
 /** DepartmentReq Controller */
-DepartmentReq.controller('Department.Requirement.Controller.detail', [ '$scope', '$stateParams', 'Department.Requirement.Service.Http', 'Department.Requirement.Service.Component',
-    function( $scope, $stateParams, Http, Component) {
+DepartmentReq.controller('Department.Requirement.Controller.detail', ['$scope', '$stateParams', 'Department.Requirement.Service.Http', 'Department.Requirement.Service.Component',
+    function($scope, $stateParams, Http, Component) {
       console.log($stateParams.ID);
+      $scope.InfoItemShow = false;
+      $scope.InfoResourceShow = false;
       Http.getReqDetail({
         requiement_id: $stateParams.ID
       }).then(function(result) {
         console.log(result.data.body[0]);
         $scope.ReqDetail = result.data.body[0];
+        if($scope.ReqDetail) {
+          // 查询需求对应的资源
+          Http.getDepartInfoResList({
+            resource_id: $scope.ReqDetail.resource_id
+          }).then(function(ResourceRes) {
+            $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
+            if($scope.InfoResourceDetail) {
+              $scope.InfoResourceShow = true;
+            }
+          })
+
+          // 查询需求对应的信息项
+          Http.getReqResourceItemList({
+            resource_id: $scope.ReqDetail.resource_id,
+            requiement_id: $stateParams.ID
+          }).then(function(ResItems) {
+            if (ResItems.data.body.length == 0) {
+              $scope.InfoItemShow = false;
+            } else {
+              $scope.InfoItemShow = true;
+              $scope.InfoItems = ResItems.data.body;
+              _($scope.InfoItems).forEach(function(item) {
+                var shareFreqDictName = [];
+                _(item.config).forEach(function(config) {
+                  shareFreqDictName.push(config.dict_name);
+                })
+                item.update_period_name = shareFreqDictName.toString();
+              })
+            }
+          })
+        }
       })
+
+
+
     }
   ])
   /* HTTP Factory */
@@ -3973,6 +5177,29 @@ DepartmentReq.factory('Department.Requirement.Service.Http', ['$http', 'API',
         }
       )
     }
+
+    function getInfoItemList(params) {
+      return $http.get(
+        path + '/allitem_detail', {
+          params: params
+        }
+      )
+    }
+    function getDepartInfoResList(params) {
+      return $http.get(
+        path + '/info_resource_list', {
+          params: params
+        }
+      )
+    }
+    function getReqResourceItemList(params) {
+      return $http.get(
+        path + '/reqResourceItem', {
+          params: params
+        }
+      )
+    }
+
     return {
       getDepartmentRequirementList: getDepartmentRequirementList,
       publishRequirement: publishRequirement,
@@ -3986,7 +5213,10 @@ DepartmentReq.factory('Department.Requirement.Service.Http', ['$http', 'API',
       deleteRequirement: deleteRequirement,
       getSystemDictByCatagory: getSystemDictByCatagory,
       getReqUpdatePeriod: getReqUpdatePeriod,
-      getReqAreaLevel: getReqAreaLevel
+      getReqAreaLevel: getReqAreaLevel,
+      getInfoItemList: getInfoItemList,
+      getDepartInfoResList: getDepartInfoResList,
+      getReqResourceItemList: getReqResourceItemList
     }
   }
 ]);
@@ -4018,7 +5248,7 @@ DepartmentReq.service('Department.Requirement.Service.Component', ['$uibModal',
       });
       scope.Modal.confirm = function(isValid) {
         console.log(scope);
-        if(!scope.confirmParent.outputResource[0] && scope.Modal.ReqResponse.status == 1) {
+        if (scope.resourceSelection.length == 0 && scope.resourceItemSelection.length == 0 && scope.Modal.ReqResponse.status == 1) {
           scope.errorMsg = '请选择信息资源！';
           isValid = false;
         }
@@ -4047,12 +5277,9 @@ DepartmentReq.service('Department.Requirement.Service.Component', ['$uibModal',
       scope.Modal.confirm = function(isValid) {
         console.log(scope);
         scope.submitted = true;
-        if(scope.reqParent.outputDeptList.length == 0) {
+        if (scope.reqParent.outputDeptList.length == 0) {
           scope.error = true;
-        }
-        else if(scope.shareFreqSelection.length == 0) {
-        }
-        else {
+        } else if (scope.shareFreqSelection.length == 0) {} else {
           modalInstance.close(scope.Modal);
         }
 
@@ -4080,6 +5307,7 @@ DepartmentShare.controller('DepartmentShare.Controller.Main', [ '$scope', 'Depar
     $scope.DepartInfoResource = {};
 
     $scope.Paging = {};
+    $scope.Paging.currentPage = 1;
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
 
@@ -4096,7 +5324,7 @@ DepartmentShare.controller('DepartmentShare.Controller.Main', [ '$scope', 'Depar
       $scope.sharePromise = Http.shareInfoResourceList(_httpParams).then(function(result) {
         $scope.depShareList = result.data.body[0].results;
         $scope.resourceCount = result.data.body[0].count[0].resource_count;
-        $scope.Paging.totalItems = result.data.body[0].count[0].item_count;
+        $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
       });
     }
 

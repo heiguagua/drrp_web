@@ -1,0 +1,39 @@
+<div id="dep-resource">
+  <div class="row">
+    <div class="panel panel-default ">
+      <div class="panel-heading">部门资源统计</div>
+      <div class="panel-body">
+        <div class="input-group col-xs-4 pull-right">
+          <div class="input-group-addon">部门数(<span ng-bind="depTotal"></span>)</div>
+          <input type="text" class="form-control" placeholder="请输入部门" ng-model="query.dep_name">
+          <div class="input-group-addon">查询</div>
+        </div>
+      </div>
+      <div class='table-responsive'>
+        <div class="container">
+          <div class="row">
+            <table class="table table-striped table-hover table-bordered table-patch">
+                <thead>
+                  <tr>
+                    <th>序号</th>
+                    <th>部门名称</th>
+                    <th>发布资源数(条)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="depResource in depRecouces | filter: query">
+                    <td class='numberAndDateStyle'>{{$index+(Paging.currentPage-1)*10+1}}</td>
+                    <td>{{depResource.dep_name}}</td>
+                    <td class='numberAndDateStyle'>{{depResource.resourcenumber}}</td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pull-right">
+        <uib-pagination boundary-links="true" ng-change="Paging.pageChanged()" total-items="Paging.totalItems" items-per-page="Paging.itemsPerPage" ng-model="Paging.currentPage" max-size="Paging.maxSize" class="pagination" boundary-link-numbers="true" rotate="false" first-text="首页" last-text="末页" next-text="下一页" previous-text="上一页"></uib-pagination>
+      </div>
+    </div>
+  </div>
+</div>

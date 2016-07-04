@@ -4,19 +4,8 @@
       <a class='btn btn-xs pull-right' onclick='history.go(-1)'>返回</a>
     </div>
     <div class="panel-body">
-      <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" ng-class="{true: 'active', false: 'inactive'}[!InfoItem.show]">
-          <a ng-click='InfoItem.show = false' aria-controls="info" role="tab" data-toggle="tab">信息资源</a>
-        </li>
-        <li role="presentation" ng-class="{true: 'active', false: 'inactive'}[InfoItem.show]" ng-show='InfoItemShow'>
-          <a ng-click='InfoItem.show = true' aria-controls="exampleData" role="tab" data-toggle="tab">信息项</a>
-        </li>
-      </ul>
-
-      <!-- Tab panes -->
-      <div class="tab-content container-fluid">
-        <div role="tabpanel" class="tab-pane" ng-class="{true: 'active', false: 'inactive'}[!InfoItem.show]" id="invntDetail">
+      <uib-tabset class='quota-detail' active="active">
+        <uib-tab index="0" heading="信息资源">
           <div class='row'>
             <label class='col-sm-2 text-right'>信息资源名称:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.resource_name}}'><pre>{{InfoResourceDetail.resource_name}}</pre></div>
@@ -53,6 +42,10 @@
             <label class='col-sm-2 text-right'>信息资源格式:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.resource_format_name}}'>{{InfoResourceDetail.resource_format_name}}</div>
           </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>格式说明:</label>
+            <div class='col-sm-10' title='{{InfoResourceDetail.resource_format_desc}}'>{{InfoResourceDetail.resource_format_desc}}</div>
+          </div>
           <div class='row' ng-show='!InfoItemShow'>
             <label class='col-sm-2 text-right' >更新周期:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.update_period}}'>{{InfoResourceDetail.update_period}}</div>
@@ -86,6 +79,10 @@
             <div class='col-sm-10' title='{{InfoResourceDetail.share_method_name}}'>{{InfoResourceDetail.share_method_name}}</div>
           </div>
           <div class='row'>
+            <label class='col-sm-2 text-right'>共享方式说明:</label>
+            <div class='col-sm-10' title='{{InfoResourceDetail.share_method_desc}}'>{{InfoResourceDetail.share_method_desc}}</div>
+          </div>
+          <div class='row'>
             <label class='col-sm-2 text-right'>是否面向社会开放:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.social_open_flag_name}}'>{{InfoResourceDetail.social_open_flag_name}}</div>
           </div>
@@ -113,12 +110,11 @@
             <label class='col-sm-2 text-right'>创建时间:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}'>{{InfoResourceDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}</div>
           </div>
-
-        </div>
-        <div role="tabpanel" class="tab-pane" ng-class="{true: 'active', false: 'inactive'}[InfoItem.show]" id="exampleData">
+        </uib-tab>
+        <uib-tab ng-show="InfoItemShow" index='1' heading="信息项">
           <!-- Table -->
-          <table class='table table-hover table-striped '>
-            <thead>
+          <table class='table table-hover table-bordered table-striped '>
+            <thead class='text-center'>
               <tr>
                 <th width='40px'>序号</th>
                 <th width='80px'>信息项名称</th>
@@ -134,7 +130,7 @@
             <tbody>
               <tr ng-repeat='rescoureItem in InfoItems | orderBy:"-create_time" '>
                 <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
-                <td>{{$index+1}}</td>
+                <td class='text-center'>{{$index+1}}</td>
                 <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
                 <td title='{{rescoureItem.item_type_name}}'>{{rescoureItem.item_type_name}}</td>
                 <td title='{{rescoureItem.data_precision}}'>{{rescoureItem.data_precision}}</td>
@@ -146,8 +142,16 @@
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
+        </uib-tab>
+        <uib-tab ng-show="InfoItemShow" index='2' heading="示例数据" >
+          <wiserv-example-data />
+        </uib-tab>
+        <uib-tab class='req-requirement-relationship' heading="需求关联拓扑">
+          <div>
+            <wiserv-reqdep-relationship/>
+          </div>
+        </uib-tab>
+      </uib-tabset>
     </div>
   </div>
 
