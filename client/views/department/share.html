@@ -22,6 +22,20 @@
       <div class='indicator-filter'>
         <nav class='pull-left'>
           <ul class="pager">
+            <li class='filter-label'>分地区数据级别</li>
+            <li role="presentation">
+              <a href="javascript:;" ng-class="{true: 'active', false: 'inactive'}[areaMainSelection.length == 0]" href="javascript:;" ng-click='getSpatialAll()'>全部</a>
+            </li>
+            <li role="presentation" ng-repeat='dataLevel in dataLevelList'>
+              <a ng-class="{true: 'active', false: 'inactive'}[areaMainSelection.indexOf(dataLevel.id) > -1]" ng-checked="areaMainSelection.indexOf(dataLevel.id) > -1" ng-click='getInfoResourceListByAP(dataLevel)' href="javascript:;">{{dataLevel.dict_name}}
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class='indicator-filter'>
+        <nav class='pull-left'>
+          <ul class="pager">
             <li class='filter-label'>信息资源格式</li>
             <li role="presentation">
               <a ng-class="{true: 'active', false: 'inactive'}[resFormatMainSelection.length == 0]" href="javascript:;" ng-click='getResFormatAll()'>全部</a>
@@ -62,15 +76,16 @@
           </ul>
         </nav>
       </div>
+
       <div class='indicator-filter'>
         <nav class='pull-left'>
           <ul class="pager">
-            <li class='filter-label'>分地区数据级别</li>
+            <li class='filter-label'>是否涉密</li>
             <li role="presentation">
-              <a href="javascript:;" ng-class="{true: 'active', false: 'inactive'}[areaMainSelection.length == 0]" href="javascript:;" ng-click='getSpatialAll()'>全部</a>
+              <a href="javascript:;" ng-class="{true: 'active', false: 'inactive'}[secretFlagMainSelection.length == 0]" href="javascript:;" ng-click='getSecretFlagAll()'>全部</a>
             </li>
-            <li role="presentation" ng-repeat='dataLevel in dataLevelList'>
-              <a ng-class="{true: 'active', false: 'inactive'}[areaMainSelection.indexOf(dataLevel.id) > -1]" ng-checked="areaMainSelection.indexOf(dataLevel.id) > -1" ng-click='getInfoResourceListByAP(dataLevel)' href="javascript:;">{{dataLevel.dict_name}}
+            <li role="presentation" ng-repeat='secretFlag in secretFlagList'>
+              <a ng-class="{true: 'active', false: 'inactive'}[secretFlagMainSelection.indexOf(secretFlag.id) > -1]" ng-checked="secretFlagMainSelection.indexOf(secretFlag.id) > -1" ng-click='getInfoResourceListBySecFlag(secretFlag)' href="javascript:;">{{secretFlag.dict_name}}
               </a>
             </li>
           </ul>
@@ -85,20 +100,6 @@
             </li>
             <li role="presentation" ng-repeat='socialOpen in socialOpenList'>
               <a ng-class="{true: 'active', false: 'inactive'}[socialOpenMainSelection.indexOf(socialOpen.dict_code) > -1]" href="javascript:;" ng-click='getInfoResourceListBySO(socialOpen)'>{{socialOpen.dict_name}}
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <div class='indicator-filter'>
-        <nav class='pull-left'>
-          <ul class="pager">
-            <li class='filter-label'>是否涉密</li>
-            <li role="presentation">
-              <a href="javascript:;" ng-class="{true: 'active', false: 'inactive'}[secretFlagMainSelection.length == 0]" href="javascript:;" ng-click='getSecretFlagAll()'>全部</a>
-            </li>
-            <li role="presentation" ng-repeat='secretFlag in secretFlagList'>
-              <a ng-class="{true: 'active', false: 'inactive'}[secretFlagMainSelection.indexOf(secretFlag.id) > -1]" ng-checked="secretFlagMainSelection.indexOf(secretFlag.id) > -1" ng-click='getInfoResourceListBySecFlag(secretFlag)' href="javascript:;">{{secretFlag.dict_name}}
               </a>
             </li>
           </ul>
@@ -179,7 +180,7 @@
                           </span>
                         </div>
                       </td>
-                      <td class='text-right'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
+                      <td class='orderBy'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
                       <td title='{{InfoResource.resource_name}}'>
                         <a ui-sref='main.department.detail({item:InfoResource.id})'>
                           <pre>{{InfoResource.resource_name}}</pre>

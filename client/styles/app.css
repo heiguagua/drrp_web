@@ -670,6 +670,10 @@ input.ng-touched.ng-invalid {
   font-family: inherit;
   margin: 0;
 }
+#department-inventory .indicator-list table tr .orderBy {
+  text-align: center;
+  vertical-align: middle;
+}
 #department-inventory .indicator-list table tr span i {
   font-size: 18px;
 }
@@ -925,6 +929,10 @@ input.ng-touched.ng-invalid {
   font-size: inherit;
   font-family: inherit;
   margin: 0;
+}
+#department-share .indicator-list table tr .orderBy {
+  text-align: center;
+  vertical-align: middle;
 }
 #department-share .indicator-list table tr span i {
   font-size: 18px;
@@ -1358,6 +1366,10 @@ input.ng-touched.ng-invalid {
   font-size: inherit;
   font-family: inherit;
   margin: 0;
+}
+#department-audit .indicator-list table tr .orderBy {
+  text-align: center;
+  vertical-align: middle;
 }
 #department-audit .indicator-list table tr span {
   padding: 0 15px;
