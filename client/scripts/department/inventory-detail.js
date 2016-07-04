@@ -2,8 +2,8 @@
 'use strict';
 var DInventoryDetail = angular.module('Department.InventoryDetail', ['ui.router', 'ngCookies', 'cgBusy']);
 
-DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', '$q', 'Department.InventoryDetail.Service.Http', '$stateParams', '$state','$sce', 'API',
-  function($scope, $q, Http, $stateParams, $state,$sce ,API) {
+DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', '$q', 'Department.InventoryDetail.Service.Http', '$stateParams', '$state', '$sce', 'API',
+  function($scope, $q, Http, $stateParams, $state, $sce, API) {
     var path = API.path;
     console.log($stateParams.item);
     $scope.InfoItemShow = false;
@@ -32,14 +32,8 @@ DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', 
     })
 
     // Data Quota Example
-    Http.getResourceExampleDatas({
+    $scope.DataExamples = Http.getResourceExampleDatas({
       resource_id: $stateParams.item
-    }).then(function(result) {
-      if (200 == result.data.head.status) {
-        if(result.data.body[0]) {
-          $scope.detailFrame = result.data.body[0].file_content;
-        }
-      }
     });
 
 
@@ -95,6 +89,21 @@ DInventoryDetail.factory('Department.InventoryDetail.Service.Http', ['$http', '$
   }
 ])
 
+DInventoryDetail.directive('wiservExampleData', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:500px;height:400px;position:relative;top:20px'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.DataExamples.then(function(result) {
+          console.log(result);
+          element.html(result.data.body[0].file_content);
+        })
+      }
+    }
+  }
+]);
 DInventoryDetail.directive('wiservReqdepRelationship', [
   function() {
     return {
