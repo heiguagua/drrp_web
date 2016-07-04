@@ -114,79 +114,67 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
         scope.ResourceReqByDepTotals.then(function(result) {
           if (200 == result.data.head.status) {
             var dataquotaRequirement = result.data.body[0];
-            var deptotal = _.size(dataquotaRequirement.depNames);
+            var deptotal = _.size(dataquotaRequirement.depNames) ;
             var resourceName = dataquotaRequirement.resourceName;
             var depNames = dataquotaRequirement.depNames;
-            var obj = {
-              name: resourceName,
-              x: 500,
-              y: 100
-            };
-            var obj1 = {
-              source: resourceName,
-              target: ""
-            };
-            var data1 = [{
-              name: resourceName,
-              x: 500,
-              y: 100
-            }];
-            var links1 = [{
-              source: resourceName,
-              target: ""
-            }];
-            if (deptotal) {
-              _(depNames).forEach(function(value, key) {
-                console.log(key + ":" + value);
-                obj.name = value;
-                obj.x = 600;
-                obj.y = 100 + (key + 1) * 20;
-                data1.push(obj);
-                obj1.target = value;
-                links1.push(obj1);
-              });
-              console.log(data1);
-              console.log(links1);
-            }
-            var myChart = echarts.init((element.find('div'))[0]);
-            var option = {
-              title: {
-                text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
-              },
-              tooltip: {},
-              animationDurationUpdate: 1500,
-              animationEasingUpdate: 'quinticInOut',
-              series: [{
-                type: 'graph',
-                layout: 'none',
-                symbolSize: 50,
-                roam: true,
-                label: {
-                  normal: {
-                    show: true
-                  }
-                },
-                edgeSymbol: ['circle', 'arrow'],
-                edgeSymbolSize: [4, 10],
-                edgeLabel: {
-                  normal: {
-                    textStyle: {
-                      fontSize: 20
-                    }
-                  }
-                },
-                data: data1,
-                links: links1,
-                lineStyle: {
-                  normal: {
-                    opacity: 0.9,
-                    width: 2,
-                    curveness: 0.3
-                  }
-                }
-              }]
-            };
-            myChart.setOption(option);
+            var obj = {name: resourceName, x: 500, y:100 };
+            var obj1 = {source: resourceName,target: "" };
+            var data1 = [{name: resourceName, x: 500, y:100 }];
+            var links1 = [{source: resourceName,target: "" }];
+            if(deptotal){
+               _(depNames).forEach(function (value,key){
+                 console.log(key+":"+value);
+                 obj.name = value;
+                 obj.x = 600;
+                 obj.y = 100 + (key+1)*20;
+                 data1.push(obj);
+                 obj1.target = value ;
+                 links1.push(obj1);
+               });
+               console.log(data1);
+               console.log(links1);
+             }
+             var myChart = echarts.init((element.find('div'))[0]);
+             var option = {
+               title: {
+                 text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
+               },
+               tooltip: {},
+               animationDurationUpdate: 1500,
+               animationEasingUpdate: 'quinticInOut',
+               series : [
+                 {
+                   type: 'graph',
+                   layout: 'none',
+                   symbolSize: 50,
+                   roam: true,
+                   label: {
+                     normal: {
+                       show: true
+                     }
+                   },
+                   edgeSymbol: ['circle', 'arrow'],
+                   edgeSymbolSize: [4, 10],
+                   edgeLabel: {
+                     normal: {
+                       textStyle: {
+                         fontSize: 20
+                       }
+                     }
+                   },
+                   data: data1,
+                   links: links1,
+                   lineStyle: {
+                     normal: {
+                       opacity: 0.9,
+                       width: 2,
+                       curveness: 0.3
+                     }
+                   }
+                 }
+               ]
+             };
+             myChart.setOption(option);
           }
         });
       }

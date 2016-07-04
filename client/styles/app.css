@@ -314,8 +314,7 @@ input.ng-touched.ng-invalid {
   right: -15px;
 }
 #main .text-center {
-  position: relative;
-  top: 15px;
+  text-align: center;
 }
 #dashboard .left {
   padding: 0;
