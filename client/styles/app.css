@@ -595,7 +595,7 @@ input.ng-touched.ng-invalid {
   height: 530px;
 }
 #department-inventory .indicator-list .scroll table {
-  table-layout: auto;
+  table-layout: fixed;
   font-size: 13px;
 }
 #department-inventory .indicator-list .scroll table tr th {
@@ -857,7 +857,7 @@ input.ng-touched.ng-invalid {
   height: 530px;
 }
 #department-share .indicator-list .scroll table {
-  table-layout: auto;
+  table-layout: fixed;
   font-size: 13px;
 }
 #department-share .indicator-list .scroll table tr th {
@@ -1297,7 +1297,7 @@ input.ng-touched.ng-invalid {
   height: 530px;
 }
 #department-audit .indicator-list .scroll table {
-  table-layout: auto;
+  table-layout: fixed;
   font-size: 13px;
 }
 #department-audit .indicator-list .scroll table tr th {

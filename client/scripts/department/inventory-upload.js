@@ -24,10 +24,13 @@ DInventoryUpload.controller('Department.InventoryUpload.Controller', ['$scope', 
       }
       $scope.uploadPromise = Http.uploadFile(file).then(function(result) {
         if (200 == result.data.head.status) {
-          alert('上传成功!');
+          alert('上传成功！');
           $state.go("main.department.inventory", {}, {
             reload: true
           });
+        }
+        else {
+          alert('上传失败，上传文件格式有误！');
         }
       });
     }

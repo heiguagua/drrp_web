@@ -2,8 +2,9 @@
 'use strict';
 var DInventoryDetail = angular.module('Department.InventoryDetail', ['ui.router', 'ngCookies', 'cgBusy']);
 
-DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', '$q', 'Department.InventoryDetail.Service.Http', '$stateParams', '$state','$sce',
-  function($scope, $q, Http, $stateParams, $state,$sce) {
+DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', '$q', 'Department.InventoryDetail.Service.Http', '$stateParams', '$state','$sce', 'API',
+  function($scope, $q, Http, $stateParams, $state,$sce ,API) {
+    var path = API.path;
     console.log($stateParams.item);
     $scope.InfoItemShow = false;
     Http.getDepartInfoResList({
@@ -31,12 +32,14 @@ DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', 
     })
 
     // Data Quota Example
-    Http.getResourceExampleByDepID({
+    Http.getResourceExampleDatas({
       resource_id: $stateParams.item
     }).then(function(result) {
-      $scope.DataQuotaExample = result.data.body;
-      $scope.detailFrame = $sce.trustAsResourceUrl('http://www.sohu.com');
-
+      if (200 == result.data.head.status) {
+        if(result.data.body[0]) {
+          $scope.detailFrame = result.data.body[0].file_content;
+        }
+      }
     });
 
 
@@ -52,9 +55,9 @@ DInventoryDetail.factory('Department.InventoryDetail.Service.Http', ['$http', '$
   function($http, $q, API) {
     var path = API.path;
 
-    function getResourceExampleByDepID(params) {
+    function getResourceExampleDatas(params) {
       return $http.get(
-        path + '/info_item_detail', {
+        path + '/info_resource_examples', {
           params: params
         }
       )
@@ -84,7 +87,7 @@ DInventoryDetail.factory('Department.InventoryDetail.Service.Http', ['$http', '$
       )
     }
     return {
-      getResourceExampleByDepID: getResourceExampleByDepID,
+      getResourceExampleDatas: getResourceExampleDatas,
       getResourceRequirementByDepTotals: getResourceRequirementByDepTotals,
       getDepartInfoResList: getDepartInfoResList,
       getInfoItemList: getInfoItemList
