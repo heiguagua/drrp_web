@@ -528,6 +528,7 @@ DepartmentReq.controller('Department.Requirement.Controller.detail', ['$scope', 
     function($scope, $stateParams, Http, Component) {
       console.log($stateParams.ID);
       $scope.InfoItemShow = false;
+      $scope.InfoResourceShow = false;
       Http.getReqDetail({
         requiement_id: $stateParams.ID
       }).then(function(result) {
@@ -539,6 +540,9 @@ DepartmentReq.controller('Department.Requirement.Controller.detail', ['$scope', 
             resource_id: $scope.ReqDetail.resource_id
           }).then(function(ResourceRes) {
             $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
+            if($scope.InfoResourceDetail) {
+              $scope.InfoResourceShow = true;
+            }
           })
 
           // 查询需求对应的信息项
