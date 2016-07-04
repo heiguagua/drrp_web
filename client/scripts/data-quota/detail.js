@@ -100,7 +100,7 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
                title: {
-                 text: "信息资源：'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
+                 text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
                },
                tooltip: {},
                animationDurationUpdate: 1500,

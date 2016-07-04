@@ -99,7 +99,7 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:500px;height:400px;position:relative;top:20px'></div>",
+      template: "<div style='width:900px;height:400px;position:relative;top:20px'></div>",
       link: function(scope, element, attr) {
         console.log(scope);
         scope.ResourceReqByDepTotals.then(function(result) {
@@ -142,7 +142,7 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
             var myChart = echarts.init((element.find('div'))[0]);
             var option = {
               title: {
-                text: '信息资源：' + resourceName + '对应的需求部门数:' + deptotal + '个'
+                text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
               },
               tooltip: {},
               animationDurationUpdate: 1500,
