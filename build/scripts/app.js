@@ -209,7 +209,7 @@ app.run(['$rootScope', function($rootScope){
 		if(toState.name!=='welcome'){
 		  if(toState.name!=='login'){
 			if(!sessionStorage.token){
-			  window.location.href='/build';
+			  window.location.href='/#/login';
 			};
 		  };
 		}
@@ -222,6 +222,7 @@ var Config = angular.module('Config', []);
 
 Config.constant('API', {
   path: 'http://localhost:8080/drrp/api' //发布
+
 });
 
 'use strict';
