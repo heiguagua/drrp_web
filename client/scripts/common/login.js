@@ -22,8 +22,8 @@ Login.controller('Login.Controller.Main', ['$rootScope', '$cookies', '$scope', '
     $scope.Login.submit = function(valid) {
       $scope.loginSubmitted = false;
       if (valid) {
-        var username = $scope.Login.username;
-        var password = $scope.Login.password;
+        var username = $scope.Login.username; 
+        var password = hex_md5($scope.Login.password);
         Http.login({
           username: username,
           password: password
