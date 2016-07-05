@@ -206,7 +206,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
 app.run(['$rootScope', function($rootScope){
   $rootScope.$on('$stateChangeStart',
     function(event, toState, toParams, fromState, fromParams){
-      if(toState.name!=='login' && toState.name!=='welcome'){
+      if(toState.name!=='login' || toState.name!=='welcome'){
         if(!sessionStorage.token){
           window.location.href='/build';
         };
@@ -219,8 +219,7 @@ app.run(['$rootScope', function($rootScope){
 var Config = angular.module('Config', []);
 
 Config.constant('API', {
-   path: 'http://localhost:8080/drrp/api'
-
+    path: 'http://172.16.1.78:8080/api' //测试
 });
 
 'use strict';
