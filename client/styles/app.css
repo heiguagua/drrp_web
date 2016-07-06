@@ -1221,6 +1221,11 @@ input.ng-touched.ng-invalid {
 .confirm-req-modal .table-resource-list {
   table-layout: fixed;
 }
+.confirm-req-modal .table-resource-list td {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .confirm-req-modal .table-resource-list td .items-list {
   overflow-x: scroll;
   overflow-y: hidden;

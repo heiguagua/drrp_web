@@ -373,13 +373,13 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       });
     }
 
-    $scope.backtoList = function() {
+    $scope.toUpload = function() {
       if($scope.ResourceItemList.length == 0) {
         alert('您还未添加信息项！');
         return;
       }
       else {
-        $state.go("main.department.inventory", {}, {
+        $state.go("main.department.inventory.uploadExampleData", {ID:$scope.InfoResource.id}, {
           reload: true
         });
       }
@@ -438,8 +438,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           console.log(result.data);
           if (200 == result.data.head.status) {
             if (!$scope.resItemAddBtn) {
-              alert('保存成功！');
-              $state.go("main.department.inventory", {}, {
+              //alert('保存成功！');
+              $state.go("main.department.inventory.uploadExampleData", {ID:result.data.body[0].id}, {
                 reload: true
               });
             } else {
@@ -471,6 +471,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
         if (RESOURCE_FORMAT_DATA == $scope.InfoResource.resource_format) {
           $scope.resItemUpdateBtn = true;
+          $scope.InfoResource.update_period = '';
         }
 
         //$scope.ResourceItemConfigList = [];
@@ -507,11 +508,6 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         })
       })
 
-
-      // 选中数据库类
-      if (RESOURCE_FORMAT_DATA == $scope.InfoResource.resource_format) {
-        $scope.resItemUpdateBtn = true;
-      }
     }
 
 
@@ -575,11 +571,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           if (200 == result.data.head.status) {
             if (!$scope.resItemUpdateBtn) {
               alert('保存成功！');
-              $scope.Modal = {};
-              //清空多选项
-              $scope.dataLevelSelection = [];
-              $scope.shareFreqSelection = [];
-              $state.go("main.department.inventory", {}, {
+              $state.go("main.department.inventory.uploadExampleData", {ID:$scope.InfoResource.id}, {
                 reload: true
               });
             } else {
