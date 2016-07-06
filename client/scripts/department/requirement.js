@@ -332,6 +332,15 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       $scope.resourceFormatList = result.data.body;
     });
 
+    // 隐藏或显示资源列表
+    $scope.togglResourceList = function() {
+      if($scope.resParent.dropListShow) {
+        $scope.resParent.dropListShow = false;
+      }
+      else {
+        $scope.resParent.dropListShow = true;
+      }
+    }
 
     // filter by resource format
     $scope.resFormatMainSelection = [];
