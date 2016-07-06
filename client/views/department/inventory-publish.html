@@ -101,7 +101,8 @@
                 <option ng-repeat='resourceFormat in resourceFormatList' value='{{resourceFormat.id}}'>{{resourceFormat.dict_name}}</option>
               </select>
               <span ng-class="{true: 'ng-hide', false: 'ng-show'}[resFormatOtherShow || resItemAddBtn]">
-                <label>格式说明：</label><input type='text' class='custom-form-control' name='resource_format_desc' ng-model='InfoResource.resource_format_desc'/>
+                <label>格式说明：</label>
+                <input type='text' class='custom-form-control' name='resource_format_desc' ng-model='InfoResource.resource_format_desc' ng-maxlength='256' />
               </span>
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[resFormatOtherShow]"><input type='text' class='custom-form-control' name='resource_format_other' ng-maxlength='256' placeholder='请输入其他信息资源格式' ng-model='InfoResource.resource_format_other'/></span>
               <!-- <span ng-class="{true: 'ng-show', false: 'ng-hide'}[resItemAddBtn]">
@@ -111,6 +112,7 @@
 
               <!-- <span class='help-block' ng-show='submitted && resItemAddBtn && (ResourceItemList.length == 0)'>您还未添加任何信息项。</span> -->
               <p ng-show="InfoResourceForm.resource_format_other.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
+              <p ng-show="InfoResourceForm.resource_format_desc.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
             </div>
           </div>
 
@@ -212,12 +214,13 @@
               </select>
 
               <span>
-                <label>共享方式说明：</label><input ng-class="{true: 'ng-hide', false: 'ng-show'}[shareMethodOtherShow]" type='text' class='custom-form-control' name='share_method_desc' ng-model='InfoResource.share_method_desc'/>
+                <label>共享方式说明：</label><input ng-class="{true: 'ng-hide', false: 'ng-show'}[shareMethodOtherShow]" type='text' class='custom-form-control' name='share_method_desc' ng-model='InfoResource.share_method_desc' ng-maxlength='256' />
               </span>
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[shareMethodOtherShow]">
                 <input type='text' ng-maxlength='256' name='share_method_other' class='custom-form-control' ng-model='InfoResource.share_method_other' placeholder='请输入其他类信息' />
               </span>
               <p ng-show="InfoResourceForm.share_method_other.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
+              <p ng-show="InfoResourceForm.share_method_desc.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
               <p ng-show="!InfoResource.share_method && submitted" class="help-block">请选择共享方式</p>
             </div>
           </div>
