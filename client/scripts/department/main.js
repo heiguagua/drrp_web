@@ -5,7 +5,9 @@ var Department = angular.module('Department', ['ui.router']);
 Department.controller('Department.Controller.Main', ['$cookies', '$scope', '$q', 'Department.Service.Http', '$sce','$state',
   function($cookies, $scope, $q, Http, $sce, $state) {
     var LoginUser = JSON.parse($cookies.get('User'));
+    console.log(LoginUser);
     var DEP_ID = LoginUser.dep_id;
+    var USERNAME = LoginUser.username;
     var SHARE_FREQUENCY = 1;
     var DATA_LEVEL = 2;
     var SHARE_LEVEL = 3;

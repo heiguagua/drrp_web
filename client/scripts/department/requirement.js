@@ -6,6 +6,7 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
   function($cookies, $scope, $stateParams, Component, Http) {
     var LoginUser = JSON.parse($cookies.get('User'));
     var DEP_ID = LoginUser.dep_id;
+    var USERNAME = LoginUser.username;
     var SHARE_FREQUENCY = 1;
     var DATA_LEVEL = 2;
     $scope.DeptRequirement = {};
@@ -48,6 +49,7 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
 
     function getDeptRequirementList() {
       _httpParams.dep_id = DEP_ID;
+      _httpParams.username = USERNAME;
       $scope.reqPromise = Http.getDepartmentRequirementList(_httpParams).then(function(result) {
         $scope.requirementList = result.data.body[0].results;
         $scope.Paging.totalItems = result.data.body[0].count;
@@ -256,6 +258,7 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
 
     var LoginUser = JSON.parse($cookies.get('User'));
     var DEP_ID = LoginUser.dep_id;
+    var USERNAME = LoginUser.username;
     $scope.DeptRequirement = {};
 
     $scope.Paging = {};

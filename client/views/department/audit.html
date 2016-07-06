@@ -1,126 +1,149 @@
 <!-- UI Router -->
 
-  <div id='department-audit'>
-    <div class='indicator-order'>
-      <div class='pull-left'>
-        <p class='font-18'>数据查看审核</p>
-      </div>
-      <div class='pull-right'>
-        <ul class="nav nav-pills">
+<div id='department-audit'>
+  <div class='indicator-order'>
+    <div class='pull-left'>
+      <p class='font-18'>数据查看审核</p>
+    </div>
+    <div class='pull-right'>
+      <ul class="nav nav-pills">
 
-          <li role="presentation "  class='indicator-total'>
-            审核总数<span class='num'>{{resourceCount}}</span>
+        <li role="presentation " class='indicator-total'>
+          审核总数
+          <span class='num'>{{resourceCount}}</span>
+        </li>
+        <li role="presentation">
+          <input type="text" class='input-filter' placeholder="请输入查询信息资源名称" ng-model='DeptAudit.resource_name_filter'>
+          <button type="button" class="btn btn-primary" ng-click='searchDeptAuditByName()'>查询</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- indicator inventory list -->
+  <div class='indicator-list'>
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">
+        <ul class="nav nav-filter">
+          审核状态
+          <li role="presentation" class="active">
+            <span>
+              <a ng-click='filterByAuditStatus()'>
+                <i class='fa fa-list-ul'></i>&nbsp;全部&nbsp;</a>
+            </span>
+          </li>
+          <li role="presentation" class="active">
+            <span>
+              <a ng-click='filterByAuditStatus(1)'>
+                <i class='fa fa-check-circle-o'></i>&nbsp;审核通过&nbsp;</a>
+            </span>
           </li>
           <li role="presentation">
-              <input type="text" class='input-filter' placeholder="请输入查询信息资源名称" ng-model='InfoResource.resource_name_filter'>
-              <button type="button" class="btn btn-primary" ng-click='searchInfoResourceByName()'>查询</button>
+            <span>
+              <a ng-click='filterByAuditStatus(2)'>
+                <i class='fa fa-times-circle-o'></i>&nbsp;审核未通过&nbsp;</a>
+            </span>
+          </li>
+          <li role="presentation">
+            <span>
+              <a ng-click='filterByAuditStatus(0)'>
+                <i class='fa fa-question-circle'></i>&nbsp;未审核&nbsp;</a>
+            </span>
           </li>
         </ul>
       </div>
-    </div>
 
-    <!-- indicator inventory list -->
-    <div class='indicator-list'>
-      <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">
-          <ul class="nav nav-filter">
-            审核状态
-            <li role="presentation" class="active">
-              <span>
-                <a ng-click='filterByAuditStatus()'><i class='fa fa-list-ul'></i>&nbsp;全部&nbsp;</a></span>
-            </li>
-            <li role="presentation" class="active">
-              <span>
-                <a ng-click='filterByAuditStatus(1)'><i class='fa fa-check-circle-o'></i>&nbsp;审核通过&nbsp;</a></span>
-            </li>
-            <li role="presentation">
-              <span>
-                <a ng-click='filterByAuditStatus(2)'><i class='fa fa-times-circle-o' ></i>&nbsp;审核未通过&nbsp;</a></span>
-            </li>
-            <li role="presentation">
-              <span>
-                <a ng-click='filterByAuditStatus(0)'><i class='fa fa-question-circle'></i>&nbsp;未审核&nbsp;</a></span>
-            </li>
-          </ul>
-        </div>
-
-        <div class='scroll' cg-busy="{promise:auditPromise,message:'加载中',backdrop:backdrop,delay:delay,minDuration:minDuration}">
+      <div class='scroll' cg-busy="{promise:auditPromise,message:'加载中',backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class=''>
           <div class=''>
-              <div class=''>
-                <!-- Table -->
-                <table class='table table-hover table-striped table-bordered'>
-                  <thead class='text-center'>
-                    <tr>
-                      <th width='110px' >操作</th>
-                      <th width='40px' >标识</th>
-                      <th width='40px' >序号</th>
-                      <th width='90px' title='信息资源名称'>信息资源名称</th>
-                      <th width='90px' title='信息资源摘要'>信息资源摘要</th>
-                      <th width='90px' title='信息资源分类'>信息资源分类</th>
-                      <th width='100px' title='分地区数据级别'>分地区数据级别</th>
-                      <th width='90px' title='信息资源格式'>信息资源格式</th>
-                      <th width='60px' title='共享级别'>共享级别</th>
-                      <th width='100px' title='是否面向社会开放'>是否面向社会开放</th>
-                      <th width='40px' ></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat='InfoResource in infoResourceList | orderBy:"create_time":true' >
-                      <td>
-                        <a class='delete btn btn-danger btn-xs' ng-click='deleteInfoResource(InfoResource.id)' ><i class='fa fa-trash'></i>&nbsp;删除</a>
-                        <a class='edit btn btn-success btn-xs' ui-sref='main.department.inventory.update({item:InfoResource.id})'><i class='fa fa-pencil'></i>&nbsp;修改</a>
-                    </td>
-                      <td>
-                        <div ng-if='InfoResource.share_level_name =="全省开放" '>
-                          <span>
-                            <i class='fa fa-eye'></i>
-                          </span>
-                        </div>
-                        <div ng-if='InfoResource.share_level_name =="省政务云平台开放" '>
-                          <span>
-                            <i class='fa fa-desktop'></i>
-                          </span>
-                        </div>
-                        <div ng-if='InfoResource.share_level_name =="授权开放" '>
-                          <span>
-                            <i class='fa fa-lock'></i>
-                          </span>
-                        </div>
-                        <div ng-if='InfoResource.share_level_name =="暂不开放" '>
-                          <span>
-                            <i class='fa fa-warning'></i>
-                          </span>
-                        </div>
-                      </td>
-                      <td class='orderBy'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
-                      <td title='{{InfoResource.resource_name}}'>
-                        <a ui-sref='main.department.detail({item:InfoResource.id})'>
-                          <pre>{{InfoResource.resource_name}}</pre>
-                        </a>
-                      </td>
-                      <td title='{{InfoResource.summary}}'>{{InfoResource.summary}}</td>
-                      <td title='{{InfoResource.category_name}}'>{{InfoResource.category_name}}</td>
-                      <td title='{{InfoResource.area_level}}'>{{InfoResource.area_level}}</td>
-                      <td title='{{InfoResource.resource_format_name}}'>{{InfoResource.resource_format_name}}</td>
-                      <td title='{{InfoResource.share_level_name}}'>{{InfoResource.share_level_name}}</td>
-                      <td title='{{InfoResource.social_open_flag_name}}'>{{InfoResource.social_open_flag_name}}</td>
-                      <td title=''>
-                        <a ui-sref='main.department.detail({item:InfoResource.id})'>
-                          <pre>更多...</pre>
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
+            <!-- Table -->
+            <table class='table table-hover table-striped table-bordered'>
+              <thead class='text-center'>
+                <tr>
+                  <th width='110px'>操作</th>
+                  <th width='40px'>标识</th>
+                  <th width='40px'>序号</th>
+                  <th width='90px' title='信息资源名称'>信息资源名称</th>
+                  <th width='90px' title='信息资源摘要'>信息资源摘要</th>
+                  <th width='90px' title='信息资源分类'>信息资源分类</th>
+                  <th width='100px' title='分地区数据级别'>分地区数据级别</th>
+                  <th width='90px' title='信息资源格式'>信息资源格式</th>
+                  <th width='60px' title='共享级别'>共享级别</th>
+                  <th width='100px' title='是否面向社会开放'>是否面向社会开放</th>
+                  <th width='40px'></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat='DeptAudit in auditList | orderBy:"create_time":true'>
+                  <td>
+                    <div ng-if='DeptAudit.audit_status == 0'>
+                      <span>
+                        <i class='fa fa-question-circle'></i>
+                      </span>
+                      <a ui-sref='main.department.audit.info({AUDITID:DeptAudit.applyid,DATAQUOTAID:DeptAudit.data_quota_id,APPLYDEPNAME:DeptAudit.applydepname,APPLYTIME:DeptAudit.apply_time})'>审核</a>
+                    </div>
+                    <div ng-if='DeptAudit.audit_status == 1'>
+                      <span>
+                        <i class='fa fa-check-circle'></i>
+                      </span>
+                    </div>
+                    <div ng-if='DeptAudit.audit_status == 2'>
+                      <span>
+                        <i class='fa fa-times-circle-o'></i>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div ng-if='DeptAudit.share_level_name =="全省开放" '>
+                      <span>
+                        <i class='fa fa-eye'></i>
+                      </span>
+                    </div>
+                    <div ng-if='DeptAudit.share_level_name =="省政务云平台开放" '>
+                      <span>
+                        <i class='fa fa-desktop'></i>
+                      </span>
+                    </div>
+                    <div ng-if='DeptAudit.share_level_name =="授权开放" '>
+                      <span>
+                        <i class='fa fa-lock'></i>
+                      </span>
+                    </div>
+                    <div ng-if='DeptAudit.share_level_name =="暂不开放" '>
+                      <span>
+                        <i class='fa fa-warning'></i>
+                      </span>
+                    </div>
+                  </td>
+                  <td class='orderBy'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
+                  <td title='{{DeptAudit.resource_name}}'>
+                    <a ui-sref='main.department.detail({item:DeptAudit.id})'>
+                      <pre>{{DeptAudit.resource_name}}</pre>
+                    </a>
+                  </td>
+                  <td title='{{DeptAudit.summary}}'>{{DeptAudit.summary}}</td>
+                  <td title='{{DeptAudit.category_name}}'>{{DeptAudit.category_name}}</td>
+                  <td title='{{DeptAudit.area_level}}'>{{DeptAudit.area_level}}</td>
+                  <td title='{{DeptAudit.resource_format_name}}'>{{DeptAudit.resource_format_name}}</td>
+                  <td title='{{DeptAudit.share_level_name}}'>{{DeptAudit.share_level_name}}</td>
+                  <td title='{{DeptAudit.social_open_flag_name}}'>{{DeptAudit.social_open_flag_name}}</td>
+                  <td title=''>
+                    <a ui-sref='main.department.detail({item:DeptAudit.id})'>
+                      <pre>更多...</pre>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <div class='pull-right'>
-          <uib-pagination boundary-links='true' ng-change='Paging.pageChanged()' total-items='Paging.totalItems' items-per-page='Paging.itemsPerPage' ng-model='Paging.currentPage' max-size='Paging.maxSize' class='pagination' boundary-link-numbers='true' rotate='false' first-text='首页' last-text='末页' next-text='下一页' previous-text='上一页'></uib-pagination>
-        </div>
-
       </div>
-    </div>
+      <div class='pull-right'>
+        <uib-pagination boundary-links='true' ng-change='Paging.pageChanged()' total-items='Paging.totalItems' items-per-page='Paging.itemsPerPage' ng-model='Paging.currentPage' max-size='Paging.maxSize' class='pagination' boundary-link-numbers='true' rotate='false' first-text='首页' last-text='末页' next-text='下一页' previous-text='上一页'></uib-pagination>
+      </div>
 
+    </div>
   </div>
+
+</div>

@@ -98,7 +98,9 @@ DInventoryDetail.directive('wiservExampleData', [
         console.log(scope);
         scope.DataExamples.then(function(result) {
           console.log(result);
-          element.html(result.data.body[0].file_content);
+          if(!result.data.body) {
+            element.html(result.data.body[0].file_content);
+          }
         })
       }
     }
