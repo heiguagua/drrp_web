@@ -10,7 +10,7 @@
     </div>
     <div class="left col-md-2 sidebar1">
       <div class="panel panel-default">
-        <div class='panel-heading' ui-sref="main.data-quota.list" ui-sref-opts="{reload:true}">
+        <div class='panel-heading' ui-sref="main.data-quota.list({resource_dep_id:'', dep_name:'', type:flag , titleName:filterName})" ui-sref-opts="{reload:true}">
               <i class="fa fa-refresh"> {{filterName}}</i>
         </div>
 
@@ -21,7 +21,7 @@
           </span>
         </div>
 
-        <div ng-if="flag===1" class='menu' ui-tree data-drag-enabled="false">
+        <div ng-if="flag==1" class='menu' ui-tree data-drag-enabled="false">
           <treecontrol class="tree-classic"
           tree-model="list"
           filter-expression="predicate"
@@ -32,7 +32,7 @@
           <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
           </treecontrol>
         </div>
-        <div ng-if="flag===2" class='menu' ui-tree data-drag-enabled="false">
+        <div ng-if="flag==2" class='menu' ui-tree data-drag-enabled="false">
           <treecontrol class="tree-classic"
           tree-model="OcupationList"
           filter-expression="predicate"
@@ -43,7 +43,7 @@
           <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
           </treecontrol>
         </div>
-        <div ng-if="flag===3" class='menu' ui-tree data-drag-enabled="false">
+        <div ng-if="flag==3" class='menu' ui-tree data-drag-enabled="false">
           <treecontrol class="tree-classic"
           tree-model="areaList"
           filter-expression="predicate"
@@ -54,7 +54,7 @@
           <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
           </treecontrol>
         </div>
-        <div ng-if="flag===4" class='menu' ui-tree data-drag-enabled="false">
+        <div ng-if="flag==4" class='menu' ui-tree data-drag-enabled="false">
           <treecontrol class="tree-classic"
           tree-model="themeList"
           filter-expression="predicate"

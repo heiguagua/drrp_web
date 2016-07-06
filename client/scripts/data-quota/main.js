@@ -2,8 +2,8 @@
 var DataQuota = angular.module('DataQuota', ['ui.router']);
 
 /** Main Controller */
-DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuota.Service.Http',
-  function($scope, $state, Http) {
+DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuota.Service.Http', '$stateParams',
+  function($scope, $state, Http, StateParams) {
     window.scrollTo(0,0);
     // Menu configration
     $scope.treeOptions = {
@@ -22,6 +22,34 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
     }
     function showType(){
       $scope.predicate="";
+      $scope.flag = (StateParams.type) ? (StateParams.type) : 1;
+      $scope.filterName = (StateParams.titleName) ? (StateParams.titleName) : "机构类型";
+        Http.menu().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.list = result.data.body;
+          }
+        });
+        Http.menuRole().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.OcupationList = result.data.body;
+          }
+        });
+
+        Http.menuArea().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.areaList = result.data.body;
+          }
+        });
+        Http.menuTheme().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.themeList = result.data.body;
+          }
+        });
+    }
+    //init
+    showType();
+    $scope.typeListOpen = function () {
+      $scope.predicate="";
       $scope.flag = 1;
       $scope.filterName = "机构类型";
       Http.menu().then(function(result) {
@@ -29,11 +57,6 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
           $scope.list = result.data.body;
         }
       });
-    }
-    //init
-    showType();
-    $scope.typeListOpen = function () {
-      showType();
 		};
 
     $scope.ocupationListOpen = function () {

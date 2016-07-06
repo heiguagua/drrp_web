@@ -101,12 +101,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         controller: 'Admin.User.Controller.Main'
       })
       .state('main.data-quota', {
-        url: '/data-quota',
+        url: '/data-quota/:type/:titleName',
         templateUrl: 'views/data-quota/main.html',
         controller: 'DataQuota.Controller.Main'
       })
       .state('main.data-quota.list', {
-        url: '/list/:resource_dep_id/:dep_name',
+        url: '/list/:resource_dep_id/:dep_name/:type/:titleName',
         templateUrl: 'views/data-quota/list0.html',
         controller: 'DataQuotaList.Controller.Main'
       })
