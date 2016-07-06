@@ -544,7 +544,7 @@ DepartmentReq.controller('Department.Requirement.Controller.detail', ['$scope', 
       }).then(function(result) {
         console.log(result.data.body[0]);
         $scope.ReqDetail = result.data.body[0];
-        if($scope.ReqDetail) {
+        if($scope.ReqDetail.resource_id) {
           // 查询需求对应的资源
           Http.getDepartInfoResList({
             resource_id: $scope.ReqDetail.resource_id

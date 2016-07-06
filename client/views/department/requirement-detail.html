@@ -49,7 +49,10 @@
               <dd title='{{ReqDetail.responser}}'>{{ReqDetail.responser}}</dd>
 
               <dt>响应结果</dt>
-              <dd title=''><span ng-if='ReqDetail.status == "1"'>通过</span><span ng-if='ReqDetail.status == "2"'>不通过</span></dd>
+              <dd title=''>
+                <span ng-if='ReqDetail.status == "0"'><i class='fa fa-question-circle' style='color:#f0ad4e'></i>&nbsp;未响应</span>
+                <span ng-if='ReqDetail.status == "1"'><i class='fa fa-check-circle' style='color:#5cb85c'></i>&nbsp;通过</span>
+                <span ng-if='ReqDetail.status == "2"'><i class='fa fa-times-circle-o' style='color:#d9534f'></i>&nbsp;不通过</span></dd>
 
               <dt>内容说明</dt>
               <dd title='{{ReqDetail.response_content}}'>{{ReqDetail.response_content}}</dd>
