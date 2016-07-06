@@ -45,7 +45,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
               if( response.data && typeof response.data==='object'){
                 if(result.data.head.status===300){
                   sessionStorage.message = '登录超时，请重新登录！';
-                  window.location.href='/build';
+                  window.location.href='/#/login';
                 };
               };
             });
@@ -61,7 +61,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
     $urlRouterProvider.otherwise('/welcome');
     $stateProvider
       .state('welcome', {
-        url: '/welcome?resource_dep_id?dep_name',
+        url: '/welcome?type?titleName',
         templateUrl: 'views/common/welcome.html',
         controller: 'Welcome.Controller.Main'
       })

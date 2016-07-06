@@ -19,53 +19,87 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
         labelSelected: "a8"
       }
     }
-    function showType(){
-      $scope.flag = 1;
-      $scope.filterName = "机构类型";
-      Http.menu().then(function(result) {
-        if (200 === result.data.head.status) {
-          $scope.list = result.data.body;
-        }
-      });
+    function treeChangeTypeDefault(){
+      $scope.flag = (StateParams.type) ? (StateParams.type) : 1;
+      $scope.filterName = (StateParams.titleName) ? (StateParams.titleName) : "机构类型";
+      // if($scope.flag==1){
+        Http.menu().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.list = result.data.body;
+          }
+        });
+
+      // }else if ($scope.flag==2) {
+        // OcupationMenu Generator
+        Http.menuRole().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.OcupationList = result.data.body;
+          }
+        });
+
+      // }else if ($scope.flag==3) {
+        // AreaMenu Generator
+        Http.menuArea().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.areaList = result.data.body;
+          }
+        });
+
+      // }else if ($scope.flag==4) {
+        // themeMenu Generator
+        Http.menuTheme().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.themeList = result.data.body;
+          }
+        });
+      // }
     }
-    //init
-    showType();
-    $scope.typeListOpen = function () {
-      showType();
-    };
+    treeChangeTypeDefault();
+    $scope.treeChangeType = function(type) {
+      $scope.predicate = "";
+      if(type==1){
+        $scope.flag = 1;
+        $scope.filterName = "机构类型";
+        Http.menu().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.list = result.data.body;
+          }
+        });
 
-    $scope.ocupationListOpen = function () {
-      $scope.filterName = "机构职能";
-      $scope.flag = 2;
-      // OcupationMenu Generator
-      Http.menuRole().then(function(result) {
-        if (200 === result.data.head.status) {
-          $scope.OcupationList = result.data.body;
-        }
-      });
-    };
+      }else if (type==2) {
+        $scope.filterName = "机构职能";
+        $scope.flag = 2;
+        // OcupationMenu Generator
+        Http.menuRole().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.OcupationList = result.data.body;
+          }
+        });
 
-    $scope.areaListOpen = function () {
-      $scope.filterName = "区域";
-      $scope.flag = 3;
-      // AreaMenu Generator
-      Http.menuArea().then(function(result) {
-        if (200 === result.data.head.status) {
-          $scope.areaList = result.data.body;
-        }
-      });
-    };
+      }else if (type==3) {
+        $scope.filterName = "区域";
+        $scope.flag = 3;
+        // AreaMenu Generator
+        Http.menuArea().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.areaList = result.data.body;
+          }
+        });
 
-    $scope.themeListOpen = function () {
-      $scope.filterName = "主题类";
-      $scope.flag = 4;
-      // themeMenu Generator
-      Http.menuTheme().then(function(result) {
-        if (200 === result.data.head.status) {
-          $scope.themeList = result.data.body;
-        }
-      });
-    };
+      }else if (type==4) {
+        $scope.filterName = "主题";
+        $scope.flag = 4;
+        // themeMenu Generator
+        Http.menuTheme().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.themeList = result.data.body;
+          }
+        });
+
+      }
+
+    }
+
 
     $scope.comparator = false;
     $scope.showSelected = function(sel) {
@@ -99,14 +133,32 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       });
     };
     // Init data quota talbe
-    (function initDataQuotaList(){
+    function initDataQuotaList(){
         /* Init selected status for filter */
         $scope.resourceFormatActiveAll = $scope.ShareLevelActiveAll = $scope.openToSocietyActiveAll = $scope.ShareFrequencyActiveAll = $scope.DataLevelActiveAll = $scope.isScretActiveAll= 'active';
         /* Init ajax parameters*/
         var httpParams = {};
         (currentDepID==='') ? (httpParams = initPaging) : (httpParams = _.assign(httpParams, currentDepID, initPaging));
         getDataQuotaList(httpParams);
-    })();
+    };
+    initDataQuotaList();
+
+   $scope.WelcomeDep = function (resource_dep_id,dep_name){
+     if(resource_dep_id){
+       $scope.TargetDataQuotaName ="";
+       var httpParams = {};
+       currentDepID = {resource_dep_id:resource_dep_id};
+       currentDepName = {dep_name:dep_name};
+       $scope.currentDep = currentDepName.dep_name;
+       /* Init selected status for filter */
+       $scope.resourceFormatActiveAll = $scope.ShareLevelActiveAll = $scope.openToSocietyActiveAll = $scope.ShareFrequencyActiveAll = $scope.DataLevelActiveAll = $scope.isScretActiveAll= 'active';
+       /* Init ajax parameters*/
+       (currentDepID==='') ? (httpParams = initPaging) : (httpParams = _.assign(httpParams, currentDepID, initPaging));
+       getDataQuotaList(httpParams);
+     }
+   }
+
+
     // Fetch data quota list by filter
     function getDataQuotaListByFilter(params){
       var httpParams = {};
