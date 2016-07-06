@@ -1,4 +1,4 @@
-<div id='department-requirement-confirm'>
+<div id='department-requirement-confirm' ui-view>
   <div class='indicator-order'>
     <div class='pull-left'>
       <p class='font-18'>需求清单</p>
@@ -95,7 +95,7 @@
                     <td class='text-right' title='{{DeptReq.create_time| date:"yyyy-MM-dd HH:mm:ss"}}'>{{DeptReq.create_time| date:"yyyy-MM-dd HH:mm:ss"}}</td>
                     <td class='text-right' title='{{DeptReq.response_time |date:"yyyy-MM-dd HH:mm:ss"}}'>{{DeptReq.response_time |date:"yyyy-MM-dd HH:mm:ss"}}</td>
                     <td title='{{DeptReq.requiement_name}}'>
-                      <a ui-sref='main.department.requirement.detail({ID:DeptReq.id})'>{{DeptReq.requiement_name}}</a>
+                      <a ui-sref='main.department.requirementConfirm.detail({ID:DeptReq.id})'>{{DeptReq.requiement_name}}</a>
                     </td>
                     <td title='{{DeptReq.requiement_desc}}'>{{DeptReq.requiement_desc}}</td>
                     <td title='{{DeptReq.sharefrequency}}'>{{DeptReq.sharefrequency}}</td>

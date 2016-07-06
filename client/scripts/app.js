@@ -184,7 +184,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         url: '/publish',
         templateUrl: 'views/department/requirement-publish.html'
       })
-      .state('main.department.requirement.detail', {
+      .state('main.department.requirementConfirm.detail', {
         url: '/detail?ID',
         templateUrl: 'views/department/requirement-detail.html',
         controller: 'Department.Requirement.Controller.detail'
