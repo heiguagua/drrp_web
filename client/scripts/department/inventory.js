@@ -74,8 +74,7 @@ DInventory.controller('Department.Inventory.Controller.Main', ['$cookies', '$sco
           $scope.infoResourceList = result.data.body[0].results;
           $scope.resourceCount = result.data.body[0].count[0].resource_count;
           $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
-        }
-        else{
+        } else {
           $scope.infoResourceList = [];
         }
 
@@ -317,7 +316,24 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
     }
 
-
+    function getInfoItemList(resourceId) {
+      // 获取信息项列表
+      Http.getInfoItemList({
+        resource_id: resourceId
+      }).then(function(result) {
+        if (200 == result.data.head.status) {
+          $scope.ResourceItemList = result.data.body;
+          // 拼接信息资源所有信息项的多选项
+          _($scope.ResourceItemList).forEach(function(item) {
+            var shareFreqDictName = [];
+            _(item.config).forEach(function(config) {
+              shareFreqDictName.push(config.dict_name);
+            })
+            item.update_period_name = shareFreqDictName.toString();
+          })
+        }
+      })
+    }
 
     Http.getDepartmentList().then(function(result) {
       $scope.deptList = result.data.body;
@@ -357,6 +373,18 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       });
     }
 
+    $scope.backtoList = function() {
+      if($scope.ResourceItemList.length == 0) {
+        alert('您还未添加信息项！');
+        return;
+      }
+      else {
+        $state.go("main.department.inventory", {}, {
+          reload: true
+        });
+      }
+    }
+
     // submit add
     $scope.addInfoResource = function(isValid) {
       $scope.submitted = true;
@@ -371,13 +399,10 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       if ($scope.shareFreqSelection.length == 0 && !$scope.resItemAddBtn) { // 未选择更新周期
         isValid = false;
       }
-      // if ($scope.resItemAddBtn && ($scope.ResourceItemList.length == 0)) { // 未添加信息项
-      //   isValid = false;
-      // }
       if ($scope.InfoResource.category == $scope.InfoResource.rel_category) { // 信息资源分类和关联及类目名称相同
         isValid = false;
       }
-      if($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
+      if ($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
         isValid = false;
       }
       if (isValid) {
@@ -404,28 +429,23 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           share_dep.apply_dep = value;
           InfoResourceApplyInfo.push(share_dep);
         });
-        // _($scope.ResourceItemList).forEach(function(item, index) {
-        //   console.log(index);
-        //   item.item_ord = index;
-        //   item.InfoResourceId = $scope.InfoResource.resource_name;
-        //   console.log($scope.ResourceItemList);
-        // })
 
         InfoResourceAddObj.InfoResource_RelationConfig = InfoResource_RelationConfig;
         InfoResourceAddObj.InfoResourceApplyInfo = InfoResourceApplyInfo;
-        //InfoResourceAddObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
-        //InfoResourceAddObj.InfoItem = $scope.ResourceItemList;
 
         console.log(InfoResourceAddObj);
         $scope.savePromise = Http.saveInfoResource(InfoResourceAddObj).then(function(result) {
           console.log(result.data);
           if (200 == result.data.head.status) {
-            $scope.ResItemListShow = true;
-            //alert('保存成功！');
-            // $state.go("main.department.inventory", {}, {
-            //   reload: true
-            // });
-            $scope.InfoResource.id = result.data.body[0].id;
+            if (!$scope.resItemAddBtn) {
+              alert('保存成功！');
+              $state.go("main.department.inventory", {}, {
+                reload: true
+              });
+            } else {
+              $scope.ResItemListShow = true;
+              $scope.InfoResource.id = result.data.body[0].id;
+            }
           } else {
             alert('保存失败！');
           }
@@ -445,6 +465,9 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         resource_id: $stateParams.item
       }).then(function(ResourceRes) {
         $scope.InfoResource = ResourceRes.data.body[0].results[0];
+        if (LEVEL_AUTH == $scope.InfoResource.share_level) {
+          $scope.depShow = true;
+        }
 
         if (RESOURCE_FORMAT_DATA == $scope.InfoResource.resource_format) {
           $scope.resItemUpdateBtn = true;
@@ -482,27 +505,6 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             })
           });
         })
-
-
-        // 获取所有信息项
-        // Http.getInfoItemList({
-        //   resource_id: $scope.InfoResource.id
-        // }).then(function(result) {
-        //   $scope.ResourceItemList = result.data.body;
-        //   // 拼接信息资源所有信息项的多选项
-        //   _($scope.ResourceItemList).forEach(function(item) {
-        //     var shareFreqDictName = [];
-        //     _(item.config).forEach(function(config) {
-        //       var itemConfig = {};
-        //       itemConfig.InfoItemId = item.item_name;
-        //       itemConfig.sys_dict_id = config.id;
-        //       itemConfig.parent_id = item.parent_id;
-        //       shareFreqDictName.push(config.dict_name);
-        //       $scope.ResourceItemConfigList.push(itemConfig);
-        //     })
-        //     item.update_period_name = shareFreqDictName.toString();
-        //   })
-        // })
       })
 
 
@@ -518,7 +520,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       var InfoResourceAddObj = {};
       var InfoResource_RelationConfig = [];
       var InfoResourceApplyInfo = [];
-    //  var InfoItem_RelationConfig = [];
+      //  var InfoItem_RelationConfig = [];
 
 
       if ($scope.resNameExist) {
@@ -527,13 +529,10 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       if ($scope.shareFreqSelection.length == 0 && !$scope.resItemUpdateBtn) { // 未选择更新周期
         isValid = false;
       }
-      // if ($scope.resItemAddBtn && ($scope.ResourceItemList.length == 0) || $scope.resItemUpdateBtn && ($scope.ResourceItemList.length == 0)) { // 未添加信息项
-      //   isValid = false;
-      // }
       if ($scope.InfoResource.category == $scope.InfoResource.rel_category) { // 信息资源分类和关联及类目名称相同
         isValid = false;
       }
-      if($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
+      if ($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
         isValid = false;
       }
 
@@ -570,22 +569,25 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
         InfoResourceAddObj.InfoResource_RelationConfig = InfoResource_RelationConfig;
         InfoResourceAddObj.InfoResourceApplyInfo = InfoResourceApplyInfo;
-        //InfoResourceAddObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
-        //InfoResourceAddObj.InfoItem = $scope.ResourceItemList;
 
-        console.log(InfoResourceAddObj);
         $scope.updatePromise = Http.updateInfoResource(InfoResourceAddObj).then(function(result) {
           console.log(result.data);
           if (200 == result.data.head.status) {
-            //alert('保存成功！');
-            //$scope.Modal = {};
-            // 清空多选项
-            //$scope.dataLevelSelection = [];
-            //$scope.shareFreqSelection = [];
-            // $state.go("main.department.inventory", {}, {
-            //   reload: true
-            // });
-            $scope.ResItemListShow = true;
+            if (!$scope.resItemUpdateBtn) {
+              alert('保存成功！');
+              $scope.Modal = {};
+              //清空多选项
+              $scope.dataLevelSelection = [];
+              $scope.shareFreqSelection = [];
+              $state.go("main.department.inventory", {}, {
+                reload: true
+              });
+            } else {
+              // 获取信息项列表
+              getInfoItemList($scope.InfoResource.id);
+              $scope.ResItemListShow = true;
+            }
+
           } else {
             alert('保存失败');
           }
@@ -596,36 +598,30 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       }
     }
 
-    $scope.editItems = function(id) {
-      //$scope.ResourceItemConfigList = [];
-      $scope.ResourceItemList = [];
-      $scope.parent = {};
-      // $scope.parent.itemoutputDeptList = [];
-      Http.getInfoItemList({
-        resource_id: id
-      }).then(function(result) {
-        if (200 == result.data.head.status) {
-          $scope.ResourceItemList = result.data.body;
-          // 拼接信息资源所有信息项的多选项
-          _($scope.ResourceItemList).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              //var itemConfig = {};
-              //itemConfig.InfoItemId = item.item_name;
-              //.sys_dict_id = config.id;
-              //itemConfig.parent_id = item.parent_id;
-              shareFreqDictName.push(config.dict_name);
-              //$scope.ResourceItemConfigList.push(itemConfig);
-            })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-        }
-
-      })
-      $scope.ResItemListShow = true;
-    }
+    // $scope.editItems = function(id) {
+    //   $scope.ResourceItemList = [];
+    //   $scope.parent = {};
+    //   Http.getInfoItemList({
+    //     resource_id: id
+    //   }).then(function(result) {
+    //     if (200 == result.data.head.status) {
+    //       $scope.ResourceItemList = result.data.body;
+    //       // 拼接信息资源所有信息项的多选项
+    //       _($scope.ResourceItemList).forEach(function(item) {
+    //         var shareFreqDictName = [];
+    //         _(item.config).forEach(function(config) {
+    //           shareFreqDictName.push(config.dict_name);
+    //         })
+    //         item.update_period_name = shareFreqDictName.toString();
+    //       })
+    //     }
+    //
+    //   })
+    //   $scope.ResItemListShow = true;
+    // }
 
     $scope.addResourceItem = function(type) {
+      console.log($scope.InfoResource.id);
       $scope.shareFreqEmpty = false;
       $scope.Modal = {};
       $scope.itemAdded = false;
@@ -635,26 +631,17 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.ResourceItem.field_standard = '';
       $scope.ResourceItem.shareFreqItemSelection = [];
       $scope.ResourceItem.shareFreqItemObjSelection = [];
+      $scope.ResourceItem.isleaf = 1;
       $scope.parent = {};
       $scope.parent.itemNameExist = false;
       $scope.parent.childParentConflict = false;
 
       $scope.data = {};
-      $scope.data.item_type = $scope.itemTypeList[0];
-      $scope.data.secret_flag = $scope.secretFlagList[0];
+      $scope.ResourceItem.item_type = $scope.itemTypeList[0].id;
+      $scope.ResourceItem.secret_flag = $scope.secretFlagList[0].id;
 
       $scope.ResourceItemConfigList = [];
       var ItemCommitObj = {};
-
-      // $scope.$watch('data.item_type', function(n) {
-      //   $scope.ResourceItem.item_type = n.id;
-      //   $scope.ResourceItem.item_type_name = n.dict_name;
-      // })
-      //
-      // $scope.$watch('data.secret_flag', function(n) {
-      //   $scope.ResourceItem.secret_flag = n.id;
-      //   $scope.ResourceItem.secret_flag_name = n.dict_name;
-      // })
 
       $scope.$watch('data.parent_id', function(n) {
         $scope.parent.childParentConflict = false;
@@ -666,8 +653,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             }
           });
           $scope.ResourceItem.parent_id = n.id;
-        }
-        else{
+        } else {
           $scope.ResourceItem.parent_id = '';
         }
       })
@@ -704,12 +690,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         return item.item_name == '';
       });
       Component.popModal($scope, 'Department.Inventory.Controller.publish', '新增', 'item-add-modal').result.then(function(res) {
-        console.log($scope.ResourceItem);
         $scope.itemAdded = false;
-        console.log(type);
-        // if(type == 2) {// 新增资源时的新增信息项
-        //   $scope.ResourceItemList.push($scope.ResourceItem);
-        // }
 
         var shareFreqDictName = [];
         _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
@@ -719,40 +700,20 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           sys_dict.parent_id = $scope.ResourceItem.parent_id;
           $scope.ResourceItemConfigList.push(sys_dict);
         });
-        //$scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
-        //$scope.ResourceItem.secret_flag = $scope.ResourceItem.secret_flag.id;
-        //$scope.ResourceItem.item_type = $scope.ResourceItem.item_type.id;
         $scope.ResourceItem.resource_id = $scope.InfoResource.id;
         ItemCommitObj.InfoItem = $scope.ResourceItem;
         ItemCommitObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
 
         // 新增信息项
-        Http.addInfoItem(ItemCommitObj).then(function(res){
-          if(200 == res.data.head.status) {
+        Http.addInfoItem(ItemCommitObj).then(function(res) {
+          if (200 == res.data.head.status) {
+            alert('保存成功！');
             // 获取信息项列表
-            Http.getInfoItemList({
-              resource_id: resource_id
-            }).then(function(result) {
-              if (200 == result.data.head.status) {
-                $scope.ResourceItemList = result.data.body;
-                // 拼接信息资源所有信息项的多选项
-                _($scope.ResourceItemList).forEach(function(item) {
-                  var shareFreqDictName = [];
-                  _(item.config).forEach(function(config) {
-                    shareFreqDictName.push(config.dict_name);
-                  })
-                  item.update_period_name = shareFreqDictName.toString();
-                })
-              }
-            })
-          }
-          else{
+            getInfoItemList($scope.InfoResource.id);
+          } else {
             alert('保存失败！');
           }
         })
-        //$scope.ResourceItemList.push($scope.ResourceItem);
-
-
       })
     }
 
@@ -760,188 +721,119 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     $scope.updateItem = function(id) {
       // 根据id查询信息项
       $scope.InfoItem = null;
-      Http.getInfoItemList({
-        resource_id: resource_id,
+      $scope.ResourceItemConfigList = [];
+      Http.getInfoItemById({
         info_item_id: id
       }).then(function(result) {
         if (200 == result.data.head.status) {
           $scope.InfoItem = result.data.body[0];
-          // 拼接信息资源所有信息项的多选项
-          _($scope.InfoItem.config).forEach(function(config) {
-            shareFreqDictName.push(config.dict_name);
-          })
-          $scope.InfoItem.update_period_name = shareFreqDictName.toString();
-        }
-      })
 
-      $scope.Modal = {};
-      $scope.itemUpdated = false;
-      $scope.ResourceItem = angular.copy($scope.InfoItem);
-      $scope.ResourceItem.shareFreqItemSelection = _.map($scope.InfoItem.config, 'id');
-      $scope.ResourceItem.shareFreqItemObjSelection = $scope.InfoItem.config;
-
-      $scope.shareFreqEmpty = false;
-      $scope.parent = {};
-      $scope.parent.itemNameExist = false;
-      $scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
-      var hasEmpty = false;
-      $scope.ResourceItemConfigList = [];
-
-      var ItemUpdateObj = {};
-
-      _($scope.parent.ItemsList).forEach(function(item) {
-        if (item.item_name == '') {
-          hasEmpty = true;
-        }
-      })
-      if(!hasEmpty) {
-        $scope.parent.ItemsList.push({'item_name':''});
-      }
-
-      $scope.data = {};
-
-      // if (InfoItem.id) { // 在修改信息资源中修改
-      //   // 获取该条信息项更新周期
-      //   Http.getItemUpdatePeriod({
-      //     item_id: InfoItem.id
-      //   }).then(function(res) {
-      //     $scope.shareFreqItemObjSelection = res.data.body;
-      //     $scope.shareFreqItemSelection = _.map($scope.shareFreqItemObjSelection, 'id');
-      //   });
-      // } else { // 新增资源时修改
-      //   $scope.shareFreqItemSelection = $scope.ResourceItem.update_period_temp;
-      //   $scope.shareFreqItemObjSelection = $scope.ResourceItem.update_period_obj_temp;
-      // }
-
-      // _($scope.secretFlagList).forEach(function(secretFlag) {
-      //   if (InfoItem.secret_flag == secretFlag.id) {
-      //     $scope.data.secret_flag = secretFlag;
-      //   }
-      // })
-      //
-      // _($scope.itemTypeList).forEach(function(itemType) {
-      //   if (InfoItem.item_type == itemType.id) {
-      //     $scope.data.item_type = angular.copy(itemType);
-      //     console.log($scope.data.item_type);
-      //   }
-      // })
-
-      _($scope.parent.ItemsList).forEach(function(resourceItem) {
-        if (InfoItem.parent_id == resourceItem.item_name) {
-          $scope.data.parent_id = resourceItem;
-          console.log($scope.data.parent_id);
-        }
-      })
-
-      // $scope.$watch('data.item_type', function(n) {
-      //   console.log($scope.data.item_type);
-      //   if (n) {
-      //     $scope.ResourceItem.item_type = n.id;
-      //     $scope.ResourceItem.item_type_name = n.dict_name;
-      //   }
-      // })
-      //
-      // $scope.$watch('data.secret_flag', function(n) {
-      //   console.log(n);
-      //   $scope.ResourceItem.secret_flag = n.id;
-      //   $scope.ResourceItem.secret_flag_name = n.dict_name;
-      // })
-
-      $scope.$watch('data.parent_id', function(n) {
-
-        $scope.parent.childParentConflict = false;
-        if (n) {
-          _($scope.ResourceItemList).forEach(function(item) {
-            if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
-              $scope.parent.childParentConflict = true;
-              return;
-            }
-          });
-          $scope.ResourceItem.parent_id = n.id;
-        } else {
-          $scope.ResourceItem.parent_id = '';
-        }
-        console.log($scope.parent.childParentConflict);
-      })
-
-      $scope.checkItemName = function() {
-        if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+          $scope.Modal = {};
+          $scope.itemUpdated = false;
+          $scope.ResourceItem = angular.copy($scope.InfoItem);
+          $scope.ResourceItem.shareFreqItemSelection = _.map($scope.InfoItem.config, 'id');
+          $scope.ResourceItem.shareFreqItemObjSelection = $scope.InfoItem.config;
+          $scope.shareFreqEmpty = false;
+          $scope.parent = {};
           $scope.parent.itemNameExist = false;
-          _($scope.ResourceItemList).forEach(function(item) {
-            if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
-              $scope.parent.itemNameExist = true;
+          $scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
+          var hasEmpty = false;
+          console.log($scope.InfoItem);
+          console.log($scope.ResourceItem.shareFreqItemSelection);
+          var ItemUpdateObj = {};
+
+          _($scope.parent.ItemsList).forEach(function(item) {
+            if (item.item_name == '') {
+              hasEmpty = true;
             }
           })
-          if (!$scope.parent.itemNameExist) {
-            Http.checkItemName({
-              item_name: $scope.ResourceItem.item_name
-            }).then(function(res) {
-              if (res.data.body[0].isexists == 'true') {
-                $scope.parent.itemNameExist = true;
-              } else {
-                $scope.parent.itemNameExist = false;
-              }
-            })
+          if (!hasEmpty) {
+            $scope.parent.ItemsList.push({
+              'item_name': ''
+            });
           }
 
-        }
+          $scope.data = {};
 
-      }
+          _($scope.parent.ItemsList).forEach(function(resourceItem) {
+            if ($scope.InfoItem.parent_id == resourceItem.item_name) {
+              $scope.data.parent_id = resourceItem;
+            }
+          })
 
-      Component.popModal($scope, 'Department.Inventory.Controller.publish', '修改', 'item-add-modal').result.then(function(res) {
-        $scope.itemUpdated = false;
-        var shareFreqDictName = [];
-        // 删除本条信息项已选中的多选项
-        // _.remove($scope.ResourceItemConfigList, function(config) {
-        //   return config.InfoItemId == $scope.ResourceItem.item_name && config.parent_id == $scope.ResourceItem.parent_id;
-        // });
+          $scope.$watch('data.parent_id', function(n) {
+            $scope.parent.childParentConflict = false;
+            if (n) {
+              _($scope.ResourceItemList).forEach(function(item) {
+                if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+                  $scope.parent.childParentConflict = true;
+                  return;
+                }
+              });
+              $scope.ResourceItem.parent_id = n.id;
+            } else {
+              $scope.ResourceItem.parent_id = '';
+            }
+          })
 
-        // _.remove($scope.ResourceItemList, function(item) {
-        //   return item == InfoItem;
-        // });
-
-        _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
-          var sys_dict = {};
-          sys_dict.InfoItemId = $scope.ResourceItem.item_name;
-          sys_dict.sys_dict_id = item.id;
-          sys_dict.parent_id = $scope.ResourceItem.parent_id;
-          $scope.ResourceItemConfigList.push(sys_dict);
-        });
-        //$scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
-        //$scope.ResourceItem.secret_flag = $scope.ResourceItem.secret_flag.id;
-        //$scope.ResourceItem.item_type = $scope.ResourceItem.item_type.id;
-        $scope.ResourceItem.resource_id = $scope.InfoResource.id;
-        ItemUpdateObj.InfoItem = $scope.ResourceItem;
-        ItemUpdateObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
-        //$scope.ResourceItem.update_period_name = shareFreqDictName.toString();
-        //$scope.ResourceItemList.push($scope.ResourceItem);
-
-        // 修改信息项
-        Http.updateInfoItem(ItemUpdateObj).then(function(res){
-          if(200 == res.data.head.status) {
-            // 获取信息项列表
-            Http.getInfoItemList({
-              resource_id: resource_id
-            }).then(function(result) {
-              if (200 == result.data.head.status) {
-                $scope.ResourceItemList = result.data.body;
-                // 拼接信息资源所有信息项的多选项
-                _($scope.ResourceItemList).forEach(function(item) {
-                  var shareFreqDictName = [];
-                  _(item.config).forEach(function(config) {
-                    shareFreqDictName.push(config.dict_name);
-                  })
-                  item.update_period_name = shareFreqDictName.toString();
+          $scope.checkItemName = function() {
+            if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+              $scope.parent.itemNameExist = false;
+              _($scope.ResourceItemList).forEach(function(item) {
+                if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
+                  $scope.parent.itemNameExist = true;
+                }
+              })
+              if (!$scope.parent.itemNameExist) {
+                Http.checkItemName({
+                  item_name: $scope.ResourceItem.item_name
+                }).then(function(res) {
+                  if (res.data.body[0].isexists == 'true') {
+                    $scope.parent.itemNameExist = true;
+                  } else {
+                    $scope.parent.itemNameExist = false;
+                  }
                 })
               }
-            })
-          }
-          else{
-            alert('保存失败！');
-          }
-        })
 
+            }
+
+          }
+
+          Component.popModal($scope, 'Department.Inventory.Controller.publish', '修改', 'item-add-modal').result.then(function(res) {
+            $scope.itemUpdated = false;
+            var shareFreqDictName = [];
+
+            _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
+              var sys_dict = {};
+              sys_dict.InfoItemId = $scope.ResourceItem.id;
+              sys_dict.sys_dict_id = item.id;
+              sys_dict.parent_id = $scope.ResourceItem.parent_id;
+              $scope.ResourceItemConfigList.push(sys_dict);
+            });
+
+            $scope.ResourceItem.resource_id = $scope.InfoResource.id;
+            ItemUpdateObj.InfoItem = $scope.ResourceItem;
+            ItemUpdateObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
+
+            // 修改信息项
+            Http.updateInfoItem(ItemUpdateObj).then(function(res) {
+              if (200 == res.data.head.status) {
+                alert('保存成功！');
+                // 获取信息项列表
+                getInfoItemList($scope.InfoResource.id);
+              } else {
+                alert('保存失败！');
+              }
+            })
+
+          })
+        } else {
+          alert('查询出错！');
+          return;
+        }
       })
+
     }
 
     // delete info item
@@ -949,26 +841,14 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       var deleteFlag = confirm('确定删除本条信息项？');
       console.log(id);
       if (deleteFlag && id) {
-        Http.deleteInfoItem(id).then(function(result) {
-          if(200 == result.data.head.status) {
+        Http.deleteInfoItem({
+          id: id
+        }).then(function(result) {
+          if (200 == result.data.head.status) {
             alert('删除成功！');
-            Http.getInfoItemList({
-              resource_id: resource_id
-            }).then(function(result) {
-              if (200 == result.data.head.status) {
-                $scope.ResourceItemList = result.data.body;
-                // 拼接信息资源所有信息项的多选项
-                _($scope.ResourceItemList).forEach(function(item) {
-                  var shareFreqDictName = [];
-                  _(item.config).forEach(function(config) {
-                    shareFreqDictName.push(config.dict_name);
-                  })
-                  item.update_period_name = shareFreqDictName.toString();
-                })
-              }
-            })
-          }
-          else {
+            // 获取信息项列表
+            getInfoItemList($scope.InfoResource.id);
+          } else {
             alert('删除失败！');
           }
         })
@@ -1021,7 +901,6 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         $scope.resFormatOtherShow = false;
         $scope.shareFreqSelection = [];
         $scope.InfoResource.secret_flag = '';
-        $scope.InfoResource.share_level = '';
         $scope.InfoResource.meter_unit = "";
         $scope.InfoResource.calculate_method = '';
       } else if (RESOURCE_FORMAT_OTHER == $scope.InfoResource.resource_format) {
@@ -1180,6 +1059,15 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
         }
       )
     }
+
+    function getInfoItemById(id) {
+      return $http.get(
+        path + '/info_item', {
+          params: id
+        }
+      )
+    }
+
     function addInfoItem(params) {
       return $http.post(
         path + '/info_item', {
@@ -1199,10 +1087,11 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
     function deleteInfoItem(id) {
       return $http.delete(
         path + '/info_item', {
-          data: params
+          data: id
         }
       )
     }
+
     function getItemUpdatePeriod(params) {
       return $http.get(
         path + '/item_update_period', {
@@ -1258,7 +1147,8 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
       getItemUpdatePeriod: getItemUpdatePeriod,
       checkResName: checkResName,
       checkItemName: checkItemName,
-      uploadFile: uploadFile
+      uploadFile: uploadFile,
+      getInfoItemById: getInfoItemById
     }
   }
 ]);
