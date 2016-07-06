@@ -438,8 +438,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           console.log(result.data);
           if (200 == result.data.head.status) {
             if (!$scope.resItemAddBtn) {
-              //alert('保存成功！');
-              $state.go("main.department.inventory.uploadExampleData", {ID:result.data.body[0].id}, {
+              alert('保存成功！');
+              $state.go("main.department.inventory", {}, {
                 reload: true
               });
             } else {
@@ -571,7 +571,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           if (200 == result.data.head.status) {
             if (!$scope.resItemUpdateBtn) {
               alert('保存成功！');
-              $state.go("main.department.inventory.uploadExampleData", {ID:$scope.InfoResource.id}, {
+              $state.go("main.department.inventory", {}, {
                 reload: true
               });
             } else {

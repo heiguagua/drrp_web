@@ -100,7 +100,7 @@ DInventoryUpload.factory('Department.InventoryUpload.Service.Http', ['$http', '$
 
     function uploadExamplesFile(file,id) {
       var fd = new FormData();
-      var uploadUrl = path + '/upload/excel?resource_id=' + id;
+      var uploadUrl = path + '/upload/examples?resource_id=' + id;
       fd.append('file', file);
       var promise = $http.post(uploadUrl, fd, {
         transformRequest: angular.identity,
