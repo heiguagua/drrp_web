@@ -296,6 +296,12 @@ input.ng-touched.ng-invalid {
   position: relative;
   width: 100%;
 }
+#login .login-wrap .login-main .login-body .help-info {
+  padding-top: 15px;
+  padding-left: 245px;
+  font-size: 13px;
+  width: 100%;
+}
 #main .logo {
   display: inline-block;
   width: 370px;
@@ -1643,7 +1649,7 @@ input.ng-touched.ng-invalid {
   color: #F07746;
 }
 #data-quota-list .icon-list {
-  font-size: 12px;
+  font-size: 13px;
 }
 #data-quota-list .icon-list i {
   margin-left: 15px;

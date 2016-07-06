@@ -21,6 +21,7 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
       }
     }
     function showType(){
+      $scope.predicate="";
       $scope.flag = 1;
       $scope.filterName = "机构类型";
       Http.menu().then(function(result) {
@@ -36,6 +37,7 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
 		};
 
     $scope.ocupationListOpen = function () {
+      $scope.predicate="";
       $scope.filterName = "机构职能";
       $scope.flag = 2;
       // OcupationMenu Generator
@@ -47,6 +49,7 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
     };
 
     $scope.areaListOpen = function () {
+      $scope.predicate="";
       $scope.filterName = "区域";
       $scope.flag = 3;
       // AreaMenu Generator
@@ -58,7 +61,8 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
     };
 
     $scope.themeListOpen = function () {
-      $scope.filterName = "主题类";
+      $scope.predicate="";
+      $scope.filterName = "主题";
       $scope.flag = 4;
       // themeMenu Generator
       Http.menuTheme().then(function(result) {
