@@ -441,6 +441,7 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       }
       else{
         $scope.resParent.dropListShow = false;
+        $scope.errorMsg = '';
       }
     }
 
@@ -753,6 +754,9 @@ DepartmentReq.service('Department.Requirement.Service.Component', ['$uibModal',
         if (scope.resourceSelection.length == 0 && scope.resourceItemSelection.length == 0 && scope.Modal.ReqResponse.status == 1) {
           scope.errorMsg = '请选择信息资源！';
           isValid = false;
+        }
+        else {
+          scope.errorMsg = '';
         }
         if (isValid) {
           modalInstanceConfirm.close(scope.Modal);
