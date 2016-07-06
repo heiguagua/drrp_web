@@ -147,6 +147,7 @@
           <!-- <div style='display:inline-block' isteven-multi-select input-model="depInfoResourceList" output-model="confirmParent.outputResource" button-label="resource_name" item-label="resource_name" tick-property="ticked" selection-mode="single" max-height="250px" helper-elements="filter"></div> -->
           <a class='btn btn-primary' ng-click='togglResourceList()'>选择信息资源</a>
           <span class='help-block' style='display:inline-block'>{{errorMsg}}</span>
+          <span class='checked-resource' title='{{checkedResourceName}}'>{{checkedResourceName}}</span>
           <p class='help-info'>根据需求选择对应的资源信息</p>
           <div class='infoListDropdown' ng-class="{true: 'ng-show', false: 'ng-hide'}[resParent.dropListShow]" >
             <ul class="pager">
@@ -178,7 +179,7 @@
                         <a ng-click='closeItems($index)' ng-class="{true: 'ng-show', false: 'ng-hide'}[closeShow && ($index == showIndex)]">
                           <i class='fa fa-angle-double-up'></i>收起</a>
                     </span>
-                    <span ng-if='depInfo.resource_format_name != "数据库类"'><input type='checkbox' ng-checked="resourceSelection.indexOf(depInfo.id) > -1" ng-click="toggleResourceSelection(depInfo.id)"  /></span>
+                    <span ng-if='depInfo.resource_format_name != "数据库类"'><input type='checkbox' ng-checked="resourceSelection.indexOf(depInfo.id) > -1" ng-click="toggleResourceSelection(depInfo.id, depInfo.resource_name)"  /></span>
                   </td>
                   <td class='text-center' title='{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
                   <td title='{{depInfo.resource_name}}'>{{depInfo.resource_name}}</td>
@@ -203,7 +204,7 @@
                           </thead>
                           <tbody>
                             <tr ng-repeat='rescoureItem in InfoItems | orderBy:"-create_time" '>
-                              <td><input type='checkbox' value='{{rescoureItem.id}}' ng-checked="resourceItemSelection.indexOf(rescoureItem.id) > -1" ng-click="toggleResItemSelection(depInfo.id, rescoureItem)" /></td>
+                              <td><input type='checkbox' value='{{rescoureItem.id}}' ng-checked="resourceItemSelection.indexOf(rescoureItem.id) > -1" ng-click="toggleResItemSelection(depInfo.id, rescoureItem, depInfo.resource_name)" /></td>
                               <td class='text-center'>{{$index+1}}</td>
                               <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
                               <td title='{{rescoureItem.item_type_name}}'>{{rescoureItem.item_type_name}}</td>

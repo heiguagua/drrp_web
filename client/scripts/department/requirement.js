@@ -281,6 +281,8 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
     _httpModalParams.limit = 10;
     _httpModalParams.skip = 0;
 
+    $scope.checkedResourceName = '';
+
     $scope.Paging.pageChanged = function() {
       _httpConfirmParams.skip = ($scope.Paging.currentPage - 1) * _httpConfirmParams.limit;
       getDeptRequirementConfirmList(_httpConfirmParams);
@@ -406,11 +408,12 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
 
     // 选中信息资源
     $scope.resourceSelection = [];
-    $scope.toggleResourceSelection = function(resourceId) {
+    $scope.toggleResourceSelection = function(resourceId, resource_name) {
       var idx = $scope.resourceSelection.indexOf(resourceId);
       // is currently selected
       if (idx > -1) {
         $scope.resourceSelection = [];
+        $scope.checkedResourceName = '';
       }
 
       // is newly selected
@@ -418,14 +421,14 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
         $scope.resourceSelection = resourceId;
         $scope.resource_id = resourceId;
         $scope.resourceItemSelection = []; //清空信息项
-
+        $scope.checkedResourceName = '已选中资源 "' + resource_name + '"';
       }
       console.log($scope.resourceItemSelection);
     };
 
     // 选中信息项checkbox事件
     $scope.resourceItemSelection = [];
-    $scope.toggleResItemSelection = function(resourceId, item) {
+    $scope.toggleResItemSelection = function(resourceId, item, resource_name) {
       if($scope.resource_id != resourceId) {
         $scope.resourceItemSelection = [];
         $scope.resource_id = resourceId;
@@ -434,11 +437,21 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       // is currently selected
       if (idx > -1) {
         $scope.resourceItemSelection.splice(idx, 1);
+        var selLength = $scope.resourceItemSelection.length;
+        console.log(selLength);
+        if(selLength == 0) {
+          $scope.checkedResourceName = '';
+        }
+        else {
+          $scope.checkedResourceName = '已选中资源 "' + resource_name + '"下的' + selLength +'条信息项';
+        }
       }
 
       // is newly selected
       else {
         $scope.resourceItemSelection.push(item.id);
+        var selLength = $scope.resourceItemSelection.length;
+        $scope.checkedResourceName = '已选中资源 "' + resource_name + '"下的' + selLength +'条信息项';
         $scope.resourceSelection = [];// 清空信息资源选中项
       }
       console.log($scope.resourceItemSelection);

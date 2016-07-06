@@ -1244,6 +1244,14 @@ input.ng-touched.ng-invalid {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.confirm-req-modal .checked-resource {
+  color: #5bc0de;
+  width: 60%;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 #department-requirement-detail {
   margin-bottom: 50px;
   font-size: 13px;
