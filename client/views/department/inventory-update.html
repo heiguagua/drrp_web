@@ -393,7 +393,8 @@
         <label for="standard" class="col-sm-2 control-label">
           标准规范:</label>
         <div class="col-sm-10">
-          <input type="text" name='field_standard' class="form-control" ng-model='ResourceItem.field_standard'>
+          <input type="text" name='field_standard' class="form-control" ng-model='ResourceItem.field_standard' ng-maxlength='256'>
+          <p ng-show="addItemForm.field_standard.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
           <span class='help-info'>
             信息项参考的国家或者行业、机构的标准规范
           </span>
