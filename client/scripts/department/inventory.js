@@ -425,7 +425,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             // $state.go("main.department.inventory", {}, {
             //   reload: true
             // });
-
+            $scope.InfoResource.id = result.data.body[0].id;
           } else {
             alert('保存失败！');
           }
@@ -722,9 +722,10 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         //$scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
         //$scope.ResourceItem.secret_flag = $scope.ResourceItem.secret_flag.id;
         //$scope.ResourceItem.item_type = $scope.ResourceItem.item_type.id;
+        $scope.ResourceItem.resource_id = $scope.InfoResource.id;
         ItemCommitObj.InfoItem = $scope.ResourceItem;
         ItemCommitObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
-        ItemCommitObj.inforesourceid = $scope.InfoResource.id;
+
         // 新增信息项
         Http.addInfoItem(ItemCommitObj).then(function(res){
           if(200 == res.data.head.status) {
@@ -909,9 +910,9 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         //$scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
         //$scope.ResourceItem.secret_flag = $scope.ResourceItem.secret_flag.id;
         //$scope.ResourceItem.item_type = $scope.ResourceItem.item_type.id;
+        $scope.ResourceItem.resource_id = $scope.InfoResource.id;
         ItemUpdateObj.InfoItem = $scope.ResourceItem;
         ItemUpdateObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
-        ItemCommitObj.inforesourceid = $scope.InfoResource.id;
         //$scope.ResourceItem.update_period_name = shareFreqDictName.toString();
         //$scope.ResourceItemList.push($scope.ResourceItem);
 
