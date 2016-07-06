@@ -209,7 +209,11 @@ app.run(['$rootScope', function($rootScope){
 		if(toState.name!=='welcome'){
 		  if(toState.name!=='login'){
 			if(!sessionStorage.token){
+<<<<<<< Updated upstream
 			  window.location.href='/#/login';
+=======
+			  window.location.href='/build';
+>>>>>>> Stashed changes
 			};
 		  };
 		}
@@ -222,7 +226,10 @@ var Config = angular.module('Config', []);
 
 Config.constant('API', {
   path: 'http://localhost:8080/drrp/api' //发布
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 });
 
 'use strict';
