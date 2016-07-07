@@ -59,13 +59,113 @@ Dashboard.controller('Dashboard.Controller.Main', ['$cookies', '$scope', 'Dashbo
       });
     }
 
-    Http.getDeptInfoResourceList().then(function(result) {
-      console.log(result);
-      $scope.depInfoResourceList = result.data.body;
+    //点击未确认按钮
 
-      //  $scope.Paging.totalItems = data.head.total;
+    function getDeptInfoResourceList() {
+      Http.getDeptInfoResourceList(_httpModalParams).then(function(result) {
+        console.log(result);
+        if (200 == result.data.head.status) {
+          $scope.depInfoResourceList = result.data.body[0].results;
+          $scope.ModalPaging.totalItems = result.data.body[0].count;
+        }
+        else{
+          $scope.depInfoResourceList = [];
+        }
+      });
+    }
+    // init
+    // 模态框信息资源列表分页
+    $scope.ModalPaging = {};
+    $scope.ModalPaging.currentPage = 1;
+    $scope.ModalPaging.maxSize = 5;
+    $scope.ModalPaging.itemsPerPage = 10;
+
+    $scope.resParent = {};
+    $scope.resParent.dropListShow = false;
+
+    var _httpModalParams = {};
+    _httpModalParams.limit = 10;
+    _httpModalParams.skip = 0;
+    getDeptInfoResourceList();
+    // 模态框中信息资源分页
+    $scope.ModalPaging.pageChanged = function() {
+      _httpModalParams.skip = ($scope.ModalPaging.currentPage - 1) * _httpModalParams.limit;
+      Http.getDeptInfoResourceList(_httpModalParams).then(function(result) {
+        console.log(result);
+        $scope.depInfoResourceList = result.data.body[0].results;
+        $scope.ModalPaging.totalItems = result.data.body[0].count;
+      });
+    }
+
+    Http.getSystemDictByCatagory({
+      'dict_category': 11
+    }).then(function(result) {
+      $scope.resourceFormatList = result.data.body;
     });
 
+    // 选中信息资源
+    $scope.resourceSelection = [];
+    $scope.toggleResourceSelection = function(resourceId, resource_name) {
+      var idx = $scope.resourceSelection.indexOf(resourceId);
+      // is currently selected
+      if (idx > -1) {
+        $scope.resourceSelection = [];
+        $scope.checkedResourceName = '';
+      }
+
+      // is newly selected
+      else {
+        $scope.resourceSelection = resourceId;
+        $scope.resource_id = resourceId;
+        $scope.resourceItemSelection = []; //清空信息项
+        $scope.checkedResourceName = '已选中资源 "' + resource_name + '"';
+      }
+      console.log($scope.resourceItemSelection);
+    };
+
+    // 选中信息项checkbox事件
+    $scope.resourceItemSelection = [];
+    $scope.toggleResItemSelection = function(resourceId, item, resource_name) {
+      if($scope.resource_id != resourceId) {
+        $scope.resourceItemSelection = [];
+        $scope.resource_id = resourceId;
+      }
+      var idx = $scope.resourceItemSelection.indexOf(item.id);
+      // is currently selected
+      if (idx > -1) {
+        $scope.resourceItemSelection.splice(idx, 1);
+        var selLength = $scope.resourceItemSelection.length;
+        console.log(selLength);
+        if(selLength == 0) {
+          $scope.checkedResourceName = '';
+        }
+        else {
+          $scope.checkedResourceName = '已选中资源 "' + resource_name + '"下的' + selLength +'条信息项';
+        }
+      }
+
+      // is newly selected
+      else {
+        $scope.resourceItemSelection.push(item.id);
+        var selLength = $scope.resourceItemSelection.length;
+        $scope.checkedResourceName = '已选中资源 "' + resource_name + '"下的' + selLength +'条信息项';
+        $scope.resourceSelection = [];// 清空信息资源选中项
+      }
+      console.log($scope.resourceItemSelection);
+    };
+
+    // 保存选中的信息资源或信息项
+    $scope.saveChooseResource = function() {
+      console.log($scope.resourceItemSelection);
+      console.log($scope.resourceSelection);
+      if($scope.resourceItemSelection.length == 0 && $scope.resourceSelection.length == 0) {
+        $scope.errorMsg = '您未选中任何资源。';
+      }
+      else{
+        $scope.resParent.dropListShow = false;
+        $scope.errorMsg = '';
+      }
+    }
 
     // 点击展开
     $scope.openItems = function(index, resourceId) {
@@ -95,11 +195,28 @@ Dashboard.controller('Dashboard.Controller.Main', ['$cookies', '$scope', 'Dashbo
       })
     }
 
+    // 点击收起
+    $scope.closeItems = function(index) {
+      $scope.collapseIndex = -1;
+      $scope.closeShow = false;
+      $scope.InfoItems = [];
+    }
+
+    // 隐藏或显示资源列表
+    $scope.togglResourceList = function() {
+      if($scope.resParent.dropListShow) {
+        $scope.resParent.dropListShow = false;
+      }
+      else {
+        $scope.resParent.dropListShow = true;
+      }
+    }
+
     //confirm
-    $scope.RequirementConfirm = function(requirement) {
+    $scope.RequirementConfirm = function(item) {
       // get requirement detail
       $scope.Modal ={};
-      $scope.Modal.ReqDetail = requirement;
+      $scope.Modal.ReqDetail = item;
       // 初始化选项状态
       $scope.Modal.ReqResponse = {};
       $scope.resourceItemSelection = [];
@@ -259,6 +376,14 @@ Dashboard.factory('Dashboard.Service.Http', ['$http', 'API',
         }
       )
     }
+    function getSystemDictByCatagory(params) {
+      return $http.get(
+        path + '/sys_dict', {
+          params: params
+        }
+      )
+    };
+
 
     return {
       updateRequirement: updateRequirement,
@@ -271,7 +396,8 @@ Dashboard.factory('Dashboard.Service.Http', ['$http', 'API',
       getUserDep: getUserDep,
       getDataQuota: getDataQuota,
       getDeptInfoResourceList: getDeptInfoResourceList,
-      getInfoItemList: getInfoItemList
+      getInfoItemList: getInfoItemList,
+      getSystemDictByCatagory: getSystemDictByCatagory
     };
 
   }
@@ -689,9 +815,12 @@ Dashboard.service('Dashboard.Requirement.Service.Component', ['$uibModal',
       });
       scope.Modal.confirm = function(isValid) {
         console.log(scope);
-        if(!scope.confirmParent.outputResource[0] && scope.Modal.ReqResponse.status == 1) {
+        if (scope.resourceSelection.length == 0 && scope.resourceItemSelection.length == 0 && scope.Modal.ReqResponse.status == 1) {
           scope.errorMsg = '请选择信息资源！';
           isValid = false;
+        }
+        else {
+          scope.errorMsg = '';
         }
         if (isValid) {
           modalInstanceConfirm.close(scope.Modal);
