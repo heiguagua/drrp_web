@@ -144,10 +144,20 @@ DataQuota.directive('wiservMainWrapper', [
     return {
       restrict: 'AE',
       link: function(scope, element, attrs) {
-        element.find('.toggler').on('click', function() {
-          element.find('.sidebar1').toggleClass("sidebar1-collapse");
-          element.find('.form-control').toggleClass("form-control-collapse");
-          element.find('.content').toggleClass("content-collapse");
+        scope.currentTab = 1;
+        element.find('.toggler').on('click', function(ev) {
+          console.log(scope.flag);
+          if( scope.currentTab == scope.flag) {
+            if((!element.hasClass("content-collapse"))){
+              element.find('.searchTree').toggleClass("searchTree-collapse");
+              element.find('.content').toggleClass("content-collapse");
+            }
+          }
+          else {
+            element.find('.searchTree').removeClass("searchTree-collapse").addClass("searchTree-collapse");
+            element.find('.content').removeClass("content-collapse");
+          }
+          scope.currentTab = scope.flag;
         });
       }
     }

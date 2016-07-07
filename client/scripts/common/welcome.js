@@ -1,8 +1,8 @@
 'use strict';
 var Welcome = angular.module('Welcome', ['ui.router']);
 /** Main Controller */
-Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Service.Http', '$stateParams',
-  function($scope, $state, Http, StateParams) {
+Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Service.Http', '$stateParams', '$document',
+  function($scope, $state, Http, StateParams, $document) {
     window.scrollTo(0,0);
     // Menu configration
     $scope.treeOptions = {
@@ -67,6 +67,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
         });
 
       }else if (type==2) {
+        // $document.find('.sidebar2').addClass('sidebar2-collapse');
         $scope.filterName = "机构职能";
         $scope.flag = 2;
         // OcupationMenu Generator
@@ -382,10 +383,20 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       return {
         restrict: 'AE',
         link: function(scope, element, attrs) {
-          element.find('.toggler').on('click', function() {
-            element.find('.sidebar1').toggleClass("sidebar1-collapse");
-            element.find('.searchTree').toggleClass("searchTree-collapse");
-            element.find('.content').toggleClass("content-collapse");
+          scope.currentTab = 1;
+          element.find('.toggler').on('click', function(ev) {
+            console.log(scope.flag);
+            if( scope.currentTab == scope.flag) {
+              if((!element.hasClass("content-collapse"))){
+                element.find('.searchTree').toggleClass("searchTree-collapse");
+                element.find('.content').toggleClass("content-collapse");
+              }
+            }
+            else {
+              element.find('.searchTree').removeClass("searchTree-collapse").addClass("searchTree-collapse");
+              element.find('.content').removeClass("content-collapse");
+            }
+            scope.currentTab = scope.flag;
           });
         }
       }
