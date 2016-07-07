@@ -345,7 +345,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       center: ['69%', '55%'],    // 默认全局居中
                       z: 3,
                       min: 0,
-                      max: ((220-summary.total_resource)<50)? (summary.total_resource+50) : 220,
+                      max: ((220-summary.total_resource)<50)? (Math.ceil(summary.total_resource/11)*11+55) : 220,
                       splitNumber: 11,
                       radius: '90%',
                       axisLine: {            // 坐标轴线
@@ -369,7 +369,12 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                           width:3
                       },
                       title : {
-                        offsetCenter: [0, '-10%'],       // x, y，单位px
+                        offsetCenter: [0, '-10%'],
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                          fontWeight: 'bolder',
+                          fontSize: 15,
+                          fontStyle: 'italic'
+                        }      // x, y，单位px       // x, y，单位px
                       },
                       detail : {
                           textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
@@ -378,7 +383,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       },
                       data:[{
                         value: (summary) ? (summary.total_resource) : 0 ,
-                        name: '/条'
+                        name: '/条（资源总数）'
                     }]
                   },
                   {
@@ -387,7 +392,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       center: ['23%', '65%'],    // 默认全局居中
                       radius: '65%',
                       min:0,
-                      max:((70-summary.month_increment_resource)<10)? (summary.month_increment_resource+10) : 70,
+                      max:((70-summary.month_increment_resource)<10)? (Math.ceil(summary.month_increment_resource/7)*7+14) : 70,
                       endAngle:20,
                       splitNumber:7,
                       axisLine: {            // 坐标轴线
@@ -411,13 +416,18 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                           width:3
                       },
                       title: {
-                          offsetCenter: [0, '-10%'],       // x, y，单位px
+                          offsetCenter: [0, '-1%'],
+                          textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bolder',
+                            fontSize: 10,
+                            fontStyle: 'italic'
+                         }      // x, y，单位px
                       },
                       detail: {
                       },
                       data:[{
                         value:(summary) ? (summary.month_increment_resource) : 0,
-                        name: '/条'
+                        name: '/条(本月新增)'
                       }]
                   }
 
@@ -506,7 +516,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       center: ['69%', '55%'],    // 默认全局居中
                       z: 3,
                       min: 0,
-                      max: ((220-summary.requiement_number)<50)? (summary.requiement_number+50) : 220,
+                      max: ((220-summary.requiement_number)<50)? (Math.ceil(summary.requiement_number/11)*11+55) : 220,
                       splitNumber: 11,
                       radius: '90%',
                       axisLine: {            // 坐标轴线
@@ -530,7 +540,12 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                           width:3
                       },
                       title : {
-                        offsetCenter: [0, '-10%'],       // x, y，单位px
+                        offsetCenter: [0, '-10%'],
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                          fontWeight: 'bolder',
+                          fontSize: 15,
+                          fontStyle: 'italic'
+                        }      // x, y，单位px       // x, y，单位px
                       },
                       detail : {
                           textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
@@ -539,7 +554,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       },
                       data:[{
                         value: (summary) ? (summary.requiement_number) : 0,
-                        name: '/条'
+                        name: '/条（需求总数）'
                     }]
                   },
                   {
@@ -548,7 +563,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       center: ['23%', '65%'],    // 默认全局居中
                       radius: '65%',
                       min:0,
-                      max:((70-summary.requiement_number_inc)<10)? (summary.requiement_number_inc+10) : 70,
+                      max:((70-summary.requiement_number_inc)<10)? (Math.ceil(summary.requiement_number_inc/7)*7+14) : 70,
                       endAngle:20,
                       splitNumber:7,
                       axisLine: {            // 坐标轴线
@@ -572,13 +587,18 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                           width:3
                       },
                       title: {
-                          offsetCenter: [0, '-10%'],       // x, y，单位px
+                          offsetCenter: [0, '-1%'],
+                          textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bolder',
+                            fontSize: 10,
+                            fontStyle: 'italic'
+                         }      // x, y，单位px
                       },
                       detail: {
                       },
                       data:[{
                         value:(summary) ? (summary.requiement_number_inc) : 0,
-                        name: '/条'
+                        name: '/条(本月新增)'
                       }]
                   }
 

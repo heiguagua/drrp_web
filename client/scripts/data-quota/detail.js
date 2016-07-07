@@ -92,19 +92,20 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
             var deptotal = _.size(dataquotaRequirement.depNames) ;
             var resourceName = dataquotaRequirement.resourceName;
             var depNames = dataquotaRequirement.depNames;
-            var obj = {name: resourceName, x: 500, y:100 };
-            var obj1 = {source: resourceName,target: "" };
             var data1 = [{name: resourceName, x: 500, y:100 }];
             var links1 = [{source: resourceName,target: "" }];
             if(deptotal){
                _(depNames).forEach(function (value,key){
                  console.log(key+":"+value);
+                 var dep_obj = {};
                  obj.name = value;
                  obj.x = 600;
                  obj.y = 100 + (key+1)*20;
                  data1.push(obj);
-                 obj1.target = value ;
-                 links1.push(obj1);
+                 var target_obj = {};
+                 target_obj.target = value ;
+                 target_obj.source = resourceName;
+                 links1.push(target_obj);
                });
                console.log(data1);
                console.log(links1);
@@ -112,7 +113,7 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
                title: {
-                 text: "对应的需求部门数为:"+deptotal+"个"
+                 text: "对应需求部门数:"+deptotal+"个"
                },
                tooltip: {},
                animationDurationUpdate: 1500,

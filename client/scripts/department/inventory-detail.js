@@ -141,7 +141,7 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
                title: {
-                 text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
+                 text: "对应的需求部门数:"+deptotal+"个"
                },
                tooltip: {},
                animationDurationUpdate: 1500,
