@@ -1,6 +1,6 @@
 <!-- UI Router -->
-
-<div id='department-audit'>
+<div id='ui-view-department-audit' ui-view>
+<div id='department-audit' >
   <div class='indicator-order'>
     <div class='pull-left'>
       <p class='font-18'>数据查看审核</p>
@@ -56,14 +56,15 @@
 
       <div class='scroll' cg-busy="{promise:auditPromise,message:'加载中',backdrop:backdrop,delay:delay,minDuration:minDuration}">
         <div class=''>
-          <div class=''>
+          <div class='' style='width:1200px'>
             <!-- Table -->
             <table class='table table-hover table-striped table-bordered'>
               <thead class='text-center'>
                 <tr>
-                  <th width='110px'>操作</th>
-                  <th width='40px'>标识</th>
+                  <th width='60px'>操作</th>
                   <th width='40px'>序号</th>
+                  <th width='70px' title='申请部门'>申请部门</th>
+                  <th width='110px' title='申请时间'>申请时间</th>
                   <th width='90px' title='信息资源名称'>信息资源名称</th>
                   <th width='90px' title='信息资源摘要'>信息资源摘要</th>
                   <th width='90px' title='信息资源分类'>信息资源分类</th>
@@ -81,7 +82,7 @@
                       <span>
                         <i class='fa fa-question-circle'></i>
                       </span>
-                      <a ui-sref='main.department.audit.info({AUDITID:DeptAudit.applyid,DATAQUOTAID:DeptAudit.data_quota_id,APPLYDEPNAME:DeptAudit.applydepname,APPLYTIME:DeptAudit.apply_time})'>审核</a>
+                      <a ui-sref='main.department.auditinfo({AUDITID:DeptAudit.audit_id,RESOURCEID:DeptAudit.resource_id,APPLYDEP:DeptAudit.applydepname,APPLYTIME:DeptAudit.apply_time})'>审核</a>
                     </div>
                     <div ng-if='DeptAudit.audit_status == 1'>
                       <span>
@@ -94,31 +95,11 @@
                       </span>
                     </div>
                   </td>
-                  <td>
-                    <div ng-if='DeptAudit.share_level_name =="全省开放" '>
-                      <span>
-                        <i class='fa fa-eye'></i>
-                      </span>
-                    </div>
-                    <div ng-if='DeptAudit.share_level_name =="省政务云平台开放" '>
-                      <span>
-                        <i class='fa fa-desktop'></i>
-                      </span>
-                    </div>
-                    <div ng-if='DeptAudit.share_level_name =="授权开放" '>
-                      <span>
-                        <i class='fa fa-lock'></i>
-                      </span>
-                    </div>
-                    <div ng-if='DeptAudit.share_level_name =="暂不开放" '>
-                      <span>
-                        <i class='fa fa-warning'></i>
-                      </span>
-                    </div>
-                  </td>
                   <td class='orderBy'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
+                  <td title='{{DeptAudit.applydepname}}'>{{DeptAudit.applydepname}}</td>
+                  <td title='{{DeptAudit.apply_time | date:"yyyy-MM-dd HH:mm:ss"}}'>{{DeptAudit.apply_time | date:"yyyy-MM-dd HH:mm:ss"}}</td>
                   <td title='{{DeptAudit.resource_name}}'>
-                    <a ui-sref='main.department.detail({item:DeptAudit.id})'>
+                    <a ui-sref='main.department.auditdetail({AUDITSTATUS:DeptAudit.audit_status,RESOURCEID:DeptAudit.resource_id,APPLYDEP:DeptAudit.applydepname,APPLYTIME:DeptAudit.apply_time,OPINION:DeptAudit.audit_opinion})'>
                       <pre>{{DeptAudit.resource_name}}</pre>
                     </a>
                   </td>
@@ -146,4 +127,5 @@
     </div>
   </div>
 
+</div>
 </div>

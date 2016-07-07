@@ -22,7 +22,10 @@
               </div>
               <div class="row">
                 <label for="" class="col-sm-3 text-right control-label">审核状态：</label>
-                <div class="col-sm-9">{{InfoResourceDetail.audit_status}}
+                <div class="col-sm-9">
+                  <span ng-if='InfoResourceDetail.audit_status == "0"'><i class='fa fa-question-circle' style='color:#f0ad4e'></i>&nbsp;未审核</span>
+                  <span ng-if='InfoResourceDetail.audit_status == "1"'><i class='fa fa-check-circle' style='color:#5cb85c'></i>&nbsp;通过</span>
+                  <span ng-if='InfoResourceDetail.audit_status == "2"'><i class='fa fa-times-circle-o' style='color:#d9534f'></i>&nbsp;不通过</span></dd>
                 </div>
               </div>
               <div class="row">
@@ -157,7 +160,7 @@
             </div>
             <div role="tabpanel" class="tab-pane" ng-class="{true: 'active', false: 'inactive'}[auditInfo.show]">
               <!-- Table -->
-              <table class='table table-hover table-striped '>
+              <table class='table table-hover table-striped table-bordered'>
                 <thead>
                   <tr>
                     <th width='40px'>序号</th>

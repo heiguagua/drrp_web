@@ -139,7 +139,6 @@
                 <table class='table table-hover table-striped table-bordered'>
                   <thead class='text-center'>
                     <tr>
-                      <th width='110px' >操作</th>
                       <th width='40px' >标识</th>
                       <th width='40px' >序号</th>
                       <th width='90px' title='信息资源名称'>信息资源名称</th>
@@ -153,12 +152,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr ng-repeat='InfoResource in infoResourceList | orderBy:"create_time":true' >
-                      <td>
-                        <a class='delete btn btn-danger btn-xs' ng-click='deleteInfoResource(InfoResource.id)' ><i class='fa fa-trash'></i>&nbsp;删除</a>
-                        <a class='edit btn btn-success btn-xs' ui-sref='main.department.inventory.update({item:InfoResource.id})'><i class='fa fa-pencil'></i>&nbsp;修改</a>
-                    </td>
-                      <td>
+                    <tr ng-repeat='InfoResource in depShareList | orderBy:"create_time":true' >
+                      <td class='text-center'>
                         <div ng-if='InfoResource.share_level_name =="全省开放" '>
                           <span>
                             <i class='fa fa-eye'></i>
