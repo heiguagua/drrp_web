@@ -105,8 +105,8 @@ input.ng-touched.ng-invalid {
 }
 #data-quota-main-unlogin .left .toggler {
   font-size: 15px;
-  border-radius: 1px;
-  box-shadow: 10px 10px 5px #888888;
+  border-radius: 10px;
+  box-shadow: 3px 3px 3px #E8E8E8 inset;
 }
 #data-quota-main-unlogin .left .panel-heading:HOVER {
   color: #337AB9;
@@ -1533,8 +1533,8 @@ input.ng-touched.ng-invalid {
 }
 #data-quota-main .left .toggler {
   font-size: 15px;
-  border-radius: 1px;
-  box-shadow: 10px 10px 5px #888888;
+  border-radius: 10px;
+  box-shadow: 3px 3px 3px 	#E8E8E8 inset;
 }
 #data-quota-main .left .panel-heading:HOVER {
   color: #337AB9;

@@ -371,7 +371,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       title : {
                         offsetCenter: [0, '-10%'],
                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                          fontWeight: 'bolder',
+                          fontWeight: '',
                           fontSize: 15,
                           fontStyle: 'italic'
                         }      // x, y，单位px       // x, y，单位px
@@ -418,7 +418,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       title: {
                           offsetCenter: [0, '-1%'],
                           textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                            fontWeight: 'bolder',
+                            fontWeight: '',
                             fontSize: 10,
                             fontStyle: 'italic'
                          }      // x, y，单位px
@@ -542,7 +542,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       title : {
                         offsetCenter: [0, '-10%'],
                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                          fontWeight: 'bolder',
+                          fontWeight: '',
                           fontSize: 15,
                           fontStyle: 'italic'
                         }      // x, y，单位px       // x, y，单位px
@@ -589,7 +589,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       title: {
                           offsetCenter: [0, '-1%'],
                           textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                            fontWeight: 'bolder',
+                            fontWeight: '',
                             fontSize: 10,
                             fontStyle: 'italic'
                          }      // x, y，单位px
