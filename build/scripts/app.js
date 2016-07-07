@@ -45,7 +45,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
               if( response.data && typeof response.data==='object'){
                 if(result.data.head.status===300){
                   sessionStorage.message = '登录超时，请重新登录！';
-                  window.location.href='/build';
+                  window.location.href='/#/login';
                 };
               };
             });
@@ -61,7 +61,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
     $urlRouterProvider.otherwise('/welcome');
     $stateProvider
       .state('welcome', {
-        url: '/welcome?resource_dep_id?dep_name',
+        url: '/welcome?type?titleName',
         templateUrl: 'views/common/welcome.html',
         controller: 'Welcome.Controller.Main'
       })
@@ -101,12 +101,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         controller: 'Admin.User.Controller.Main'
       })
       .state('main.data-quota', {
-        url: '/data-quota',
+        url: '/data-quota/:type/:titleName',
         templateUrl: 'views/data-quota/main.html',
         controller: 'DataQuota.Controller.Main'
       })
       .state('main.data-quota.list', {
-        url: '/list/:resource_dep_id/:dep_name',
+        url: '/list/:resource_dep_id/:dep_name/:type/:titleName',
         templateUrl: 'views/data-quota/list0.html',
         controller: 'DataQuotaList.Controller.Main'
       })
@@ -148,6 +148,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         templateUrl: 'views/department/inventory-upload.html',
         controller: 'Department.InventoryUpload.Controller'
       })
+      .state('main.department.inventory.uploadExampleData', {
+        url: '/uploadExamples?ID',
+        cache:'false',
+        templateUrl: 'views/department/inventory-upload-examples.html',
+        controller: 'Department.InventoryUploadExamples.Controller'
+      })
       .state('main.department.detail', {
         url: '/detail/:item',
         cache:'false',
@@ -178,7 +184,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         url: '/publish',
         templateUrl: 'views/department/requirement-publish.html'
       })
-      .state('main.department.requirement.detail', {
+      .state('main.department.requirementConfirm.detail', {
         url: '/detail?ID',
         templateUrl: 'views/department/requirement-detail.html',
         controller: 'Department.Requirement.Controller.detail'
@@ -190,7 +196,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         controller: 'Department.Audit.Controller.Main'
       })
       .state('main.department.auditinfo', {
-        url: '/auditinfo/:AUDITID/:RESOURCEID/:APPLYTIME/:APPLYDEP',
+        url: '/auditinfo/:AUDITID/:RESOURCEID/:APPLYDEP/:APPLYTIME',
         templateUrl: 'views/department/audit-info.html',
         controller: 'Department.Audit.Controller.info'
       })
@@ -209,11 +215,7 @@ app.run(['$rootScope', function($rootScope){
 		if(toState.name!=='welcome'){
 		  if(toState.name!=='login'){
 			if(!sessionStorage.token){
-<<<<<<< Updated upstream
 			  window.location.href='/#/login';
-=======
-			  window.location.href='/build';
->>>>>>> Stashed changes
 			};
 		  };
 		}
@@ -225,11 +227,8 @@ app.run(['$rootScope', function($rootScope){
 var Config = angular.module('Config', []);
 
 Config.constant('API', {
-  path: 'http://localhost:8080/drrp/api' //发布
-<<<<<<< Updated upstream
+  path: 'http://localhost:8080/drrp/api'
 
-=======
->>>>>>> Stashed changes
 });
 
 'use strict';
@@ -1211,34 +1210,87 @@ Dashboard.controller('Dashboard.Controller.Main', ['$cookies', '$scope', 'Dashbo
       //  $scope.Paging.totalItems = data.head.total;
     });
 
+
+    // 点击展开
+    $scope.openItems = function(index, resourceId) {
+      $scope.collapseIndex = index;
+      $scope.closeShow = true;
+      $scope.showIndex = index;
+      $scope.InfoItems = [];
+      Http.getInfoItemList({
+        resource_id: resourceId
+      }).then(function(result) {
+        if (result.data.body.length == 0) {
+          $scope.InfoItemShow = false;
+        } else {
+          $scope.InfoItemShow = true;
+          $scope.InfoItems = result.data.body;
+
+          _($scope.InfoItems).forEach(function(item) {
+            var shareFreqDictName = [];
+            _(item.config).forEach(function(config) {
+              shareFreqDictName.push(config.dict_name);
+            })
+            item.update_period_name = shareFreqDictName.toString();
+          })
+        }
+
+
+      })
+    }
+
     //confirm
     $scope.RequirementConfirm = function(requirement) {
       // get requirement detail
-      $scope.Modal = {};
-      $scope.Modal.Audetail = requirement;
+      $scope.Modal ={};
+      $scope.Modal.ReqDetail = requirement;
+      // 初始化选项状态
       $scope.Modal.ReqResponse = {};
-      $scope.confirmParent = {};
-      if($scope.depInfoResourceList.length == 0) {
+      $scope.resourceItemSelection = [];
+      $scope.resourceSelection = [];
+      $scope.resource_id = null;
+      $scope.closeShow = false;
+      $scope.showIndex = -1;
+      $scope.collapseIndex = -1;
+
+      if ($scope.depInfoResourceList.length == 0) {
         $scope.Modal.ReqResponse.resource_id = '';
         $scope.errorMsg = '本部门还未发布任何信息资源';
         $scope.dataQuotaIdNull = true;
       }
+      // else{
+      //   $scope.Modal.ReqResponse.resource_id = _.map($scope.outputResource,'id');
+      // }
 
       Component.popModalConfirm($scope, '', 'confirm-req-modal').result.then(function() {
-        console.log($scope.confirmParent.outputResource[0]);
-        $scope.Modal.ReqResponse.resource_id = _.map($scope.confirmParent.outputResource,'id')[0];
-        console.log($scope.confirmParent.outputResource);
+        $scope.Modal.ReqResponse.resource_id = $scope.resource_id;
+
         console.log($scope.Modal.ReqResponse);
-        $scope.Modal.ReqResponse.requiement_id = requirement.id;
+        console.log($scope.resourceItemSelection);
+        $scope.Modal.ReqResponse.requiement_id = item.id;
 
         Http.updateRequirement($scope.Modal.ReqResponse).then(function(result) {
           if (200 == result.data.head.status) {
             if ($scope.Modal.ReqResponse.status == 1) {
+              var http_params = [];
+              if($scope.resourceItemSelection.length == 0) {
+                var obj = {};
+                obj.requiement_id = item.id;
+                obj.resource_id = $scope.Modal.ReqResponse.resource_id,
+                obj.item_id = '';
+                http_params.push(obj);
+              }
+              else{
+                _($scope.resourceItemSelection).forEach(function(value) {
+                  var obj = {};
+                  obj.requiement_id = item.id;
+                  obj.resource_id = $scope.Modal.ReqResponse.resource_id,
+                  obj.item_id = value;
+                  http_params.push(obj);
+                });
+              }
               // 保存需求响应
-              Http.saveReqResponse({
-                requiement_id: requirement.id,
-                resource_id: $scope.Modal.ReqResponse.resource_id
-              }).then(function(saveResult) {
+              Http.saveReqResponse(http_params).then(function(saveResult) {
                 if (200 == saveResult.data.head.status) {
                   alert('保存成功！');
                   getDataRequirementNew();
@@ -1344,6 +1396,13 @@ Dashboard.factory('Dashboard.Service.Http', ['$http', 'API',
         }
       )
     }
+    function getInfoItemList(params) {
+      return $http.get(
+        path + '/allitem_detail', {
+          params: params
+        }
+      )
+    }
 
     return {
       updateRequirement: updateRequirement,
@@ -1355,7 +1414,8 @@ Dashboard.factory('Dashboard.Service.Http', ['$http', 'API',
       getDataRequirementSummary: getDataRequirementSummary,
       getUserDep: getUserDep,
       getDataQuota: getDataQuota,
-      getDeptInfoResourceList: getDeptInfoResourceList
+      getDeptInfoResourceList: getDeptInfoResourceList,
+      getInfoItemList: getInfoItemList
     };
 
   }
@@ -1366,58 +1426,165 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:300;height:175px;position:relative;top:-1px'></div>",
+      template: "<div style='width:300;height:215px;position:relative;top:-1px'></div>",
       link: function(scope, element, attr) {
         scope.DataquotaSummary.then(function(result) {
           if (200 == result.data.head.status) {
             var summary = result.data.body[0];
             var myChart = echarts.init((element.find('div'))[0]);
+          //   var option = {
+          //     tooltip: {
+          //       trigger: 'item',
+          //       formatter: "{a} <br/>{b}: {c} ({d}%)"
+          //     },
+          //     series: [{
+          //       name: '资源提供部门',
+          //       type: 'pie',
+          //       // selectedMode: 'single',
+          //       radius: [0, '45%'],
+          //       label: {
+          //         normal: {
+          //           position: 'inner',
+          //           textStyle :{
+          //               color:'#FFAD38'
+          //             }
+          //         }
+          //       },
+          //       labelLine: {
+          //         normal: {
+          //           show: true
+          //         }
+          //       },
+          //       data: [{
+          //         value: (summary) ? (summary.dep_resource): '0' ,
+          //         name: '提供部门'
+          //       }, {
+          //         value: (summary) ? (summary.month_increment_dpet_resource) : '0' ,
+          //         name: '本月新增',
+          //         selected: true
+          //       }]
+          //     }, {
+          //       name: '资源总数',
+          //       type: 'pie',
+          //       radius: ['60%', '67%'],
+          //       data: [{
+          //         value: (summary) ? (summary.total_resource) : '0',
+          //         name: '资源总数'
+          //       }, {
+          //         value: (summary) ? (summary.month_increment_resource) : '0',
+          //         name: '本月新增',
+          //         selected: true
+          //       }]
+          //     }]
+          //   };
+          //   myChart.setOption(option);
             var option = {
-              tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+              tooltip : {
+                  formatter: "{a} <br/>{c} {b}"
               },
-              series: [{
-                name: '资源提供部门',
-                type: 'pie',
-                // selectedMode: 'single',
-                radius: [0, '45%'],
-                label: {
-                  normal: {
-                    position: 'inner',
-                    textStyle :{
-                        color:'#FFAD38'
-                      }
+              series : [
+                  {
+                      name: '资源总数',
+                      type: 'gauge',
+                      center: ['69%', '55%'],    // 默认全局居中
+                      z: 3,
+                      min: 0,
+                      max: ((220-summary.total_resource)<50)? (Math.ceil(summary.total_resource/11)*11+55) : 220,
+                      splitNumber: 11,
+                      radius: '90%',
+                      axisLine: {            // 坐标轴线
+                          lineStyle: {       // 属性lineStyle控制线条样式
+                              width: 10
+                          }
+                      },
+                      axisTick: {            // 坐标轴小标记
+                          length: 15,        // 属性length控制线长
+                          lineStyle: {       // 属性lineStyle控制线条样式
+                              color: 'auto'
+                          }
+                      },
+                      splitLine: {           // 分隔线
+                          length: 20,         // 属性length控制线长
+                          lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                              color: 'auto'
+                          }
+                      },
+                      pointer: {
+                          width:3
+                      },
+                      title : {
+                        offsetCenter: [0, '-10%'],
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                          fontWeight: '',
+                          fontSize: 15,
+                          fontStyle: 'italic'
+                        }      // x, y，单位px       // x, y，单位px
+                      },
+                      detail : {
+                          textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                              fontWeight: ''
+                          }
+                      },
+                      data:[{
+                        value: (summary) ? (summary.total_resource) : 0 ,
+                        name: '/条（资源总数）'
+                    }]
+                  },
+                  {
+                      name: '本月新增',
+                      type: 'gauge',
+                      center: ['23%', '65%'],    // 默认全局居中
+                      radius: '65%',
+                      min:0,
+                      max:((70-summary.month_increment_resource)<10)? (Math.ceil(summary.month_increment_resource/7)*7+14) : 70,
+                      endAngle:20,
+                      splitNumber:7,
+                      axisLine: {            // 坐标轴线
+                          lineStyle: {       // 属性lineStyle控制线条样式
+                              width: 8
+                          }
+                      },
+                      axisTick: {            // 坐标轴小标记
+                          length:12,        // 属性length控制线长
+                          lineStyle: {       // 属性lineStyle控制线条样式
+                              color: 'auto'
+                          }
+                      },
+                      splitLine: {           // 分隔线
+                          length:20,         // 属性length控制线长
+                          lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                              color: 'auto'
+                          }
+                      },
+                      pointer: {
+                          width:3
+                      },
+                      title: {
+                          offsetCenter: [0, '-1%'],
+                          textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: '',
+                            fontSize: 10,
+                            fontStyle: 'italic'
+                         }      // x, y，单位px
+                      },
+                      detail: {
+                      },
+                      data:[{
+                        value:(summary) ? (summary.month_increment_resource) : 0,
+                        name: '/条(本月新增)'
+                      }]
                   }
-                },
-                labelLine: {
-                  normal: {
-                    show: true
-                  }
-                },
-                data: [{
-                  value: (summary) ? (summary.dep_resource): '0' ,
-                  name: '提供部门'
-                }, {
-                  value: (summary) ? (summary.month_increment_dpet_resource) : '0' ,
-                  name: '本月新增',
-                  selected: true
-                }]
-              }, {
-                name: '资源总数',
-                type: 'pie',
-                radius: ['60%', '67%'],
-                data: [{
-                  value: (summary) ? (summary.total_resource) : '0',
-                  name: '资源总数'
-                }, {
-                  value: (summary) ? (summary.month_increment_resource) : '0',
-                  name: '本月新增',
-                  selected: true
-                }]
-              }]
+
+              ]
             };
             myChart.setOption(option);
+            // app.timeTicket = setInterval(function (){
+            //     option.series[0].data[0].value = (Math.random()*100).toFixed(2) - 0;
+            //     option.series[1].data[0].value = (Math.random()*7).toFixed(2) - 0;
+            //     option.series[2].data[0].value = (Math.random()*2).toFixed(2) - 0;
+            //     option.series[3].data[0].value = (Math.random()*2).toFixed(2) - 0;
+            //     myChart.setOption(option,true);
+            // },2000);
           }
         });
       }
@@ -1425,60 +1592,161 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
   }
 ]);
 
+
 Dashboard.directive('wiservRequirementOverviewChart', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:300;height:175px;position:relative;top:-1px'></div>",
+      template: "<div style='width:300;height:215px;position:relative;top:-1px'></div>",
       link: function(scope, element, attr) {
         scope.DataRequirementSummary.then(function(result) {
           if (200 == result.data.head.status) {
             var summary = result.data.body[0];
             var myChart = echarts.init((element.find('div'))[0]);
+            // var option = {
+            //   tooltip: {
+            //     trigger: 'item',
+            //     formatter: "{a} <br/>{b}: {c} ({d}%)"
+            //   },
+            //   series: [{
+            //     name: '涉及部门',
+            //     type: 'pie',
+            //     // selectedMode: 'single',
+            //     radius: [0, '45%'],
+            //     label: {
+            //       normal: {
+            //         position: 'inner',
+            //         textStyle :{
+            //             color:'#FFAD38'
+            //           }
+            //       }
+            //     },
+            //     labelLine: {
+            //       normal: {
+            //         show: false
+            //       }
+            //     },
+            //     data: [{
+            //       value: (summary) ? (summary.department_number) : '0',
+            //       name: '涉及部门'
+            //     }, {
+            //       value: (summary) ? (summary.department_number) : '0',
+            //       name: '本月新增',
+            //       selected: true
+            //     }]
+            //   }, {
+            //     name: '需求总数',
+            //     type: 'pie',
+            //     radius: ['60%', '67%'],
+            //     data: [{
+            //       value: (summary) ? (summary.requiement_number) : '0',
+            //       name: '需求总数'
+            //     }, {
+            //       value: (summary) ? (summary.requiement_number_inc) : '0',
+            //       name: '本月新增',
+            //       selected: true
+            //     }]
+            //   }]
+            // };
+            // myChart.setOption(option);
             var option = {
-              tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+              tooltip : {
+                  formatter: "{a} <br/>{c} {b}"
               },
-              series: [{
-                name: '涉及部门',
-                type: 'pie',
-                // selectedMode: 'single',
-                radius: [0, '45%'],
-                label: {
-                  normal: {
-                    position: 'inner',
-                    textStyle :{
-                        color:'#FFAD38'
-                      }
+              series : [
+                  {
+                      name: '需求总数',
+                      type: 'gauge',
+                      center: ['69%', '55%'],    // 默认全局居中
+                      z: 3,
+                      min: 0,
+                      max: ((220-summary.requiement_number)<50)? (Math.ceil(summary.requiement_number/11)*11+55) : 220,
+                      splitNumber: 11,
+                      radius: '90%',
+                      axisLine: {            // 坐标轴线
+                          lineStyle: {       // 属性lineStyle控制线条样式
+                              width: 10
+                          }
+                      },
+                      axisTick: {            // 坐标轴小标记
+                          length: 15,        // 属性length控制线长
+                          lineStyle: {       // 属性lineStyle控制线条样式
+                              color: 'auto'
+                          }
+                      },
+                      splitLine: {           // 分隔线
+                          length: 20,         // 属性length控制线长
+                          lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                              color: 'auto'
+                          }
+                      },
+                      pointer: {
+                          width:3
+                      },
+                      title : {
+                        offsetCenter: [0, '-10%'],
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                          fontWeight: '',
+                          fontSize: 15,
+                          fontStyle: 'italic'
+                        }      // x, y，单位px       // x, y，单位px
+                      },
+                      detail : {
+                          textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                              fontWeight: ''
+                          }
+                      },
+                      data:[{
+                        value: (summary) ? (summary.requiement_number) : 0,
+                        name: '/条（需求总数）'
+                    }]
+                  },
+                  {
+                      name: '本月新增',
+                      type: 'gauge',
+                      center: ['23%', '65%'],    // 默认全局居中
+                      radius: '65%',
+                      min:0,
+                      max:((70-summary.requiement_number_inc)<10)? (Math.ceil(summary.requiement_number_inc/7)*7+14) : 70,
+                      endAngle:20,
+                      splitNumber:7,
+                      axisLine: {            // 坐标轴线
+                          lineStyle: {       // 属性lineStyle控制线条样式
+                              width: 8
+                          }
+                      },
+                      axisTick: {            // 坐标轴小标记
+                          length:12,        // 属性length控制线长
+                          lineStyle: {       // 属性lineStyle控制线条样式
+                              color: 'auto'
+                          }
+                      },
+                      splitLine: {           // 分隔线
+                          length:20,         // 属性length控制线长
+                          lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                              color: 'auto'
+                          }
+                      },
+                      pointer: {
+                          width:3
+                      },
+                      title: {
+                          offsetCenter: [0, '-1%'],
+                          textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: '',
+                            fontSize: 10,
+                            fontStyle: 'italic'
+                         }      // x, y，单位px
+                      },
+                      detail: {
+                      },
+                      data:[{
+                        value:(summary) ? (summary.requiement_number_inc) : 0,
+                        name: '/条(本月新增)'
+                      }]
                   }
-                },
-                labelLine: {
-                  normal: {
-                    show: false
-                  }
-                },
-                data: [{
-                  value: (summary) ? (summary.department_number) : '0',
-                  name: '涉及部门'
-                }, {
-                  value: (summary) ? (summary.department_number) : '0',
-                  name: '本月新增',
-                  selected: true
-                }]
-              }, {
-                name: '需求总数',
-                type: 'pie',
-                radius: ['60%', '67%'],
-                data: [{
-                  value: (summary) ? (summary.requiement_number) : '0',
-                  name: '需求总数'
-                }, {
-                  value: (summary) ? (summary.requiement_number_inc) : '0',
-                  name: '本月新增',
-                  selected: true
-                }]
-              }]
+
+              ]
             };
             myChart.setOption(option);
           }
@@ -1643,7 +1911,7 @@ Login.controller('Login.Controller.Main', ['$rootScope', '$cookies', '$scope', '
       $scope.loginSubmitted = false;
       if (valid) {
         var username = $scope.Login.username;
-        var password = $scope.Login.password;
+        var password = hex_md5($scope.Login.password);
         Http.login({
           username: username,
           password: password
@@ -1724,8 +1992,8 @@ Main.factory('Main.Service.Http', ['$http', 'API',
 'use strict';
 var Welcome = angular.module('Welcome', ['ui.router']);
 /** Main Controller */
-Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Service.Http', '$stateParams',
-  function($scope, $state, Http, StateParams) {
+Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Service.Http', '$stateParams', '$document',
+  function($scope, $state, Http, StateParams, $document) {
     window.scrollTo(0,0);
     // Menu configration
     $scope.treeOptions = {
@@ -1742,53 +2010,88 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
         labelSelected: "a8"
       }
     }
-    function showType(){
-      $scope.flag = 1;
-      $scope.filterName = "机构类型";
-      Http.menu().then(function(result) {
-        if (200 === result.data.head.status) {
-          $scope.list = result.data.body;
-        }
-      });
+    function treeChangeTypeDefault(){
+      $scope.flag = (StateParams.type) ? (StateParams.type) : 1;
+      $scope.filterName = (StateParams.titleName) ? (StateParams.titleName) : "机构类型";
+      // if($scope.flag==1){
+        Http.menu().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.list = result.data.body;
+          }
+        });
+
+      // }else if ($scope.flag==2) {
+        // OcupationMenu Generator
+        Http.menuRole().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.OcupationList = result.data.body;
+          }
+        });
+
+      // }else if ($scope.flag==3) {
+        // AreaMenu Generator
+        Http.menuArea().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.areaList = result.data.body;
+          }
+        });
+
+      // }else if ($scope.flag==4) {
+        // themeMenu Generator
+        Http.menuTheme().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.themeList = result.data.body;
+          }
+        });
+      // }
     }
-    //init
-    showType();
-    $scope.typeListOpen = function () {
-      showType();
-    };
+    treeChangeTypeDefault();
+    $scope.treeChangeType = function(type) {
+      $scope.predicate = "";
+      if(type==1){
+        $scope.flag = 1;
+        $scope.filterName = "机构类型";
+        Http.menu().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.list = result.data.body;
+          }
+        });
 
-    $scope.ocupationListOpen = function () {
-      $scope.filterName = "机构职能";
-      $scope.flag = 2;
-      // OcupationMenu Generator
-      Http.menuRole().then(function(result) {
-        if (200 === result.data.head.status) {
-          $scope.OcupationList = result.data.body;
-        }
-      });
-    };
+      }else if (type==2) {
+        // $document.find('.sidebar2').addClass('sidebar2-collapse');
+        $scope.filterName = "机构职能";
+        $scope.flag = 2;
+        // OcupationMenu Generator
+        Http.menuRole().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.OcupationList = result.data.body;
+          }
+        });
 
-    $scope.areaListOpen = function () {
-      $scope.filterName = "区域";
-      $scope.flag = 3;
-      // AreaMenu Generator
-      Http.menuArea().then(function(result) {
-        if (200 === result.data.head.status) {
-          $scope.areaList = result.data.body;
-        }
-      });
-    };
+      }else if (type==3) {
+        $scope.filterName = "区域";
+        $scope.flag = 3;
+        // AreaMenu Generator
+        Http.menuArea().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.areaList = result.data.body;
+          }
+        });
 
-    $scope.themeListOpen = function () {
-      $scope.filterName = "主题类";
-      $scope.flag = 4;
-      // themeMenu Generator
-      Http.menuTheme().then(function(result) {
-        if (200 === result.data.head.status) {
-          $scope.themeList = result.data.body;
-        }
-      });
-    };
+      }else if (type==4) {
+        $scope.filterName = "主题";
+        $scope.flag = 4;
+        // themeMenu Generator
+        Http.menuTheme().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.themeList = result.data.body;
+          }
+        });
+
+      }
+
+    }
+
 
     $scope.comparator = false;
     $scope.showSelected = function(sel) {
@@ -1822,14 +2125,32 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       });
     };
     // Init data quota talbe
-    (function initDataQuotaList(){
+    function initDataQuotaList(){
         /* Init selected status for filter */
         $scope.resourceFormatActiveAll = $scope.ShareLevelActiveAll = $scope.openToSocietyActiveAll = $scope.ShareFrequencyActiveAll = $scope.DataLevelActiveAll = $scope.isScretActiveAll= 'active';
         /* Init ajax parameters*/
         var httpParams = {};
         (currentDepID==='') ? (httpParams = initPaging) : (httpParams = _.assign(httpParams, currentDepID, initPaging));
         getDataQuotaList(httpParams);
-    })();
+    };
+    initDataQuotaList();
+
+   $scope.WelcomeDep = function (resource_dep_id,dep_name){
+     if(resource_dep_id){
+       $scope.TargetDataQuotaName ="";
+       var httpParams = {};
+       currentDepID = {resource_dep_id:resource_dep_id};
+       currentDepName = {dep_name:dep_name};
+       $scope.currentDep = currentDepName.dep_name;
+       /* Init selected status for filter */
+       $scope.resourceFormatActiveAll = $scope.ShareLevelActiveAll = $scope.openToSocietyActiveAll = $scope.ShareFrequencyActiveAll = $scope.DataLevelActiveAll = $scope.isScretActiveAll= 'active';
+       /* Init ajax parameters*/
+       (currentDepID==='') ? (httpParams = initPaging) : (httpParams = _.assign(httpParams, currentDepID, initPaging));
+       getDataQuotaList(httpParams);
+     }
+   }
+
+
     // Fetch data quota list by filter
     function getDataQuotaListByFilter(params){
       var httpParams = {};
@@ -2053,10 +2374,20 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       return {
         restrict: 'AE',
         link: function(scope, element, attrs) {
-          element.find('.toggler').on('click', function() {
-            element.find('.sidebar1').toggleClass("sidebar1-collapse");
-            element.find('.searchTree').toggleClass("searchTree-collapse");
-            element.find('.content').toggleClass("content-collapse");
+          scope.currentTab = 1;
+          element.find('.toggler').on('click', function(ev) {
+            console.log(scope.flag);
+            if( scope.currentTab == scope.flag) {
+              if((!element.hasClass("content-collapse"))){
+                element.find('.searchTree').toggleClass("searchTree-collapse");
+                element.find('.content').toggleClass("content-collapse");
+              }
+            }
+            else {
+              element.find('.searchTree').removeClass("searchTree-collapse").addClass("searchTree-collapse");
+              element.find('.content').removeClass("content-collapse");
+            }
+            scope.currentTab = scope.flag;
           });
         }
       }
@@ -2157,19 +2488,20 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
             var deptotal = _.size(dataquotaRequirement.depNames) ;
             var resourceName = dataquotaRequirement.resourceName;
             var depNames = dataquotaRequirement.depNames;
-            var obj = {name: resourceName, x: 500, y:100 };
-            var obj1 = {source: resourceName,target: "" };
             var data1 = [{name: resourceName, x: 500, y:100 }];
             var links1 = [{source: resourceName,target: "" }];
             if(deptotal){
                _(depNames).forEach(function (value,key){
                  console.log(key+":"+value);
+                 var dep_obj = {};
                  obj.name = value;
                  obj.x = 600;
                  obj.y = 100 + (key+1)*20;
                  data1.push(obj);
-                 obj1.target = value ;
-                 links1.push(obj1);
+                 var target_obj = {};
+                 target_obj.target = value ;
+                 target_obj.source = resourceName;
+                 links1.push(target_obj);
                });
                console.log(data1);
                console.log(links1);
@@ -2177,7 +2509,7 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
                title: {
-                 text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
+                 text: "对应需求部门数:"+deptotal+"个"
                },
                tooltip: {},
                animationDurationUpdate: 1500,
@@ -2471,8 +2803,8 @@ DataQuotaList.factory('DataQuotaList.Service.Http', ['$http', 'API',
 var DataQuota = angular.module('DataQuota', ['ui.router']);
 
 /** Main Controller */
-DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuota.Service.Http',
-  function($scope, $state, Http) {
+DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuota.Service.Http', '$stateParams',
+  function($scope, $state, Http, StateParams) {
     window.scrollTo(0,0);
     // Menu configration
     $scope.treeOptions = {
@@ -2490,6 +2822,35 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
       }
     }
     function showType(){
+      $scope.predicate="";
+      $scope.flag = (StateParams.type) ? (StateParams.type) : 1;
+      $scope.filterName = (StateParams.titleName) ? (StateParams.titleName) : "机构类型";
+        Http.menu().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.list = result.data.body;
+          }
+        });
+        Http.menuRole().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.OcupationList = result.data.body;
+          }
+        });
+
+        Http.menuArea().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.areaList = result.data.body;
+          }
+        });
+        Http.menuTheme().then(function(result) {
+          if (200 === result.data.head.status) {
+            $scope.themeList = result.data.body;
+          }
+        });
+    }
+    //init
+    showType();
+    $scope.typeListOpen = function () {
+      $scope.predicate="";
       $scope.flag = 1;
       $scope.filterName = "机构类型";
       Http.menu().then(function(result) {
@@ -2497,14 +2858,10 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
           $scope.list = result.data.body;
         }
       });
-    }
-    //init
-    showType();
-    $scope.typeListOpen = function () {
-      showType();
 		};
 
     $scope.ocupationListOpen = function () {
+      $scope.predicate="";
       $scope.filterName = "机构职能";
       $scope.flag = 2;
       // OcupationMenu Generator
@@ -2516,6 +2873,7 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
     };
 
     $scope.areaListOpen = function () {
+      $scope.predicate="";
       $scope.filterName = "区域";
       $scope.flag = 3;
       // AreaMenu Generator
@@ -2527,7 +2885,8 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
     };
 
     $scope.themeListOpen = function () {
-      $scope.filterName = "主题类";
+      $scope.predicate="";
+      $scope.filterName = "主题";
       $scope.flag = 4;
       // themeMenu Generator
       Http.menuTheme().then(function(result) {
@@ -2586,10 +2945,20 @@ DataQuota.directive('wiservMainWrapper', [
     return {
       restrict: 'AE',
       link: function(scope, element, attrs) {
-        element.find('.toggler').on('click', function() {
-          element.find('.sidebar1').toggleClass("sidebar1-collapse");
-          element.find('.form-control').toggleClass("form-control-collapse");
-          element.find('.content').toggleClass("content-collapse");
+        scope.currentTab = 1;
+        element.find('.toggler').on('click', function(ev) {
+          console.log(scope.flag);
+          if( scope.currentTab == scope.flag) {
+            if((!element.hasClass("content-collapse"))){
+              element.find('.searchTree').toggleClass("searchTree-collapse");
+              element.find('.content').toggleClass("content-collapse");
+            }
+          }
+          else {
+            element.find('.searchTree').removeClass("searchTree-collapse").addClass("searchTree-collapse");
+            element.find('.content').removeClass("content-collapse");
+          }
+          scope.currentTab = scope.flag;
         });
       }
     }
@@ -2890,7 +3259,9 @@ DInventoryDetail.directive('wiservExampleData', [
         console.log(scope);
         scope.DataExamples.then(function(result) {
           console.log(result);
-          element.html(result.data.body[0].file_content);
+          if(!result.data.body) {
+            element.html(result.data.body[0].file_content);
+          }
         })
       }
     }
@@ -2909,19 +3280,21 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
             var deptotal = _.size(dataquotaRequirement.depNames) ;
             var resourceName = dataquotaRequirement.resourceName;
             var depNames = dataquotaRequirement.depNames;
-            var obj = {name: resourceName, x: 500, y:100 };
-            var obj1 = {source: resourceName,target: "" };
-            var data1 = [{name: resourceName, x: 500, y:100 }];
+            var data1 = [{name: resourceName, x: 500, y:130 }];
             var links1 = [{source: resourceName,target: "" }];
             if(deptotal){
                _(depNames).forEach(function (value,key){
                  console.log(key+":"+value);
-                 obj.name = value;
-                 obj.x = 600;
-                 obj.y = 100 + (key+1)*20;
-                 data1.push(obj);
-                 obj1.target = value ;
-                 links1.push(obj1);
+                 var dep_obj = {};
+                 dep_obj.name = value;
+                 dep_obj.x = 600;
+                 dep_obj.y = 100 + (key+1)*20;
+                 data1.push(dep_obj);
+
+                 var target_obj = {};
+                 target_obj.target = value ;
+                 target_obj.source = resourceName;
+                 links1.push(target_obj);
                });
                console.log(data1);
                console.log(links1);
@@ -2929,7 +3302,7 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
                title: {
-                 text: "'"+resourceName+"'对应的需求部门数:"+deptotal+"个"
+                 text: "对应的需求部门数:"+deptotal+"个"
                },
                tooltip: {},
                animationDurationUpdate: 1500,
@@ -2982,14 +3355,6 @@ DInventoryUpload.controller('Department.InventoryUpload.Controller', ['$scope', 
   function($scope, $q, Http, $stateParams, $state, $sce, API) {
     $scope.uploadPromise = null;
 
-    $scope.htmlPopover = $sce.trustAsHtml("<table class='table table-hover table-striped '>" +
-      "<thead><tr><th>序号</th><th>城市</th><th>GDP(亿元)</th><th>增长</th>" +
-      "<th>地方公共财政收入(亿元)</th><th>增长</th><th>城镇登记失业率</th>" +
-      "<th>农村居民人均纯收入(元)</th><th>增长</th></tr></thead>" +
-      "<tbody><tr><td>1</td><td>成都</td><td>9000</td><td>8.54%</td><td>8000</td><td>7.51%</td>" +
-      "<td>1.39</td><td>5678</td><td>3.40%</td></tr>" +
-      "</tbody></table>");
-
     $scope.uploadFile = function() {
       var file = $scope.myFile;
       console.log('file is ');
@@ -3006,12 +3371,59 @@ DInventoryUpload.controller('Department.InventoryUpload.Controller', ['$scope', 
           });
         }
         else {
-          alert('上传失败，上传文件格式有误！');
+          if('error' == result.data.head.message) {
+            alert('上传失败');
+          }
+          else {
+            alert('上传失败，上传文件格式有误！');
+          }
         }
       });
     }
 
     $scope.downloadUrl = API.path + '/download';
+
+    $scope.toIndex = function() {
+      $state.go("main.department.inventory", {}, {
+        reload: true
+      });
+    }
+  }
+])
+
+
+DInventoryUpload.controller('Department.InventoryUploadExamples.Controller', ['$scope', '$q', 'Department.InventoryUpload.Service.Http', '$stateParams', '$state', '$sce', 'API',
+  function($scope, $q, Http, $stateParams, $state, $sce, API) {
+    $scope.uploadPromise = null;
+
+    $scope.htmlPopover = $sce.trustAsHtml("<table class='table table-hover table-striped '>" +
+      "<thead><tr><th>序号</th><th>城市</th><th>GDP(亿元)</th><th>增长</th>" +
+      "<th>地方公共财政收入(亿元)</th><th>增长</th><th>城镇登记失业率</th>" +
+      "<th>农村居民人均纯收入(元)</th><th>增长</th></tr></thead>" +
+      "<tbody><tr><td>1</td><td>成都</td><td>9000</td><td>8.54%</td><td>8000</td><td>7.51%</td>" +
+      "<td>1.39</td><td>5678</td><td>3.40%</td></tr>" +
+      "</tbody></table>");
+
+    $scope.uploadFile = function() {
+      var file = $scope.myFile;
+      console.log('file is ');
+      console.dir(file);
+      if (!file) {
+        alert('您还未选择文件');
+        return;
+      }
+      $scope.uploadPromise = Http.uploadExamplesFile(file,$stateParams.ID).then(function(result) {
+        if (200 == result.data.head.status) {
+          alert('上传成功！');
+          $state.go("main.department.inventory", {}, {
+            reload: true
+          });
+        }
+        else {
+          alert('上传失败，上传文件格式有误！');
+        }
+      });
+    }
 
     $scope.toIndex = function() {
       $state.go("main.department.inventory", {}, {
@@ -3039,8 +3451,22 @@ DInventoryUpload.factory('Department.InventoryUpload.Service.Http', ['$http', '$
       });
       return promise;
     }
+
+    function uploadExamplesFile(file,id) {
+      var fd = new FormData();
+      var uploadUrl = path + '/upload/examples?resource_id=' + id;
+      fd.append('file', file);
+      var promise = $http.post(uploadUrl, fd, {
+        transformRequest: angular.identity,
+        headers: {
+          'Content-Type': undefined
+        }
+      });
+      return promise;
+    }
     return {
-      uploadFile: uploadFile
+      uploadFile: uploadFile,
+      uploadExamplesFile: uploadExamplesFile
     }
   }])
 
@@ -3054,6 +3480,35 @@ DInventoryUpload.factory('Department.InventoryUpload.Service.Http', ['$http', '$
         scope.parentIvntObj = {};
         element.bind('change', function() {
           var rgx = /(zip)/i;
+          var fileSuffix = element[0].files[0].name;
+          scope.parentIvntObj.fileName = fileSuffix;
+          var ext = fileSuffix.substring(fileSuffix.lastIndexOf(".") + 1);
+          if (!rgx.test(ext)) {
+            scope.$apply(function() {
+              scope.parentIvntObj.fileNameError = true;
+            })
+
+          } else {
+            scope.parentIvntObj.fileNameError = false;
+            scope.$apply(function() {
+              modelSetter(scope, element[0].files[0]);
+            });
+          }
+
+        });
+      }
+    };
+  }]);
+
+  DInventoryUpload.directive('fileModelExcel', ['$parse', function($parse) {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        var model = $parse(attrs.fileModelExcel);
+        var modelSetter = model.assign;
+        scope.parentIvntObj = {};
+        element.bind('change', function() {
+          var rgx = /(xls|xlsx)/i;
           var fileSuffix = element[0].files[0].name;
           scope.parentIvntObj.fileName = fileSuffix;
           var ext = fileSuffix.substring(fileSuffix.lastIndexOf(".") + 1);
@@ -3150,8 +3605,7 @@ DInventory.controller('Department.Inventory.Controller.Main', ['$cookies', '$sco
           $scope.infoResourceList = result.data.body[0].results;
           $scope.resourceCount = result.data.body[0].count[0].resource_count;
           $scope.Paging.totalItems = result.data.body[0].count[0].resource_count;
-        }
-        else{
+        } else {
           $scope.infoResourceList = [];
         }
 
@@ -3374,7 +3828,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     $scope.InfoResource.share_method_desc = '';
     // item list
     $scope.ResourceItemList = [];
-    $scope.ResourceItemConfigList = [];
+    //$scope.ResourceItemConfigList = [];
 
     // resource name duplicate check
     $scope.resNameExist = false;
@@ -3393,7 +3847,24 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
     }
 
-
+    function getInfoItemList(resourceId) {
+      // 获取信息项列表
+      Http.getInfoItemList({
+        resource_id: resourceId
+      }).then(function(result) {
+        if (200 == result.data.head.status) {
+          $scope.ResourceItemList = result.data.body;
+          // 拼接信息资源所有信息项的多选项
+          _($scope.ResourceItemList).forEach(function(item) {
+            var shareFreqDictName = [];
+            _(item.config).forEach(function(config) {
+              shareFreqDictName.push(config.dict_name);
+            })
+            item.update_period_name = shareFreqDictName.toString();
+          })
+        }
+      })
+    }
 
     Http.getDepartmentList().then(function(result) {
       $scope.deptList = result.data.body;
@@ -3433,26 +3904,36 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       });
     }
 
+    $scope.toUpload = function() {
+      if($scope.ResourceItemList.length == 0) {
+        alert('您还未添加信息项！');
+        return;
+      }
+      else {
+        $state.go("main.department.inventory.uploadExampleData", {ID:$scope.InfoResource.id}, {
+          reload: true
+        });
+      }
+    }
+
     // submit add
     $scope.addInfoResource = function(isValid) {
       $scope.submitted = true;
       var InfoResourceAddObj = {};
       var InfoResource_RelationConfig = [];
       var InfoResourceApplyInfo = [];
-      var InfoItem_RelationConfig = [];
+      console.log($scope.resItemAddBtn);
+      //var InfoItem_RelationConfig = [];
       if ($scope.resNameExist) {
         isValid = false;
       }
       if ($scope.shareFreqSelection.length == 0 && !$scope.resItemAddBtn) { // 未选择更新周期
         isValid = false;
       }
-      if ($scope.resItemAddBtn && ($scope.ResourceItemList.length == 0)) { // 未添加信息项
-        isValid = false;
-      }
       if ($scope.InfoResource.category == $scope.InfoResource.rel_category) { // 信息资源分类和关联及类目名称相同
         isValid = false;
       }
-      if($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
+      if ($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
         isValid = false;
       }
       if (isValid) {
@@ -3479,28 +3960,23 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           share_dep.apply_dep = value;
           InfoResourceApplyInfo.push(share_dep);
         });
-        _($scope.ResourceItemList).forEach(function(item, index) {
-          console.log(index);
-          item.item_ord = index;
-          item.InfoResourceId = $scope.InfoResource.resource_name;
-          console.log($scope.ResourceItemList);
-        })
 
         InfoResourceAddObj.InfoResource_RelationConfig = InfoResource_RelationConfig;
         InfoResourceAddObj.InfoResourceApplyInfo = InfoResourceApplyInfo;
-        InfoResourceAddObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
-        InfoResourceAddObj.InfoItem = $scope.ResourceItemList;
 
         console.log(InfoResourceAddObj);
         $scope.savePromise = Http.saveInfoResource(InfoResourceAddObj).then(function(result) {
           console.log(result.data);
           if (200 == result.data.head.status) {
-            alert('保存成功！');
-            $scope.Modal = {};
-            $state.go("main.department.inventory", {}, {
-              reload: true
-            });
-
+            if (!$scope.resItemAddBtn) {
+              alert('保存成功！');
+              $state.go("main.department.inventory", {}, {
+                reload: true
+              });
+            } else {
+              $scope.ResItemListShow = true;
+              $scope.InfoResource.id = result.data.body[0].id;
+            }
           } else {
             alert('保存失败！');
           }
@@ -3520,12 +3996,16 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         resource_id: $stateParams.item
       }).then(function(ResourceRes) {
         $scope.InfoResource = ResourceRes.data.body[0].results[0];
+        if (LEVEL_AUTH == $scope.InfoResource.share_level) {
+          $scope.depShow = true;
+        }
 
         if (RESOURCE_FORMAT_DATA == $scope.InfoResource.resource_format) {
           $scope.resItemUpdateBtn = true;
+          $scope.InfoResource.update_period = '';
         }
 
-        $scope.ResourceItemConfigList = [];
+        //$scope.ResourceItemConfigList = [];
         // 获取资源分地区数据级别
         Http.getResourceAreaLevel({
           resource_id: $scope.InfoResource.id
@@ -3557,35 +4037,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             })
           });
         })
-
-
-        // 获取所有信息项
-        Http.getInfoItemList({
-          resource_id: $scope.InfoResource.id
-        }).then(function(result) {
-          $scope.ResourceItemList = result.data.body;
-          // 拼接信息资源所有信息项的多选项
-          _($scope.ResourceItemList).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              var itemConfig = {};
-              itemConfig.InfoItemId = item.item_name;
-              itemConfig.sys_dict_id = config.id;
-              itemConfig.parent_id = item.parent_id;
-              shareFreqDictName.push(config.dict_name);
-              $scope.ResourceItemConfigList.push(itemConfig);
-            })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-          console.log($scope.ResourceItemConfigList);
-        })
       })
 
-
-      // 选中数据库类
-      if (RESOURCE_FORMAT_DATA == $scope.InfoResource.resource_format) {
-        $scope.resItemUpdateBtn = true;
-      }
     }
 
 
@@ -3594,7 +4047,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       var InfoResourceAddObj = {};
       var InfoResource_RelationConfig = [];
       var InfoResourceApplyInfo = [];
-      var InfoItem_RelationConfig = [];
+      //  var InfoItem_RelationConfig = [];
 
 
       if ($scope.resNameExist) {
@@ -3603,13 +4056,10 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       if ($scope.shareFreqSelection.length == 0 && !$scope.resItemUpdateBtn) { // 未选择更新周期
         isValid = false;
       }
-      if ($scope.resItemAddBtn && ($scope.ResourceItemList.length == 0) || $scope.resItemUpdateBtn && ($scope.ResourceItemList.length == 0)) { // 未添加信息项
-        isValid = false;
-      }
       if ($scope.InfoResource.category == $scope.InfoResource.rel_category) { // 信息资源分类和关联及类目名称相同
         isValid = false;
       }
-      if($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
+      if ($scope.depShow && ($scope.outputDeptList.length == 0)) { // 未选择指定部门开放
         isValid = false;
       }
 
@@ -3646,21 +4096,20 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
         InfoResourceAddObj.InfoResource_RelationConfig = InfoResource_RelationConfig;
         InfoResourceAddObj.InfoResourceApplyInfo = InfoResourceApplyInfo;
-        InfoResourceAddObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
-        InfoResourceAddObj.InfoItem = $scope.ResourceItemList;
 
-        console.log(InfoResourceAddObj);
         $scope.updatePromise = Http.updateInfoResource(InfoResourceAddObj).then(function(result) {
           console.log(result.data);
           if (200 == result.data.head.status) {
-            alert('保存成功！');
-            $scope.Modal = {};
-            // 清空多选项
-            $scope.dataLevelSelection = [];
-            $scope.shareFreqSelection = [];
-            $state.go("main.department.inventory", {}, {
-              reload: true
-            });
+            if (!$scope.resItemUpdateBtn) {
+              alert('保存成功！');
+              $state.go("main.department.inventory", {}, {
+                reload: true
+              });
+            } else {
+              // 获取信息项列表
+              getInfoItemList($scope.InfoResource.id);
+              $scope.ResItemListShow = true;
+            }
 
           } else {
             alert('保存失败');
@@ -3672,36 +4121,30 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       }
     }
 
-    $scope.editItems = function(id) {
-      $scope.ResourceItemConfigList = [];
-      $scope.ResourceItemList = [];
-      $scope.parent = {};
-      // $scope.parent.itemoutputDeptList = [];
-      Http.getInfoItemList({
-        resource_id: id
-      }).then(function(result) {
-        if (200 == result.data.head.status) {
-          $scope.ResourceItemList = result.data.body;
-          // 拼接信息资源所有信息项的多选项
-          _($scope.ResourceItemList).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              var itemConfig = {};
-              itemConfig.InfoItemId = item.item_name;
-              itemConfig.sys_dict_id = config.id;
-              itemConfig.parent_id = item.parent_id;
-              shareFreqDictName.push(config.dict_name);
-              $scope.ResourceItemConfigList.push(itemConfig);
-            })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-        }
-
-      })
-      $scope.ResItemListShow = true;
-    }
+    // $scope.editItems = function(id) {
+    //   $scope.ResourceItemList = [];
+    //   $scope.parent = {};
+    //   Http.getInfoItemList({
+    //     resource_id: id
+    //   }).then(function(result) {
+    //     if (200 == result.data.head.status) {
+    //       $scope.ResourceItemList = result.data.body;
+    //       // 拼接信息资源所有信息项的多选项
+    //       _($scope.ResourceItemList).forEach(function(item) {
+    //         var shareFreqDictName = [];
+    //         _(item.config).forEach(function(config) {
+    //           shareFreqDictName.push(config.dict_name);
+    //         })
+    //         item.update_period_name = shareFreqDictName.toString();
+    //       })
+    //     }
+    //
+    //   })
+    //   $scope.ResItemListShow = true;
+    // }
 
     $scope.addResourceItem = function(type) {
+      console.log($scope.InfoResource.id);
       $scope.shareFreqEmpty = false;
       $scope.Modal = {};
       $scope.itemAdded = false;
@@ -3711,23 +4154,17 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.ResourceItem.field_standard = '';
       $scope.ResourceItem.shareFreqItemSelection = [];
       $scope.ResourceItem.shareFreqItemObjSelection = [];
+      $scope.ResourceItem.isleaf = 1;
       $scope.parent = {};
       $scope.parent.itemNameExist = false;
       $scope.parent.childParentConflict = false;
 
       $scope.data = {};
-      $scope.data.item_type = $scope.itemTypeList[0];
-      $scope.data.secret_flag = $scope.secretFlagList[0];
+      $scope.ResourceItem.item_type = $scope.itemTypeList[0].id;
+      $scope.ResourceItem.secret_flag = $scope.secretFlagList[0].id;
 
-      $scope.$watch('data.item_type', function(n) {
-        $scope.ResourceItem.item_type = n.id;
-        $scope.ResourceItem.item_type_name = n.dict_name;
-      })
-
-      $scope.$watch('data.secret_flag', function(n) {
-        $scope.ResourceItem.secret_flag = n.id;
-        $scope.ResourceItem.secret_flag_name = n.dict_name;
-      })
+      $scope.ResourceItemConfigList = [];
+      var ItemCommitObj = {};
 
       $scope.$watch('data.parent_id', function(n) {
         $scope.parent.childParentConflict = false;
@@ -3738,9 +4175,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
               return;
             }
           });
-          $scope.ResourceItem.parent_id = n.item_name;
-        }
-        else{
+          $scope.ResourceItem.parent_id = n.id;
+        } else {
           $scope.ResourceItem.parent_id = '';
         }
       })
@@ -3772,18 +4208,12 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
       }
 
-      console.log($scope.ResourceItemList);
       $scope.parent.ItemsList = $scope.ResourceItemList;
       _.remove($scope.parent.ItemsList, function(item) {
         return item.item_name == '';
       });
       Component.popModal($scope, 'Department.Inventory.Controller.publish', '新增', 'item-add-modal').result.then(function(res) {
-        console.log($scope.ResourceItem);
         $scope.itemAdded = false;
-        console.log(type);
-        // if(type == 2) {// 新增资源时的新增信息项
-        //   $scope.ResourceItemList.push($scope.ResourceItem);
-        // }
 
         var shareFreqDictName = [];
         _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
@@ -3792,164 +4222,159 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           sys_dict.sys_dict_id = item.id;
           sys_dict.parent_id = $scope.ResourceItem.parent_id;
           $scope.ResourceItemConfigList.push(sys_dict);
-          shareFreqDictName.push(item.dict_name);
         });
-        $scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
-        $scope.ResourceItem.update_period_name = shareFreqDictName.toString();
-        $scope.ResourceItemList.push($scope.ResourceItem);
+        $scope.ResourceItem.resource_id = $scope.InfoResource.id;
+        ItemCommitObj.InfoItem = $scope.ResourceItem;
+        ItemCommitObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
 
-        console.log($scope.ResourceItemList);
+        // 新增信息项
+        Http.addInfoItem(ItemCommitObj).then(function(res) {
+          if (200 == res.data.head.status) {
+            alert('保存成功！');
+            // 获取信息项列表
+            getInfoItemList($scope.InfoResource.id);
+          } else {
+            alert('保存失败！');
+          }
+        })
       })
     }
 
     // update resource item
-    $scope.updateItem = function(InfoItem) {
-      console.log(InfoItem);
-      $scope.Modal = {};
-      $scope.itemUpdated = false;
-      $scope.ResourceItem = angular.copy(InfoItem);
-      $scope.ResourceItem.shareFreqItemSelection = _.map(InfoItem.config, 'id');
-      $scope.ResourceItem.shareFreqItemObjSelection = InfoItem.config;
+    $scope.updateItem = function(id) {
+      // 根据id查询信息项
+      $scope.InfoItem = null;
+      $scope.ResourceItemConfigList = [];
+      Http.getInfoItemById({
+        info_item_id: id
+      }).then(function(result) {
+        if (200 == result.data.head.status) {
+          $scope.InfoItem = result.data.body[0];
 
-      $scope.shareFreqEmpty = false;
-      $scope.parent = {};
-      $scope.parent.itemNameExist = false;
-      $scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
-      var hasEmpty = false;
-      _($scope.parent.ItemsList).forEach(function(item) {
-        if (item.item_name == '') {
-          hasEmpty = true;
-        }
-      })
-      if(!hasEmpty) {
-        $scope.parent.ItemsList.push({'item_name':''});
-      }
-
-      $scope.data = {};
-
-      // if (InfoItem.id) { // 在修改信息资源中修改
-      //   // 获取该条信息项更新周期
-      //   Http.getItemUpdatePeriod({
-      //     item_id: InfoItem.id
-      //   }).then(function(res) {
-      //     $scope.shareFreqItemObjSelection = res.data.body;
-      //     $scope.shareFreqItemSelection = _.map($scope.shareFreqItemObjSelection, 'id');
-      //   });
-      // } else { // 新增资源时修改
-      //   $scope.shareFreqItemSelection = $scope.ResourceItem.update_period_temp;
-      //   $scope.shareFreqItemObjSelection = $scope.ResourceItem.update_period_obj_temp;
-      // }
-
-      _($scope.secretFlagList).forEach(function(secretFlag) {
-        if (InfoItem.secret_flag == secretFlag.id) {
-          $scope.data.secret_flag = secretFlag;
-        }
-      })
-
-      _($scope.itemTypeList).forEach(function(itemType) {
-        if (InfoItem.item_type == itemType.id) {
-          $scope.data.item_type = angular.copy(itemType);
-          console.log($scope.data.item_type);
-        }
-      })
-
-      _($scope.parent.ItemsList).forEach(function(resourceItem) {
-        if (InfoItem.parent_id == resourceItem.item_name) {
-          $scope.data.parent_id = resourceItem;
-          console.log($scope.data.parent_id);
-        }
-      })
-
-      $scope.$watch('data.item_type', function(n) {
-        console.log($scope.data.item_type);
-        if (n) {
-          $scope.ResourceItem.item_type = n.id;
-          $scope.ResourceItem.item_type_name = n.dict_name;
-        }
-      })
-
-      $scope.$watch('data.secret_flag', function(n) {
-        console.log(n);
-        $scope.ResourceItem.secret_flag = n.id;
-        $scope.ResourceItem.secret_flag_name = n.dict_name;
-      })
-
-      $scope.$watch('data.parent_id', function(n) {
-
-        $scope.parent.childParentConflict = false;
-        if (n) {
-          _($scope.ResourceItemList).forEach(function(item) {
-            if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
-              $scope.parent.childParentConflict = true;
-              return;
-            }
-          });
-          $scope.ResourceItem.parent_id = n.item_name;
-        } else {
-          $scope.ResourceItem.parent_id = '';
-        }
-        console.log($scope.parent.childParentConflict);
-      })
-
-      $scope.checkItemName = function() {
-        if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
-          console.log($scope.ResourceItem);
-          console.log($scope.ResourceItemList);
+          $scope.Modal = {};
+          $scope.itemUpdated = false;
+          $scope.ResourceItem = angular.copy($scope.InfoItem);
+          $scope.ResourceItem.shareFreqItemSelection = _.map($scope.InfoItem.config, 'id');
+          $scope.ResourceItem.shareFreqItemObjSelection = $scope.InfoItem.config;
+          $scope.shareFreqEmpty = false;
+          $scope.parent = {};
           $scope.parent.itemNameExist = false;
-          _($scope.ResourceItemList).forEach(function(item) {
-            if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
-              $scope.parent.itemNameExist = true;
+          $scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
+          var hasEmpty = false;
+          console.log($scope.InfoItem);
+          console.log($scope.ResourceItem.shareFreqItemSelection);
+          var ItemUpdateObj = {};
+
+          _($scope.parent.ItemsList).forEach(function(item) {
+            if (item.item_name == '') {
+              hasEmpty = true;
             }
           })
-          if (!$scope.parent.itemNameExist) {
-            Http.checkItemName({
-              item_name: $scope.ResourceItem.item_name
-            }).then(function(res) {
-              if (res.data.body[0].isexists == 'true') {
-                $scope.parent.itemNameExist = true;
-              } else {
-                $scope.parent.itemNameExist = false;
-              }
-            })
+          if (!hasEmpty) {
+            $scope.parent.ItemsList.push({
+              'item_name': ''
+            });
           }
 
+          $scope.data = {};
+
+          _($scope.parent.ItemsList).forEach(function(resourceItem) {
+            if ($scope.InfoItem.parent_id == resourceItem.item_name) {
+              $scope.data.parent_id = resourceItem;
+            }
+          })
+
+          $scope.$watch('data.parent_id', function(n) {
+            $scope.parent.childParentConflict = false;
+            if (n) {
+              _($scope.ResourceItemList).forEach(function(item) {
+                if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+                  $scope.parent.childParentConflict = true;
+                  return;
+                }
+              });
+              $scope.ResourceItem.parent_id = n.id;
+            } else {
+              $scope.ResourceItem.parent_id = '';
+            }
+          })
+
+          $scope.checkItemName = function() {
+            if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+              $scope.parent.itemNameExist = false;
+              _($scope.ResourceItemList).forEach(function(item) {
+                if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
+                  $scope.parent.itemNameExist = true;
+                }
+              })
+              if (!$scope.parent.itemNameExist) {
+                Http.checkItemName({
+                  item_name: $scope.ResourceItem.item_name
+                }).then(function(res) {
+                  if (res.data.body[0].isexists == 'true') {
+                    $scope.parent.itemNameExist = true;
+                  } else {
+                    $scope.parent.itemNameExist = false;
+                  }
+                })
+              }
+
+            }
+
+          }
+
+          Component.popModal($scope, 'Department.Inventory.Controller.publish', '修改', 'item-add-modal').result.then(function(res) {
+            $scope.itemUpdated = false;
+            var shareFreqDictName = [];
+
+            _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
+              var sys_dict = {};
+              sys_dict.InfoItemId = $scope.ResourceItem.id;
+              sys_dict.sys_dict_id = item.id;
+              sys_dict.parent_id = $scope.ResourceItem.parent_id;
+              $scope.ResourceItemConfigList.push(sys_dict);
+            });
+
+            $scope.ResourceItem.resource_id = $scope.InfoResource.id;
+            ItemUpdateObj.InfoItem = $scope.ResourceItem;
+            ItemUpdateObj.InfoItem_RelationConfig = $scope.ResourceItemConfigList;
+
+            // 修改信息项
+            Http.updateInfoItem(ItemUpdateObj).then(function(res) {
+              if (200 == res.data.head.status) {
+                alert('保存成功！');
+                // 获取信息项列表
+                getInfoItemList($scope.InfoResource.id);
+              } else {
+                alert('保存失败！');
+              }
+            })
+
+          })
+        } else {
+          alert('查询出错！');
+          return;
         }
-
-      }
-
-      Component.popModal($scope, 'Department.Inventory.Controller.publish', '修改', 'item-add-modal').result.then(function(res) {
-        $scope.itemUpdated = false;
-        var shareFreqDictName = [];
-        // 删除本条信息项已选中的多选项
-        _.remove($scope.ResourceItemConfigList, function(config) {
-          return config.InfoItemId == $scope.ResourceItem.item_name && config.parent_id == $scope.ResourceItem.parent_id;
-        });
-
-        _.remove($scope.ResourceItemList, function(item) {
-          return item == InfoItem;
-        });
-
-        _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
-          var sys_dict = {};
-          sys_dict.InfoItemId = $scope.ResourceItem.item_name;
-          sys_dict.sys_dict_id = item.id;
-          sys_dict.parent_id = $scope.ResourceItem.parent_id;
-          $scope.ResourceItemConfigList.push(sys_dict);
-          shareFreqDictName.push(item.dict_name);
-        });
-        $scope.ResourceItem.config = $scope.ResourceItem.shareFreqItemObjSelection;
-        $scope.ResourceItem.update_period_name = shareFreqDictName.toString();
-        $scope.ResourceItemList.push($scope.ResourceItem);
-        console.log($scope.ResourceItemList);
       })
+
     }
 
     // delete info item
-    $scope.deleteItem = function(index) {
+    $scope.deleteItem = function(id) {
       var deleteFlag = confirm('确定删除本条信息项？');
-      console.log(index);
-      if (deleteFlag && index > -1) {
-        $scope.ResourceItemList.splice(index, 1);
+      console.log(id);
+      if (deleteFlag && id) {
+        Http.deleteInfoItem({
+          id: id
+        }).then(function(result) {
+          if (200 == result.data.head.status) {
+            alert('删除成功！');
+            // 获取信息项列表
+            getInfoItemList($scope.InfoResource.id);
+          } else {
+            alert('删除失败！');
+          }
+        })
       }
     }
 
@@ -3999,7 +4424,6 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         $scope.resFormatOtherShow = false;
         $scope.shareFreqSelection = [];
         $scope.InfoResource.secret_flag = '';
-        $scope.InfoResource.share_level = '';
         $scope.InfoResource.meter_unit = "";
         $scope.InfoResource.calculate_method = '';
       } else if (RESOURCE_FORMAT_OTHER == $scope.InfoResource.resource_format) {
@@ -4159,10 +4583,34 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
       )
     }
 
+    function getInfoItemById(id) {
+      return $http.get(
+        path + '/info_item', {
+          params: id
+        }
+      )
+    }
+
+    function addInfoItem(params) {
+      return $http.post(
+        path + '/info_item', {
+          data: params
+        }
+      )
+    }
+
     function updateInfoItem(params) {
       return $http.put(
         path + '/info_item', {
           data: params
+        }
+      )
+    }
+
+    function deleteInfoItem(id) {
+      return $http.delete(
+        path + '/info_item', {
+          data: id
         }
       )
     }
@@ -4204,7 +4652,6 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
       return promise;
     }
 
-
     return {
       saveInfoResource: saveInfoResource,
       getDepartmentList: getDepartmentList,
@@ -4217,11 +4664,14 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
       getResourceAreaLevel: getResourceAreaLevel,
       getResourceUpdatePeriod: getResourceUpdatePeriod,
       getResourceShareDeps: getResourceShareDeps,
+      addInfoItem: addInfoItem,
       updateInfoItem: updateInfoItem,
+      deleteInfoItem: deleteInfoItem,
       getItemUpdatePeriod: getItemUpdatePeriod,
       checkResName: checkResName,
       checkItemName: checkItemName,
-      uploadFile: uploadFile
+      uploadFile: uploadFile,
+      getInfoItemById: getInfoItemById
     }
   }
 ]);
@@ -4284,7 +4734,9 @@ var Department = angular.module('Department', ['ui.router']);
 Department.controller('Department.Controller.Main', ['$cookies', '$scope', '$q', 'Department.Service.Http', '$sce','$state',
   function($cookies, $scope, $q, Http, $sce, $state) {
     var LoginUser = JSON.parse($cookies.get('User'));
+    console.log(LoginUser);
     var DEP_ID = LoginUser.dep_id;
+    var USERNAME = LoginUser.username;
     var SHARE_FREQUENCY = 1;
     var DATA_LEVEL = 2;
     var SHARE_LEVEL = 3;
@@ -4513,6 +4965,7 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
   function($cookies, $scope, $stateParams, Component, Http) {
     var LoginUser = JSON.parse($cookies.get('User'));
     var DEP_ID = LoginUser.dep_id;
+    var USERNAME = LoginUser.username;
     var SHARE_FREQUENCY = 1;
     var DATA_LEVEL = 2;
     $scope.DeptRequirement = {};
@@ -4555,6 +5008,7 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
 
     function getDeptRequirementList() {
       _httpParams.dep_id = DEP_ID;
+      _httpParams.username = USERNAME;
       $scope.reqPromise = Http.getDepartmentRequirementList(_httpParams).then(function(result) {
         $scope.requirementList = result.data.body[0].results;
         $scope.Paging.totalItems = result.data.body[0].count;
@@ -4763,6 +5217,7 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
 
     var LoginUser = JSON.parse($cookies.get('User'));
     var DEP_ID = LoginUser.dep_id;
+    var USERNAME = LoginUser.username;
     $scope.DeptRequirement = {};
 
     $scope.Paging = {};
@@ -4784,6 +5239,8 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
     var _httpModalParams = {};
     _httpModalParams.limit = 10;
     _httpModalParams.skip = 0;
+
+    $scope.checkedResourceName = '';
 
     $scope.Paging.pageChanged = function() {
       _httpConfirmParams.skip = ($scope.Paging.currentPage - 1) * _httpConfirmParams.limit;
@@ -4839,6 +5296,15 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       $scope.resourceFormatList = result.data.body;
     });
 
+    // 隐藏或显示资源列表
+    $scope.togglResourceList = function() {
+      if($scope.resParent.dropListShow) {
+        $scope.resParent.dropListShow = false;
+      }
+      else {
+        $scope.resParent.dropListShow = true;
+      }
+    }
 
     // filter by resource format
     $scope.resFormatMainSelection = [];
@@ -4901,11 +5367,12 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
 
     // 选中信息资源
     $scope.resourceSelection = [];
-    $scope.toggleResourceSelection = function(resourceId) {
+    $scope.toggleResourceSelection = function(resourceId, resource_name) {
       var idx = $scope.resourceSelection.indexOf(resourceId);
       // is currently selected
       if (idx > -1) {
         $scope.resourceSelection = [];
+        $scope.checkedResourceName = '';
       }
 
       // is newly selected
@@ -4913,14 +5380,14 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
         $scope.resourceSelection = resourceId;
         $scope.resource_id = resourceId;
         $scope.resourceItemSelection = []; //清空信息项
-
+        $scope.checkedResourceName = '已选中资源 "' + resource_name + '"';
       }
       console.log($scope.resourceItemSelection);
     };
 
     // 选中信息项checkbox事件
     $scope.resourceItemSelection = [];
-    $scope.toggleResItemSelection = function(resourceId, item) {
+    $scope.toggleResItemSelection = function(resourceId, item, resource_name) {
       if($scope.resource_id != resourceId) {
         $scope.resourceItemSelection = [];
         $scope.resource_id = resourceId;
@@ -4929,11 +5396,21 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       // is currently selected
       if (idx > -1) {
         $scope.resourceItemSelection.splice(idx, 1);
+        var selLength = $scope.resourceItemSelection.length;
+        console.log(selLength);
+        if(selLength == 0) {
+          $scope.checkedResourceName = '';
+        }
+        else {
+          $scope.checkedResourceName = '已选中资源 "' + resource_name + '"下的' + selLength +'条信息项';
+        }
       }
 
       // is newly selected
       else {
         $scope.resourceItemSelection.push(item.id);
+        var selLength = $scope.resourceItemSelection.length;
+        $scope.checkedResourceName = '已选中资源 "' + resource_name + '"下的' + selLength +'条信息项';
         $scope.resourceSelection = [];// 清空信息资源选中项
       }
       console.log($scope.resourceItemSelection);
@@ -4948,6 +5425,7 @@ DepartmentReq.controller('Department.Requirement.Controller.confirm', ['$cookies
       }
       else{
         $scope.resParent.dropListShow = false;
+        $scope.errorMsg = '';
       }
     }
 
@@ -5041,7 +5519,7 @@ DepartmentReq.controller('Department.Requirement.Controller.detail', ['$scope', 
       }).then(function(result) {
         console.log(result.data.body[0]);
         $scope.ReqDetail = result.data.body[0];
-        if($scope.ReqDetail) {
+        if($scope.ReqDetail.resource_id) {
           // 查询需求对应的资源
           Http.getDepartInfoResList({
             resource_id: $scope.ReqDetail.resource_id
@@ -5260,6 +5738,9 @@ DepartmentReq.service('Department.Requirement.Service.Component', ['$uibModal',
         if (scope.resourceSelection.length == 0 && scope.resourceItemSelection.length == 0 && scope.Modal.ReqResponse.status == 1) {
           scope.errorMsg = '请选择信息资源！';
           isValid = false;
+        }
+        else {
+          scope.errorMsg = '';
         }
         if (isValid) {
           modalInstanceConfirm.close(scope.Modal);

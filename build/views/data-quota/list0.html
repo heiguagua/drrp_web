@@ -111,9 +111,9 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <i class="fa fa-table"> 资源列表</i>
+      <i class="fa fa-table "></i> 资源列表
       <span class='icon-list'>
-        <i class='fa fa-eye'></i> 全省开放
+        <i class='fa fa-eye blue'></i> 全省开放
         <i class='fa fa-desktop blue'></i> 政务云开放
         <i class='fa fa-lock blue'></i> 授权开放
         <i class='fa fa-warning orange'></i> 暂不开放
@@ -136,16 +136,16 @@
                   <th width="45px" >分地区数据级别</th>
                   <th width="40px" >信息资源格式</th>
                   <th width="30px" >共享级别</th>
-                  <th width="48px" title="是否面向社会开放">是否面向社会开放</th>
-                  <th width="15px" ></th>
+                  <th width="40px" title="是否面向社会开放">是否面向社会开放</th>
+                  <th width="25px" ></th>
                 </tr>
               </thead>
               <tbody>
                 <tr ng-repeat='quota in DataQuotas'>
-                  <td title="{{quota.share_level_name}}">
+                  <td title="{{quota.share_level_name}}"  class="orderStyle">
                     <div ng-if='quota.share_level_name =="全省开放"'>
                       <span>
-                        <i class='fa fa-eye'></i>
+                        <i class='fa fa-eye blue'></i>
                       </span>
                     </div>
                     <div ng-if='quota.share_level_name =="省政务云平台开放" '>

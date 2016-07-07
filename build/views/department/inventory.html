@@ -16,11 +16,11 @@
             <input type="text" class='input-filter' placeholder="请输入查询信息资源名称" ng-model='DepartInfoResource.resource_name_filter'>
             <button type="button" class="btn btn-primary" ng-click='searchDeptInfoResourceByName()'>查询</button>
           </li>
-          <li role="presentation">
+          <li role="presentation" style='margin-left:40px;margin-right:0'>
             <button class='btn btn-success' ui-sref='main.department.inventory.publish'>
               <i class='fa fa-plus'></i>&nbsp;新增资源</button>
           </li>
-          <li role="presentation">
+          <li role="presentation" style='margin-left:10px;'>
             <button class='btn btn-success' ui-sref='main.department.inventory.upload'>
               <i class='fa fa-file-excel-o'></i>&nbsp;导入数据</button>
           </li>
@@ -169,7 +169,7 @@
                         <a class='delete btn btn-danger btn-xs' ng-click='deleteInfoResource(InfoResource.id)' ><i class='fa fa-trash'></i>&nbsp;删除</a>
                         <a class='edit btn btn-success btn-xs' ui-sref='main.department.inventory.update({item:InfoResource.id})'><i class='fa fa-pencil'></i>&nbsp;修改</a>
                     </td>
-                      <td>
+                      <td class='text-center'>
                         <div ng-if='InfoResource.share_level_name =="全省开放" '>
                           <span>
                             <i class='fa fa-eye'></i>

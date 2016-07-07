@@ -1,4 +1,4 @@
-<div id='department-requirement-confirm'>
+<div id='department-requirement-confirm' ui-view>
   <div class='indicator-order'>
     <div class='pull-left'>
       <p class='font-18'>需求清单</p>
@@ -52,7 +52,7 @@
       </div>
 
       <div class='panel-body' style='overflow-x:scroll;overflow-y:hidden' cg-busy="{promise:reqConfirmPromise,message:'加载中',backdrop:backdrop,delay:delay,minDuration:minDuration}">
-        <div class='' style='width:1600px'>
+        <div class='' style='width:1200px'>
           <div class='row'>
             <div class='col-lg-12'>
               <!-- Table -->
@@ -60,16 +60,16 @@
                 <thead>
                   <tr>
                     <th width='50px'>状态</th>
-                    <th width='100px'>需求日期</th>
-                    <th width='100px'>确认日期</th>
+                    <th width='100px'>需求发布日期</th>
+                    <th width='100px'>需求响应日期</th>
                     <th width='80px'>需求名称</th>
-                    <th width='120px'>需求说明</th>
-                    <th width='40px'>共享频率</th>
+                    <th width='60px'>需求说明</th>
+                    <th width='80px'>共享频率</th>
                     <th width='60px'>空间范围</th>
                     <th width='80px'>数据级别</th>
                     <th width='40px'>联系人</th>
                     <th width='80px'>联系电话</th>
-                    <th width='80px'>对应部门</th>
+                    <th width='80px'>来源部门</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -95,7 +95,7 @@
                     <td class='text-right' title='{{DeptReq.create_time| date:"yyyy-MM-dd HH:mm:ss"}}'>{{DeptReq.create_time| date:"yyyy-MM-dd HH:mm:ss"}}</td>
                     <td class='text-right' title='{{DeptReq.response_time |date:"yyyy-MM-dd HH:mm:ss"}}'>{{DeptReq.response_time |date:"yyyy-MM-dd HH:mm:ss"}}</td>
                     <td title='{{DeptReq.requiement_name}}'>
-                      <a ui-sref='main.department.requirement.detail({ID:DeptReq.id})'>{{DeptReq.requiement_name}}</a>
+                      <a ui-sref='main.department.requirementConfirm.detail({ID:DeptReq.id})'>{{DeptReq.requiement_name}}</a>
                     </td>
                     <td title='{{DeptReq.requiement_desc}}'>{{DeptReq.requiement_desc}}</td>
                     <td title='{{DeptReq.sharefrequency}}'>{{DeptReq.sharefrequency}}</td>
@@ -145,7 +145,10 @@
           <span class='require-sign'>*</span>对应资源:</label>
         <div class="col-sm-10" style='position:relative'>
           <!-- <div style='display:inline-block' isteven-multi-select input-model="depInfoResourceList" output-model="confirmParent.outputResource" button-label="resource_name" item-label="resource_name" tick-property="ticked" selection-mode="single" max-height="250px" helper-elements="filter"></div> -->
-          <a class='btn btn-primary' ng-click='resParent.dropListShow = true'>选择信息资源</a>
+          <a class='btn btn-primary' ng-click='togglResourceList()'>选择信息资源</a>
+          <span class='help-block' style='display:inline-block'>{{errorMsg}}</span>
+          <span class='checked-resource' title='{{checkedResourceName}}'>{{checkedResourceName}}</span>
+          <p class='help-info'>根据需求选择对应的资源信息</p>
           <div class='infoListDropdown' ng-class="{true: 'ng-show', false: 'ng-hide'}[resParent.dropListShow]" >
             <ul class="pager">
               <li class='filter-label'>信息资源格式</li>
@@ -176,7 +179,7 @@
                         <a ng-click='closeItems($index)' ng-class="{true: 'ng-show', false: 'ng-hide'}[closeShow && ($index == showIndex)]">
                           <i class='fa fa-angle-double-up'></i>收起</a>
                     </span>
-                    <span ng-if='depInfo.resource_format_name != "数据库类"'><input type='checkbox' ng-checked="resourceSelection.indexOf(depInfo.id) > -1" ng-click="toggleResourceSelection(depInfo.id)"  /></span>
+                    <span ng-if='depInfo.resource_format_name != "数据库类"'><input type='checkbox' ng-checked="resourceSelection.indexOf(depInfo.id) > -1" ng-click="toggleResourceSelection(depInfo.id, depInfo.resource_name)"  /></span>
                   </td>
                   <td class='text-center' title='{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
                   <td title='{{depInfo.resource_name}}'>{{depInfo.resource_name}}</td>
@@ -184,7 +187,7 @@
                   <tr ng-if='depInfoResourceList[$index].resource_format_name == "数据库类"' ng-class="{true: 'ng-show', false: 'ng-hide'}[$index == collapseIndex]">
                     <td colspan="4">
                       <div class='items-list'>
-                        <table class='table table-hover table-striped '>
+                        <table class='table table-hover table-striped table-bordered'>
                           <thead>
                             <tr>
                               <th width='60px'>选中</th>
@@ -201,7 +204,7 @@
                           </thead>
                           <tbody>
                             <tr ng-repeat='rescoureItem in InfoItems | orderBy:"-create_time" '>
-                              <td><input type='checkbox' value='{{rescoureItem.id}}' ng-checked="resourceItemSelection.indexOf(rescoureItem.id) > -1" ng-click="toggleResItemSelection(depInfo.id, rescoureItem)" /></td>
+                              <td><input type='checkbox' value='{{rescoureItem.id}}' ng-checked="resourceItemSelection.indexOf(rescoureItem.id) > -1" ng-click="toggleResItemSelection(depInfo.id, rescoureItem, depInfo.resource_name)" /></td>
                               <td class='text-center'>{{$index+1}}</td>
                               <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
                               <td title='{{rescoureItem.item_type_name}}'>{{rescoureItem.item_type_name}}</td>
@@ -233,8 +236,8 @@
             </div>
           </div>
 
-          <p class='help-block'>{{errorMsg}}</p>
-          <span class='help-info'>根据需求选择对应的资源信息</span>
+
+
         </div>
       </div>
 

@@ -105,8 +105,8 @@ input.ng-touched.ng-invalid {
 }
 #data-quota-main-unlogin .left .toggler {
   font-size: 15px;
-  border-radius: 1px;
-  box-shadow: 10px 10px 5px #888888;
+  border-radius: 10px;
+  box-shadow: 3px 3px 3px #E8E8E8 inset;
 }
 #data-quota-main-unlogin .left .panel-heading:HOVER {
   color: #337AB9;
@@ -294,6 +294,12 @@ input.ng-touched.ng-invalid {
 }
 #login .login-wrap .login-main .login-body button {
   position: relative;
+  width: 100%;
+}
+#login .login-wrap .login-main .login-body .help-info {
+  padding-top: 15px;
+  padding-left: 245px;
+  font-size: 13px;
   width: 100%;
 }
 #main .logo {
@@ -1158,7 +1164,7 @@ input.ng-touched.ng-invalid {
   text-overflow: ellipsis;
 }
 #department-requirement-confirm .indicator-list table tr span {
-  padding: 0 15px;
+  padding: 0 5px;
 }
 #department-requirement-confirm .indicator-list table tr span i {
   font-size: 18px;
@@ -1221,6 +1227,11 @@ input.ng-touched.ng-invalid {
 .confirm-req-modal .table-resource-list {
   table-layout: fixed;
 }
+.confirm-req-modal .table-resource-list td {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .confirm-req-modal .table-resource-list td .items-list {
   overflow-x: scroll;
   overflow-y: hidden;
@@ -1229,6 +1240,14 @@ input.ng-touched.ng-invalid {
   table-layout: fixed;
 }
 .confirm-req-modal .table-resource-list td .items-list table tr td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.confirm-req-modal .checked-resource {
+  color: #5bc0de;
+  width: 60%;
+  display: inline-block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1252,6 +1271,15 @@ input.ng-touched.ng-invalid {
   padding: 15px 0;
   border-top: 1px solid #CCC;
   margin-top: 16px;
+}
+#department-requirement-detail .resource-info-tab {
+  padding: 15px 0;
+}
+#department-requirement-detail .resource-info-tab .row {
+  padding: 4px 0;
+}
+#department-requirement-detail .resource-info-tab .row .col-sm-10 {
+  word-wrap: break-word;
 }
 #department-requirement-detail pre {
   overflow: hidden;
@@ -1376,7 +1404,7 @@ input.ng-touched.ng-invalid {
   vertical-align: middle;
 }
 #department-audit .indicator-list table tr span {
-  padding: 0 15px;
+  padding: 0 5px;
 }
 #department-audit .indicator-list table tr span i {
   font-size: 18px;
@@ -1505,8 +1533,8 @@ input.ng-touched.ng-invalid {
 }
 #data-quota-main .left .toggler {
   font-size: 15px;
-  border-radius: 1px;
-  box-shadow: 10px 10px 5px #888888;
+  border-radius: 10px;
+  box-shadow: 3px 3px 3px 	#E8E8E8 inset;
 }
 #data-quota-main .left .panel-heading:HOVER {
   color: #337AB9;
@@ -1629,7 +1657,7 @@ input.ng-touched.ng-invalid {
   color: #F07746;
 }
 #data-quota-list .icon-list {
-  font-size: 12px;
+  font-size: 13px;
 }
 #data-quota-list .icon-list i {
   margin-left: 15px;
