@@ -112,7 +112,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
       })
       .state('main.data-quota.detail', {
         url: '/detail/:resource_id',
-        templateUrl: 'views/data-quota/detail.html',
+        templateUrl: 'views/data-quota/detail0.html',
         controller: 'DataQuotaDetail.Controller.Main'
       })
       .state('main.department', {

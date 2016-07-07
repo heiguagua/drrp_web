@@ -1672,6 +1672,10 @@ input.ng-touched.ng-invalid {
   background: #E9E9E9;
   font-weight: bolder;
 }
+#data-quota-detail {
+  /*detail0*/
+  /*detail0*/
+}
 #data-quota-detail .quota-detail {
   font-size: 13px;
 }
@@ -1684,6 +1688,26 @@ input.ng-touched.ng-invalid {
 #data-quota-detail .list-patch {
   overflow: hidden;
   word-wrap: break-word;
+}
+#data-quota-detail .row {
+  padding-bottom: 5px ;
+  padding-top: 5px ;
+}
+#data-quota-detail .row .col-sm-10 {
+  word-wrap: break-word;
+}
+#data-quota-detail pre {
+  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  word-break: initial;
+  word-wrap: break-word;
+  color: inherit;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  margin: 0;
 }
 #data-quota-detail .table {
   margin-bottom: 20px;
