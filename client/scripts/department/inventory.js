@@ -673,7 +673,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           })
           if (!$scope.parent.itemNameExist) {
             Http.checkItemName({
-              item_name: $scope.ResourceItem.item_name
+              item_name: $scope.ResourceItem.item_name,
+              info_resource_id: $scope.InfoResource.id
             }).then(function(res) {
               if (res.data.body[0].isexists == 'true') {
                 $scope.parent.itemNameExist = true;
@@ -788,7 +789,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
               })
               if (!$scope.parent.itemNameExist) {
                 Http.checkItemName({
-                  item_name: $scope.ResourceItem.item_name
+                  item_name: $scope.ResourceItem.item_name,
+                  info_resource_id: $scope.InfoResource.id
                 }).then(function(res) {
                   if (res.data.body[0].isexists == 'true') {
                     $scope.parent.itemNameExist = true;
