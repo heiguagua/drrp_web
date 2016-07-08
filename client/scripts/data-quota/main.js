@@ -145,9 +145,9 @@ DataQuota.directive('wiservMainWrapper', [
     return {
       restrict: 'AE',
       link: function(scope, element, attrs) {
-        scope.currentTab = currentTabFlash;
+        scope.currentTab = scope.currentTabFlash;
         element.find('.toggler').on('click', function(ev) {
-          console.log(scope.flag);
+          // console.log(scope.flag);
           if( scope.currentTab == scope.flag) {
             if((!element.hasClass("content-collapse"))){
               element.find('.searchTree').toggleClass("searchTree-collapse");
