@@ -1811,6 +1811,9 @@ input.ng-touched.ng-invalid {
 #dep-resource .table-patch .numberAndDateStyle {
   text-align: right;
 }
+#dep-resource .table-patch .orderBy {
+  text-align: center;
+}
 #dep-resource table.table.table-striped.table-hover.table-bordered.table-patch {
   width: 750px;
   margin-left: 100px;

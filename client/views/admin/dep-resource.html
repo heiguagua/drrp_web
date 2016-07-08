@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                   <tr ng-repeat="depResource in depRecouces | filter: query">
-                    <td class='numberAndDateStyle'>{{$index+(Paging.currentPage-1)*10+1}}</td>
+                    <td class='orderBy'>{{$index+(Paging.currentPage-1)*10+1}}</td>
                     <td>{{depResource.dep_name}}</td>
                     <td class='numberAndDateStyle'>{{depResource.resourcenumber}}</td>
                   </tr>
