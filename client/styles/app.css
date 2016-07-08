@@ -694,6 +694,13 @@ input.ng-touched.ng-invalid {
 #department-inventory .indicator-list table tr span i.fa-warning {
   color: #f0ad4e;
 }
+.form-item .checkBoxContainer {
+  max-width: 300px;
+  overflow-x: scroll;
+}
+.form-item .multiSelect .buttonLabel {
+  text-align: left;
+}
 #inventory-publish {
   margin-bottom: 50px;
 }

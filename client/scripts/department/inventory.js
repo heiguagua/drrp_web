@@ -647,14 +647,14 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
       $scope.$watch('data.parent_id', function(n) {
         $scope.parent.childParentConflict = false;
-        if (n) {
+        if (n && n.length > 0) {
           _($scope.ResourceItemList).forEach(function(item) {
-            if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+            if ((n[0].item_name != $scope.ResourceItem.item_name) && (n[0].item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
               $scope.parent.childParentConflict = true;
               return;
             }
           });
-          $scope.ResourceItem.parent_id = n.id;
+          $scope.ResourceItem.parent_id = n[0].id ? n[0].id : '';
         } else {
           $scope.ResourceItem.parent_id = '';
         }
@@ -757,23 +757,24 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           }
 
           $scope.data = {};
-
           _($scope.parent.ItemsList).forEach(function(resourceItem) {
             if ($scope.InfoItem.parent_id == resourceItem.item_name) {
-              $scope.data.parent_id = resourceItem;
+              $scope.data.parent_id = [];
+              resourceItem.ticked = true;
+              $scope.data.parent_id.push(resourceItem);
             }
           })
 
           $scope.$watch('data.parent_id', function(n) {
             $scope.parent.childParentConflict = false;
-            if (n) {
+            if (n && n.length > 0) {
               _($scope.ResourceItemList).forEach(function(item) {
-                if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+                if ((n[0].item_name != $scope.ResourceItem.item_name) && (n[0].item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
                   $scope.parent.childParentConflict = true;
                   return;
                 }
               });
-              $scope.ResourceItem.parent_id = n.id;
+              $scope.ResourceItem.parent_id = n[0].id ? n[0].id : '';
             } else {
               $scope.ResourceItem.parent_id = '';
             }

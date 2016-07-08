@@ -361,7 +361,7 @@
 </div>
 
 <script type='text/ng-template' id='item-add-modal.html'>
-  <form class="form-horizontal" class="form-horizontal" novalidate name='addItemForm'>
+  <form class="form-horizontal form-item" novalidate name='addItemForm'>
     <div class='modal-header'>
       <h4>
         <i class="fa fa-plus"></i>
@@ -479,11 +479,15 @@
       <div class="form-group">
         <label for="" class="col-sm-2 control-label">
           父节点信息项:</label>
-        <div class="col-sm-10">
-          <select ng-model='data.parent_id'  ng-options="srcItem as srcItem.item_name for srcItem in parent.ItemsList track by srcItem.item_name" class='custom-form-control'></select>
-          <p ng-show="(data.parent_id.item_name == ResourceItem.item_name) && ResourceItem.item_name"  class="help-block">不能选择自身作为父级信息项。</p>
-          <p ng-show="parent.childParentConflict"  class="help-block">所选信息项不能与自己互为父节点。</p>
-        </div>
+          <div class="col-sm-10">
+            <div style='display:inline-block;max-width:300px;' isteven-multi-select
+            input-model="parent.ItemsList" output-model="data.parent_id" selection-mode="single" helper-elements="all none filter"
+             button-label="item_name" item-label="item_name" tick-property="ticked" max-height="250px"></div>
+
+            <!-- <select ng-model='data.parent_id' ng-options="srcItem as srcItem.item_name for srcItem in parent.ItemsList track by srcItem.item_name" class='custom-form-control'></select> -->
+            <p ng-show="(data.parent_id[0].item_name == ResourceItem.item_name) && ResourceItem.item_name" class="help-block">不能选择自身作为父级信息项。</p>
+            <p ng-show="parent.childParentConflict" class="help-block">所选信息项不能与自己互为父节点。</p>
+          </div>
       </div>
 
       <!-- <div class="form-group">
@@ -500,7 +504,7 @@
     </div>
     <div class='modal-footer'>
       <button class='btn btn-default' type='button' ng-click='Modal.cancel()'>取消</button>
-      <button class='btn btn-success' ng-disabled="parent.childParentConflict || (data.parent_id.item_name == ResourceItem.item_name) || addItemForm.$invalid" ng-click="Modal.confirm()">确认</button>
+      <button class='btn btn-success' ng-disabled="parent.childParentConflict || (data.parent_id[0].item_name == ResourceItem.item_name) || addItemForm.$invalid" ng-click="Modal.confirm()">确认</button>
     </div>
   </div>
 </form>
