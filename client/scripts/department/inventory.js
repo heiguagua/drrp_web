@@ -633,7 +633,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.ResourceItem.field_standard = '';
       $scope.ResourceItem.shareFreqItemSelection = [];
       $scope.ResourceItem.shareFreqItemObjSelection = [];
-      $scope.ResourceItem.isleaf = 1;
+      //$scope.ResourceItem.isleaf = 1;
       $scope.parent = {};
       $scope.parent.itemNameExist = false;
       $scope.parent.childParentConflict = false;
