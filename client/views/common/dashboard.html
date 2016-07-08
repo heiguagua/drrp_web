@@ -124,7 +124,7 @@
           <tbody>
             <tr ng-repeat='requirement in Requirements| orderBy:"-create_time"'>
               <td  class='numberAndDateStyle' title="{{requirement.create_time | date:'yyyy-MM-dd HH:mm:ss'}}">{{requirement.create_time | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-              <td title="{{requirement.requiement_name}}"><a ui-sref='main.department.requirement.detail({ID:requirement.id})'>{{requirement.requiement_name}}</a></td>
+              <td title="{{requirement.requiement_name}}"><a ui-sref='main.department.requirementConfirm.detail({ID:requirement.id})'>{{requirement.requiement_name}}</a></td>
               <td title="{{requirement.dep_name}}">{{requirement.dep_name}}</td>
               <td>
                 <div ng-if='requirement.status == 0'>
