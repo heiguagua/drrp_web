@@ -98,19 +98,19 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
             var links1 = [{source: resourceName,target: "" }];
             if(deptotal){
                _(depNames).forEach(function (value,key){
-                 console.log(key+":"+value);
+                //  console.log(key+":"+value);
                  var dep_obj = {};
-                 obj.name = value;
-                 obj.x = 600;
-                 obj.y = 100 + (key+1)*20;
-                 data1.push(obj);
+                 dep_obj.name = value;
+                 dep_obj.x = 520;
+                 dep_obj.y = 100 + (key+1)*10;
+                 data1.push(dep_obj);
                  var target_obj = {};
                  target_obj.target = value ;
                  target_obj.source = resourceName;
                  links1.push(target_obj);
                });
-               console.log(data1);
-               console.log(links1);
+              //  console.log(data1);
+              //  console.log(links1);
              }
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
