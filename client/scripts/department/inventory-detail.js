@@ -11,24 +11,27 @@ DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', 
       resource_id: $stateParams.item
     }).then(function(ResourceRes) {
       $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
-      Http.getInfoItemList({
-        resource_id: $scope.InfoResourceDetail.id
-      }).then(function(result) {
-        if (result.data.body.length == 0) {
-          $scope.InfoItemShow = false;
-        } else {
-          $scope.InfoItemShow = true;
-          $scope.InfoItems = result.data.body;
+      if($scope.InfoResourceDetail && $scope.InfoResourceDetail.resource_format_name.indexOf('数据库类') > -1) {
+        Http.getInfoItemList({
+          resource_id: $scope.InfoResourceDetail.id
+        }).then(function(result) {
+          if (result.data.body.length == 0) {
+            $scope.InfoItemShow = false;
+          } else {
+            $scope.InfoItemShow = true;
+            $scope.InfoItems = result.data.body;
 
-          _($scope.InfoItems).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              shareFreqDictName.push(config.dict_name);
+            _($scope.InfoItems).forEach(function(item) {
+              var shareFreqDictName = [];
+              _(item.config).forEach(function(config) {
+                shareFreqDictName.push(config.dict_name);
+              })
+              item.update_period_name = shareFreqDictName.toString();
             })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-        }
-      })
+          }
+        })
+      }
+
     })
 
     // Data Quota Example
