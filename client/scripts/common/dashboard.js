@@ -408,7 +408,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:300;height:215px;position:relative;top:-1px'></div>",
+      template: "<div style='width:300;height:215px;position:relative;top:-1px;'></div>",
       link: function(scope, element, attr) {
         scope.DataquotaSummary.then(function(result) {
           if (200 == result.data.head.status) {
@@ -476,7 +476,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       radius: '90%',
                       axisLine: {            // 坐标轴线
                           lineStyle: {       // 属性lineStyle控制线条样式
-                              width: 10
+                              width: 5
                           }
                       },
                       axisTick: {            // 坐标轴小标记
@@ -523,17 +523,17 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       splitNumber:7,
                       axisLine: {            // 坐标轴线
                           lineStyle: {       // 属性lineStyle控制线条样式
-                              width: 8
+                              width: 3
                           }
                       },
                       axisTick: {            // 坐标轴小标记
-                          length:12,        // 属性length控制线长
+                          length:10,        // 属性length控制线长
                           lineStyle: {       // 属性lineStyle控制线条样式
                               color: 'auto'
                           }
                       },
                       splitLine: {           // 分隔线
-                          length:20,         // 属性length控制线长
+                          length:13,         // 属性length控制线长
                           lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                               color: 'auto'
                           }
@@ -544,7 +544,6 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       title: {
                           offsetCenter: [0, '-1%'],
                           textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                            fontWeight: '',
                             fontSize: 10,
                             fontStyle: 'italic'
                          }      // x, y，单位px
@@ -647,7 +646,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       radius: '90%',
                       axisLine: {            // 坐标轴线
                           lineStyle: {       // 属性lineStyle控制线条样式
-                              width: 10
+                              width: 5
                           }
                       },
                       axisTick: {            // 坐标轴小标记
@@ -694,17 +693,17 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       splitNumber:7,
                       axisLine: {            // 坐标轴线
                           lineStyle: {       // 属性lineStyle控制线条样式
-                              width: 8
+                              width: 3
                           }
                       },
                       axisTick: {            // 坐标轴小标记
-                          length:12,        // 属性length控制线长
+                          length:10,        // 属性length控制线长
                           lineStyle: {       // 属性lineStyle控制线条样式
                               color: 'auto'
                           }
                       },
                       splitLine: {           // 分隔线
-                          length:20,         // 属性length控制线长
+                          length:13,         // 属性length控制线长
                           lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                               color: 'auto'
                           }
@@ -715,7 +714,6 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       title: {
                           offsetCenter: [0, '-1%'],
                           textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                            fontWeight: '',
                             fontSize: 10,
                             fontStyle: 'italic'
                          }      // x, y，单位px
