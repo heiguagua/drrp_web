@@ -175,6 +175,7 @@
                 <div style='display:inline-block' isteven-multi-select input-model="deptList" output-model="outputDeptList" helper-elements="all none filter" button-label="dep_name" item-label="dep_name" tick-property="ticked" max-height="250px"></div>
               </span>
               <p ng-show="!InfoResource.share_level && submitted" class="help-block">请选择共享级别</p>
+              <p ng-show="depShow && (outputDeptList.length == 0) && submitted" class="help-block">请选择指定开放部门</p>
             </div>
           </div>
 
