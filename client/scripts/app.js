@@ -189,6 +189,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         templateUrl: 'views/department/requirement-detail.html',
         controller: 'Department.Requirement.Controller.detail'
       })
+      .state('main.department.requirement.detail', {
+        url: '/detail?ID',
+        templateUrl: 'views/department/requirement-detail.html',
+        controller: 'Department.Requirement.Controller.detail'
+      })
       .state('main.department.audit', {
         url: '/audit',
         cache:'false',
