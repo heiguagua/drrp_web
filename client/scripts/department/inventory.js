@@ -367,6 +367,15 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.itemTypeList = result.data.body;
     });
 
+    // 从信息项返回到修改信息资源
+    $scope.backToUpdate = function() {
+      console.log($scope.InfoResource.id);
+      $state.go('main.department.inventory.update', {
+        item: $scope.InfoResource.id
+      }, {
+        reload: true
+      })
+    }
     $scope.close = function(isValid) {
       $state.go("main.department.inventory", {}, {
         reload: true
@@ -374,12 +383,13 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     }
 
     $scope.toUpload = function() {
-      if($scope.ResourceItemList.length == 0) {
+      if ($scope.ResourceItemList.length == 0) {
         alert('您还未添加信息项！');
         return;
-      }
-      else {
-        $state.go("main.department.inventory.uploadExampleData", {ID:$scope.InfoResource.id}, {
+      } else {
+        $state.go("main.department.inventory.uploadExampleData", {
+          ID: $scope.InfoResource.id
+        }, {
           reload: true
         });
       }
