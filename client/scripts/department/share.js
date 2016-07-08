@@ -237,35 +237,48 @@ DepartmentShare.controller('DepartmentShare.Controller.Main', [ '$scope', 'Depar
 
 
 // Department share detail controller
-DepartmentShare.controller('DepartmentShare.Controller.detail', [ '$scope', 'DepartmentShare.Service.Http', '$stateParams',
-  function( $scope, Http, $stateParams) {
+DepartmentShare.controller('DepartmentShare.Controller.detail', [ '$scope', 'DepartmentShare.Service.Http', '$stateParams', 'API',
+  function( $scope, Http, $stateParams, API) {
+    var path = API.path;
+    console.log($stateParams.item);
     $scope.InfoItemShow = false;
-    Http.shareInfoResourceList({
-      resource_id : $stateParams.item
+    Http.getShareInfoResDetail({
+      resource_id: $stateParams.item
     }).then(function(ResourceRes) {
       $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
-      Http.getInfoItemList({
-        resource_id: $scope.InfoResourceDetail.id
-      }).then(function(result) {
-        if (result.data.body.length == 0) {
-          $scope.InfoItemShow = false;
-        } else {
-          $scope.InfoItemShow = true;
-          $scope.InfoItems = result.data.body;
+      if($scope.InfoResourceDetail && $scope.InfoResourceDetail.resource_format_name.indexOf('数据库类') > -1) {
+        Http.getInfoItemList({
+          resource_id: $scope.InfoResourceDetail.id
+        }).then(function(result) {
+          if (result.data.body.length == 0) {
+            $scope.InfoItemShow = false;
+          } else {
+            $scope.InfoItemShow = true;
+            $scope.InfoItems = result.data.body;
 
-          _($scope.InfoItems).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              shareFreqDictName.push(config.dict_name);
+            _($scope.InfoItems).forEach(function(item) {
+              var shareFreqDictName = [];
+              _(item.config).forEach(function(config) {
+                shareFreqDictName.push(config.dict_name);
+              })
+              item.update_period_name = shareFreqDictName.toString();
             })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-        }
+          }
+        })
+      }
 
-
-      })
     })
 
+    // Data Quota Example
+    $scope.ShareDataExamples = Http.getShareResourceExampleDatas({
+      resource_id: $stateParams.item
+    });
+
+
+    // // 获取需求拓扑图
+    $scope.ShareResourceReqByDepTotals = Http.getShareResourceReqByDepTotals({
+      resource_id: $stateParams.item
+    });
 
   }
 ])
@@ -311,6 +324,14 @@ DepartmentShare.factory('DepartmentShare.Service.Http', ['$http', 'API',
       )
     };
 
+    function getShareInfoResDetail(params) {
+      return $http.get(
+        path + '/share_resource_detail', {
+          params: params
+        }
+      )
+    }
+
     function getInfoItemList(params) {
       return $http.get(
         path + '/allitem_detail', {
@@ -318,13 +339,128 @@ DepartmentShare.factory('DepartmentShare.Service.Http', ['$http', 'API',
         }
       )
     }
+    function getShareResourceExampleDatas(params) {
+      return $http.get(
+        path + '/info_resource_examples', {
+          params: params
+        }
+      )
+    };
+
+    function getShareResourceReqByDepTotals(params) {
+      return $http.get(
+        path + '/info_item_requirementDeps', {
+          params: params
+        }
+      )
+    };
     return {
       getSystemDictByCatagory: getSystemDictByCatagory,
       shareInfoResourceList: shareInfoResourceList,
       getQuotaDetail: getQuotaDetail,
       followDepartment: followDepartment,
       cancelFollowDepartment: cancelFollowDepartment,
-      getInfoItemList: getInfoItemList
+      getShareInfoResDetail: getShareInfoResDetail,
+      getInfoItemList: getInfoItemList,
+      getShareResourceExampleDatas: getShareResourceExampleDatas,
+      getShareResourceReqByDepTotals: getShareResourceReqByDepTotals
+    }
+  }
+]);
+
+
+DepartmentShare.directive('wiservShareExampleData', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:500px;height:400px;position:relative;top:20px'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.ShareDataExamples.then(function(result) {
+          if(result.data.body && result.data.body[0] && result.data.body[0].file_content) {
+            element.html(result.data.body[0].file_content);
+          }
+        })
+      }
+    }
+  }
+]);
+DepartmentShare.directive('wiservShareReqdepRelationship', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:900px;height:400px;position:relative;top:20px'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.ShareResourceReqByDepTotals.then(function(result) {
+          if (200 == result.data.head.status) {
+            var dataquotaRequirement = result.data.body[0];
+            var deptotal = _.size(dataquotaRequirement.depNames) ;
+            var resourceName = dataquotaRequirement.resourceName;
+            var depNames = dataquotaRequirement.depNames;
+            var data1 = [{name: resourceName, x: 500, y:130 }];
+            var links1 = [{source: resourceName,target: "" }];
+            if(deptotal){
+               _(depNames).forEach(function (value,key){
+                 console.log(key+":"+value);
+                 var dep_obj = {};
+                 dep_obj.name = value;
+                 dep_obj.x = 600;
+                 dep_obj.y = 100 + (key+1)*20;
+                 data1.push(dep_obj);
+
+                 var target_obj = {};
+                 target_obj.target = value ;
+                 target_obj.source = resourceName;
+                 links1.push(target_obj);
+               });
+               console.log(data1);
+               console.log(links1);
+             }
+             var myChart = echarts.init((element.find('div'))[0]);
+             var option = {
+               title: {
+                 text: "对应的需求部门数:"+deptotal+"个"
+               },
+               tooltip: {},
+               animationDurationUpdate: 1500,
+               animationEasingUpdate: 'quinticInOut',
+               series : [
+                 {
+                   type: 'graph',
+                   layout: 'none',
+                   symbolSize: 50,
+                   roam: true,
+                   label: {
+                     normal: {
+                       show: true
+                     }
+                   },
+                   edgeSymbol: ['circle', 'arrow'],
+                   edgeSymbolSize: [4, 10],
+                   edgeLabel: {
+                     normal: {
+                       textStyle: {
+                         fontSize: 20
+                       }
+                     }
+                   },
+                   data: data1,
+                   links: links1,
+                   lineStyle: {
+                     normal: {
+                       opacity: 0.9,
+                       width: 2,
+                       curveness: 0.3
+                     }
+                   }
+                 }
+               ]
+             };
+             myChart.setOption(option);
+          }
+        });
+      }
     }
   }
 ]);

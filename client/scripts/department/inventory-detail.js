@@ -101,7 +101,7 @@ DInventoryDetail.directive('wiservExampleData', [
         console.log(scope);
         scope.DataExamples.then(function(result) {
           console.log(result);
-          if(!result.data.body) {
+          if(result.data.body && result.data.body[0] && result.data.body[0].file_content) {
             element.html(result.data.body[0].file_content);
           }
         })
