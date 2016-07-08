@@ -22,6 +22,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     function treeChangeTypeDefault(){
       $scope.flag = (StateParams.type) ? (StateParams.type) : 1;
       $scope.filterName = (StateParams.titleName) ? (StateParams.titleName) : "机构类型";
+      $scope.currentTabFlash = (StateParams.type) ? (StateParams.type) : 1;
       // if($scope.flag==1){
         Http.menu().then(function(result) {
           if (200 === result.data.head.status) {
@@ -383,9 +384,10 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       return {
         restrict: 'AE',
         link: function(scope, element, attrs) {
-          scope.currentTab = 1;
+          scope.currentTab = scope.currentTabFlash;
           element.find('.toggler').on('click', function(ev) {
-            console.log(scope.flag);
+            // console.log("指令中flag:"+scope.flag);
+            // console.log("指令中currentTab:"+scope.currentTab);
             if( scope.currentTab == scope.flag) {
               if((!element.hasClass("content-collapse"))){
                 element.find('.searchTree').toggleClass("searchTree-collapse");

@@ -24,6 +24,7 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
       $scope.predicate="";
       $scope.flag = (StateParams.type) ? (StateParams.type) : 1;
       $scope.filterName = (StateParams.titleName) ? (StateParams.titleName) : "机构类型";
+      $scope.currentTabFlash = (StateParams.type) ? (StateParams.type) : 1;
         Http.menu().then(function(result) {
           if (200 === result.data.head.status) {
             $scope.list = result.data.body;
@@ -144,7 +145,7 @@ DataQuota.directive('wiservMainWrapper', [
     return {
       restrict: 'AE',
       link: function(scope, element, attrs) {
-        scope.currentTab = 1;
+        scope.currentTab = currentTabFlash;
         element.find('.toggler').on('click', function(ev) {
           console.log(scope.flag);
           if( scope.currentTab == scope.flag) {
