@@ -15,10 +15,10 @@ Department.controller('Department.Controller.Main', ['$cookies', '$scope', '$q',
     var RESOURCE_FORMAT = 11;
     var SOCIAL_OPEN_FLAG = 14;
     var _httpParams = {};
-    _httpParams.limit = 10;
+    _httpParams.limit = 5;
     _httpParams.skip = 0;
     var _httpConfirmParams = {};
-    _httpConfirmParams.limit = 10;
+    _httpConfirmParams.limit = 5;
     _httpConfirmParams.skip = 0;
 
     // follow department
