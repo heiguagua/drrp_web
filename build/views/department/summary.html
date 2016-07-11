@@ -1,4 +1,4 @@
-<div id='department-summary'>
+<div id='department-summary' >
   <div class='row'>
     <div class='col-lg-3 col-md-6 left right'>
       <div class='panel panel-primary' ui-sref='main.department.inventory' style='cursor:pointer'>
@@ -101,7 +101,7 @@
               <tr ng-repeat='invtItem in toAuditList'>
                 <td class='text-right' title='{{invtItem.apply_time |date:"yyyy-MM-dd"}}'>{{invtItem.apply_time |date:"yyyy-MM-dd"}}</td>
                 <td title='{{invtItem.resource_name}}'>
-                  <a ui-sref='main.department.audit.info({AUDITID:invtItem.audit_id,RESOURCEID:invtItem.resource_id,APPLYTIME:invtItem.apply_time,APPLYDEP:invtItem.dep_name})'>
+                  <a ui-sref='main.department.auditinfo({AUDITID:invtItem.audit_id,RESOURCEID:invtItem.resource_id,APPLYTIME:invtItem.apply_time,APPLYDEP:invtItem.dep_name})'>
                     <pre>{{invtItem.resource_name}}</pre>
                   </a>
                 </td>
@@ -137,7 +137,7 @@
                 <td class='text-right' title='{{resItem.response_time |date:"yyyy-MM-dd"}}'>{{resItem.response_time |date:"yyyy-MM-dd"}}</td>
                 <td class='text-right' title='{{resItem.create_time| date:"yyyy-MM-dd"}}'>{{resItem.create_time| date:"yyyy-MM-dd"}}</td>
                 <td title='{{resItem.requiement_name}}'>
-                  <a ui-sref='main.department.requirement.detail({ID:resItem.id})'>{{resItem.requiement_name}}</a>
+                  <a ui-sref='main.department.requirementConfirm.detail({ID:resItem.id})'>{{resItem.requiement_name}}</a>
                 </td>
                 <td title='{{resItem.dep_name}}'>{{resItem.dep_name}}</td>
               </tr>

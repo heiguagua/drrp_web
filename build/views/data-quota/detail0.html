@@ -1,0 +1,160 @@
+<div id='data-quota-detail'>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <i class="fa fa-paperclip"> 信息资源详情</i>
+      <a class="pull-right btn btn-xs" type="button" onclick="history.go(-1)">返回</a>
+    </div>
+    <div class="panel-body">
+      <uib-tabset class='quota-detail' active="active">
+        <uib-tab index="0" heading="信息资源">
+          <div class='row'>
+            <label class='col-sm-2 text-right'>信息资源名称:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.resource_name}}'><pre>{{DataQuotaDetail.resource_name}}</pre></div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>信息资源别称:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.alias}}'>{{DataQuotaDetail.alias}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>信息资源摘要:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.summary}}'>{{DataQuotaDetail.summary}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>信息资源分类:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.category}}'>{{DataQuotaDetail.category}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>信息资源目录代码:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.resource_sn}}'>{{DataQuotaDetail.resource_sn}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>关联及类目名称:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.rel_category}}'>{{DataQuotaDetail.rel_category}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>空间范围:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.area_range}}'>{{DataQuotaDetail.area_range}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>分地区数据级别:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.regionallevel}}'>{{DataQuotaDetail.regionallevel}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>信息资源格式:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.resource_format}}'>{{DataQuotaDetail.resource_format}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>格式说明:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.resource_format_desc}}'>{{DataQuotaDetail.resource_format_desc}}</div>
+          </div>
+          <div class='row' ng-show='!DataQuotaDetail.resource_format ==="数据库类"'>
+            <label class='col-sm-2 text-right' >更新周期:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.updatecycle}}'>{{DataQuotaDetail.updatecycle}}</div>
+          </div>
+          <div class='row' ng-show='!DataQuotaDetail.resource_format ==="数据库类"'>
+            <label class='col-sm-2 text-right' >是否涉密:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.secret_flag}}'>{{DataQuotaDetail.secret_flag}}</div>
+          </div>
+          <div class='row' ng-show='!DataQuotaDetail.resource_format ==="数据库类"'>
+            <label class='col-sm-2 text-right' >计量单位:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.meter_unit}}'>{{DataQuotaDetail.meter_unit}}</div>
+          </div>
+          <div class='row' ng-show='!DataQuotaDetail.resource_format ==="数据库类"'>
+            <label class='col-sm-2 text-right' >计算方法:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.calculate_method}}'>{{DataQuotaDetail.calculate_method}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>共享级别:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.share_level}}'>{{DataQuotaDetail.share_level}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>共享类型:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.share_type}}'>{{DataQuotaDetail.share_type}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>共享条件:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.share_limit}}'>{{DataQuotaDetail.share_limit}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>共享方式:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.share_method}}'>{{DataQuotaDetail.share_method}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>共享方式说明:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.share_method_desc}}'>{{DataQuotaDetail.share_method_desc}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>是否面向社会开放:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.social_open}}'>{{DataQuotaDetail.social_open}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>开放条件:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.social_open_limit}}'>{{DataQuotaDetail.social_open_limit}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>信息资源提供方:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.resource_provider}}'>{{DataQuotaDetail.resource_provider}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>资源提供方代码:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.resource_provider_code}}'>{{DataQuotaDetail.resource_provider_code}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>联系人:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.linkman}}'>{{DataQuotaDetail.linkman}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>联系电话:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.contact_phone}}'>{{DataQuotaDetail.contact_phone}}</div>
+          </div>
+          <div class='row'>
+            <label class='col-sm-2 text-right'>创建时间:</label>
+            <div class='col-sm-10' title='{{DataQuotaDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}'>{{DataQuotaDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}</div>
+          </div>
+        </uib-tab>
+        <uib-tab ng-show="DataQuotaDetail.resource_format ==='数据库类'" class='quota-example' index="1" heading="信息项">
+        <div class="table-responsive">
+          <table class='table table-hover table-striped table-bordered table-patch'>
+             <thead>
+               <caption class="caption"></caption>
+               <tr>
+                 <th width="40px">序号</th>
+                 <th width="40px">信息项名称</th>
+                 <th width="40px">数据类型</th>
+                 <th width="40px">数据精度</th>
+                 <th width="40px">数据长度</th>
+                 <th width="40px">更新周期</th>
+                 <th width="40px">是否涉密</th>
+                 <th width="40px">计量单位</th>
+                 <th width="40px">计算方法</th>
+               </tr>
+             </thead>
+             <tbody>
+               <tr ng-repeat='columns in DataQuotaExample'>
+                 <td class="orderStyle" >{{$index+1}}</td>
+                 <td title="{{columns.item_name}}">{{columns.item_name}}</td>
+                 <td title="{{columns.item_type}}">{{columns.item_type}}</td>
+                 <td title="{{columns.data_precision}}">{{columns.data_precision}}</td>
+                 <td title="{{columns.data_length}}">{{columns.data_length}}</td>
+                 <td title="{{columns.updatecycle}}">{{columns.updatecycle}}</td>
+                 <td title="{{columns.secret_flag}}">{{columns.secret_flag}}</td>
+                 <td title="{{columns.meter_unit}}">{{columns.meter_unit}}</td>
+                 <td title="{{columns.calculate_method}}">{{columns.calculate_method}}</td>
+               </tr>
+             </tbody>
+           </table>
+          </div>
+        </uib-tab>
+        <uib-tab ng-show="DataQuotaDetail.resource_format ==='数据库类'" class='quota-example-data' index='2' heading="样例数据">
+          <wiserv-example-data-show style='padding:15px 0' />
+        </uib-tab>
+        <uib-tab  class='quota-requirement-relationship' heading="需求关联拓扑">
+        <div>
+          <requirement-depatment-relationship/>
+        </div>
+        </uib-tab>
+      </uib-tabset>
+
+    </div>
+  </div>
+</div>

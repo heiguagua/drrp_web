@@ -45,7 +45,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
               if( response.data && typeof response.data==='object'){
                 if(result.data.head.status===300){
                   sessionStorage.message = '登录超时，请重新登录！';
-                  window.location.href='/#/login';
+                  window.location.href='./#/login';
                 };
               };
             });
@@ -112,7 +112,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
       })
       .state('main.data-quota.detail', {
         url: '/detail/:resource_id',
-        templateUrl: 'views/data-quota/detail.html',
+        templateUrl: 'views/data-quota/detail0.html',
         controller: 'DataQuotaDetail.Controller.Main'
       })
       .state('main.department', {
@@ -189,6 +189,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$provide',
         templateUrl: 'views/department/requirement-detail.html',
         controller: 'Department.Requirement.Controller.detail'
       })
+      .state('main.department.requirement.detail', {
+        url: '/detail?ID',
+        templateUrl: 'views/department/requirement-detail.html',
+        controller: 'Department.Requirement.Controller.detail'
+      })
       .state('main.department.audit', {
         url: '/audit',
         cache:'false',
@@ -215,7 +220,7 @@ app.run(['$rootScope', function($rootScope){
 		if(toState.name!=='welcome'){
 		  if(toState.name!=='login'){
 			if(!sessionStorage.token){
-			  window.location.href='/#/login';
+			  window.location.href='./#/login';
 			};
 		  };
 		}
@@ -227,8 +232,7 @@ app.run(['$rootScope', function($rootScope){
 var Config = angular.module('Config', []);
 
 Config.constant('API', {
-  path: 'http://localhost:8080/drrp/api'
-
+  path: 'http://localhost:8080/drrp/api' //发布
 });
 
 'use strict';
@@ -1552,7 +1556,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
   function() {
     return {
       restrict: 'AE',
-      template: "<div style='width:300;height:215px;position:relative;top:-1px'></div>",
+      template: "<div style='width:300;height:215px;position:relative;top:-1px;'></div>",
       link: function(scope, element, attr) {
         scope.DataquotaSummary.then(function(result) {
           if (200 == result.data.head.status) {
@@ -1620,7 +1624,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       radius: '90%',
                       axisLine: {            // 坐标轴线
                           lineStyle: {       // 属性lineStyle控制线条样式
-                              width: 10
+                              width: 5
                           }
                       },
                       axisTick: {            // 坐标轴小标记
@@ -1667,17 +1671,17 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       splitNumber:7,
                       axisLine: {            // 坐标轴线
                           lineStyle: {       // 属性lineStyle控制线条样式
-                              width: 8
+                              width: 3
                           }
                       },
                       axisTick: {            // 坐标轴小标记
-                          length:12,        // 属性length控制线长
+                          length:10,        // 属性length控制线长
                           lineStyle: {       // 属性lineStyle控制线条样式
                               color: 'auto'
                           }
                       },
                       splitLine: {           // 分隔线
-                          length:20,         // 属性length控制线长
+                          length:13,         // 属性length控制线长
                           lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                               color: 'auto'
                           }
@@ -1688,7 +1692,6 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       title: {
                           offsetCenter: [0, '-1%'],
                           textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                            fontWeight: '',
                             fontSize: 10,
                             fontStyle: 'italic'
                          }      // x, y，单位px
@@ -1791,7 +1794,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       radius: '90%',
                       axisLine: {            // 坐标轴线
                           lineStyle: {       // 属性lineStyle控制线条样式
-                              width: 10
+                              width: 5
                           }
                       },
                       axisTick: {            // 坐标轴小标记
@@ -1838,17 +1841,17 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       splitNumber:7,
                       axisLine: {            // 坐标轴线
                           lineStyle: {       // 属性lineStyle控制线条样式
-                              width: 8
+                              width: 3
                           }
                       },
                       axisTick: {            // 坐标轴小标记
-                          length:12,        // 属性length控制线长
+                          length:10,        // 属性length控制线长
                           lineStyle: {       // 属性lineStyle控制线条样式
                               color: 'auto'
                           }
                       },
                       splitLine: {           // 分隔线
-                          length:20,         // 属性length控制线长
+                          length:13,         // 属性length控制线长
                           lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                               color: 'auto'
                           }
@@ -1859,7 +1862,6 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       title: {
                           offsetCenter: [0, '-1%'],
                           textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                            fontWeight: '',
                             fontSize: 10,
                             fontStyle: 'italic'
                          }      // x, y，单位px
@@ -2142,6 +2144,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     function treeChangeTypeDefault(){
       $scope.flag = (StateParams.type) ? (StateParams.type) : 1;
       $scope.filterName = (StateParams.titleName) ? (StateParams.titleName) : "机构类型";
+      $scope.currentTabFlash = (StateParams.type) ? (StateParams.type) : 1;
       // if($scope.flag==1){
         Http.menu().then(function(result) {
           if (200 === result.data.head.status) {
@@ -2503,9 +2506,10 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       return {
         restrict: 'AE',
         link: function(scope, element, attrs) {
-          scope.currentTab = 1;
+          scope.currentTab = scope.currentTabFlash;
           element.find('.toggler').on('click', function(ev) {
-            console.log(scope.flag);
+            // console.log("指令中flag:"+scope.flag);
+            // console.log("指令中currentTab:"+scope.currentTab);
             if( scope.currentTab == scope.flag) {
               if((!element.hasClass("content-collapse"))){
                 element.find('.searchTree').toggleClass("searchTree-collapse");
@@ -2599,7 +2603,9 @@ DataQuotaDetail.directive('wiservExampleDataShow', [
         console.log(scope);
         scope.DataExamples.then(function(result) {
           console.log(result);
-          element.html(result.data.body[0].file_content);
+          if(result.data.body[0]){
+            element.html(result.data.body[0].file_content);
+          }
         })
       }
     }
@@ -2621,19 +2627,19 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
             var links1 = [{source: resourceName,target: "" }];
             if(deptotal){
                _(depNames).forEach(function (value,key){
-                 console.log(key+":"+value);
+                //  console.log(key+":"+value);
                  var dep_obj = {};
-                 obj.name = value;
-                 obj.x = 600;
-                 obj.y = 100 + (key+1)*20;
-                 data1.push(obj);
+                 dep_obj.name = value;
+                 dep_obj.x = 520;
+                 dep_obj.y = 100 + (key+1)*10;
+                 data1.push(dep_obj);
                  var target_obj = {};
                  target_obj.target = value ;
                  target_obj.source = resourceName;
                  links1.push(target_obj);
                });
-               console.log(data1);
-               console.log(links1);
+              //  console.log(data1);
+              //  console.log(links1);
              }
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
@@ -2954,6 +2960,7 @@ DataQuota.controller('DataQuota.Controller.Main', ['$scope', '$state', 'DataQuot
       $scope.predicate="";
       $scope.flag = (StateParams.type) ? (StateParams.type) : 1;
       $scope.filterName = (StateParams.titleName) ? (StateParams.titleName) : "机构类型";
+      $scope.currentTabFlash = (StateParams.type) ? (StateParams.type) : 1;
         Http.menu().then(function(result) {
           if (200 === result.data.head.status) {
             $scope.list = result.data.body;
@@ -3074,9 +3081,9 @@ DataQuota.directive('wiservMainWrapper', [
     return {
       restrict: 'AE',
       link: function(scope, element, attrs) {
-        scope.currentTab = 1;
+        scope.currentTab = scope.currentTabFlash;
         element.find('.toggler').on('click', function(ev) {
-          console.log(scope.flag);
+          // console.log(scope.flag);
           if( scope.currentTab == scope.flag) {
             if((!element.hasClass("content-collapse"))){
               element.find('.searchTree').toggleClass("searchTree-collapse");
@@ -3301,24 +3308,27 @@ DInventoryDetail.controller('Department.InventoryDetail.Controller', ['$scope', 
       resource_id: $stateParams.item
     }).then(function(ResourceRes) {
       $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
-      Http.getInfoItemList({
-        resource_id: $scope.InfoResourceDetail.id
-      }).then(function(result) {
-        if (result.data.body.length == 0) {
-          $scope.InfoItemShow = false;
-        } else {
-          $scope.InfoItemShow = true;
-          $scope.InfoItems = result.data.body;
+      if($scope.InfoResourceDetail && $scope.InfoResourceDetail.resource_format_name.indexOf('数据库类') > -1) {
+        Http.getInfoItemList({
+          resource_id: $scope.InfoResourceDetail.id
+        }).then(function(result) {
+          if (result.data.body.length == 0) {
+            $scope.InfoItemShow = false;
+          } else {
+            $scope.InfoItemShow = true;
+            $scope.InfoItems = result.data.body;
 
-          _($scope.InfoItems).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              shareFreqDictName.push(config.dict_name);
+            _($scope.InfoItems).forEach(function(item) {
+              var shareFreqDictName = [];
+              _(item.config).forEach(function(config) {
+                shareFreqDictName.push(config.dict_name);
+              })
+              item.update_period_name = shareFreqDictName.toString();
             })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-        }
-      })
+          }
+        })
+      }
+
     })
 
     // Data Quota Example
@@ -3388,7 +3398,7 @@ DInventoryDetail.directive('wiservExampleData', [
         console.log(scope);
         scope.DataExamples.then(function(result) {
           console.log(result);
-          if(!result.data.body) {
+          if(result.data.body && result.data.body[0] && result.data.body[0].file_content) {
             element.html(result.data.body[0].file_content);
           }
         })
@@ -4027,6 +4037,15 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.itemTypeList = result.data.body;
     });
 
+    // 从信息项返回到修改信息资源
+    $scope.backToUpdate = function() {
+      console.log($scope.InfoResource.id);
+      $state.go('main.department.inventory.update', {
+        item: $scope.InfoResource.id
+      }, {
+        reload: true
+      })
+    }
     $scope.close = function(isValid) {
       $state.go("main.department.inventory", {}, {
         reload: true
@@ -4034,12 +4053,13 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     }
 
     $scope.toUpload = function() {
-      if($scope.ResourceItemList.length == 0) {
+      if ($scope.ResourceItemList.length == 0) {
         alert('您还未添加信息项！');
         return;
-      }
-      else {
-        $state.go("main.department.inventory.uploadExampleData", {ID:$scope.InfoResource.id}, {
+      } else {
+        $state.go("main.department.inventory.uploadExampleData", {
+          ID: $scope.InfoResource.id
+        }, {
           reload: true
         });
       }
@@ -4283,7 +4303,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.ResourceItem.field_standard = '';
       $scope.ResourceItem.shareFreqItemSelection = [];
       $scope.ResourceItem.shareFreqItemObjSelection = [];
-      $scope.ResourceItem.isleaf = 1;
+      //$scope.ResourceItem.isleaf = 1;
       $scope.parent = {};
       $scope.parent.itemNameExist = false;
       $scope.parent.childParentConflict = false;
@@ -4297,14 +4317,14 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
       $scope.$watch('data.parent_id', function(n) {
         $scope.parent.childParentConflict = false;
-        if (n) {
+        if (n && n.length > 0) {
           _($scope.ResourceItemList).forEach(function(item) {
-            if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+            if ((n[0].item_name != $scope.ResourceItem.item_name) && (n[0].item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
               $scope.parent.childParentConflict = true;
               return;
             }
           });
-          $scope.ResourceItem.parent_id = n.id;
+          $scope.ResourceItem.parent_id = n[0].id ? n[0].id : '';
         } else {
           $scope.ResourceItem.parent_id = '';
         }
@@ -4323,7 +4343,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           })
           if (!$scope.parent.itemNameExist) {
             Http.checkItemName({
-              item_name: $scope.ResourceItem.item_name
+              item_name: $scope.ResourceItem.item_name,
+              info_resource_id: $scope.InfoResource.id
             }).then(function(res) {
               if (res.data.body[0].isexists == 'true') {
                 $scope.parent.itemNameExist = true;
@@ -4406,23 +4427,24 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           }
 
           $scope.data = {};
-
           _($scope.parent.ItemsList).forEach(function(resourceItem) {
             if ($scope.InfoItem.parent_id == resourceItem.item_name) {
-              $scope.data.parent_id = resourceItem;
+              $scope.data.parent_id = [];
+              resourceItem.ticked = true;
+              $scope.data.parent_id.push(resourceItem);
             }
           })
 
           $scope.$watch('data.parent_id', function(n) {
             $scope.parent.childParentConflict = false;
-            if (n) {
+            if (n && n.length > 0) {
               _($scope.ResourceItemList).forEach(function(item) {
-                if ((n.item_name != $scope.ResourceItem.item_name) && (n.item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+                if ((n[0].item_name != $scope.ResourceItem.item_name) && (n[0].item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
                   $scope.parent.childParentConflict = true;
                   return;
                 }
               });
-              $scope.ResourceItem.parent_id = n.id;
+              $scope.ResourceItem.parent_id = n[0].id ? n[0].id : '';
             } else {
               $scope.ResourceItem.parent_id = '';
             }
@@ -4438,7 +4460,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
               })
               if (!$scope.parent.itemNameExist) {
                 Http.checkItemName({
-                  item_name: $scope.ResourceItem.item_name
+                  item_name: $scope.ResourceItem.item_name,
+                  info_resource_id: $scope.InfoResource.id
                 }).then(function(res) {
                   if (res.data.body[0].isexists == 'true') {
                     $scope.parent.itemNameExist = true;
@@ -4873,10 +4896,10 @@ Department.controller('Department.Controller.Main', ['$cookies', '$scope', '$q',
     var RESOURCE_FORMAT = 11;
     var SOCIAL_OPEN_FLAG = 14;
     var _httpParams = {};
-    _httpParams.limit = 10;
+    _httpParams.limit = 5;
     _httpParams.skip = 0;
     var _httpConfirmParams = {};
-    _httpConfirmParams.limit = 10;
+    _httpConfirmParams.limit = 5;
     _httpConfirmParams.skip = 0;
 
     // follow department
@@ -6156,35 +6179,48 @@ DepartmentShare.controller('DepartmentShare.Controller.Main', [ '$scope', 'Depar
 
 
 // Department share detail controller
-DepartmentShare.controller('DepartmentShare.Controller.detail', [ '$scope', 'DepartmentShare.Service.Http', '$stateParams',
-  function( $scope, Http, $stateParams) {
+DepartmentShare.controller('DepartmentShare.Controller.detail', [ '$scope', 'DepartmentShare.Service.Http', '$stateParams', 'API',
+  function( $scope, Http, $stateParams, API) {
+    var path = API.path;
+    console.log($stateParams.item);
     $scope.InfoItemShow = false;
-    Http.shareInfoResourceList({
-      resource_id : $stateParams.item
+    Http.getShareInfoResDetail({
+      resource_id: $stateParams.item
     }).then(function(ResourceRes) {
       $scope.InfoResourceDetail = ResourceRes.data.body[0].results[0];
-      Http.getInfoItemList({
-        resource_id: $scope.InfoResourceDetail.id
-      }).then(function(result) {
-        if (result.data.body.length == 0) {
-          $scope.InfoItemShow = false;
-        } else {
-          $scope.InfoItemShow = true;
-          $scope.InfoItems = result.data.body;
+      if($scope.InfoResourceDetail && $scope.InfoResourceDetail.resource_format_name.indexOf('数据库类') > -1) {
+        Http.getInfoItemList({
+          resource_id: $scope.InfoResourceDetail.id
+        }).then(function(result) {
+          if (result.data.body.length == 0) {
+            $scope.InfoItemShow = false;
+          } else {
+            $scope.InfoItemShow = true;
+            $scope.InfoItems = result.data.body;
 
-          _($scope.InfoItems).forEach(function(item) {
-            var shareFreqDictName = [];
-            _(item.config).forEach(function(config) {
-              shareFreqDictName.push(config.dict_name);
+            _($scope.InfoItems).forEach(function(item) {
+              var shareFreqDictName = [];
+              _(item.config).forEach(function(config) {
+                shareFreqDictName.push(config.dict_name);
+              })
+              item.update_period_name = shareFreqDictName.toString();
             })
-            item.update_period_name = shareFreqDictName.toString();
-          })
-        }
+          }
+        })
+      }
 
-
-      })
     })
 
+    // Data Quota Example
+    $scope.ShareDataExamples = Http.getShareResourceExampleDatas({
+      resource_id: $stateParams.item
+    });
+
+
+    // // 获取需求拓扑图
+    $scope.ShareResourceReqByDepTotals = Http.getShareResourceReqByDepTotals({
+      resource_id: $stateParams.item
+    });
 
   }
 ])
@@ -6230,6 +6266,14 @@ DepartmentShare.factory('DepartmentShare.Service.Http', ['$http', 'API',
       )
     };
 
+    function getShareInfoResDetail(params) {
+      return $http.get(
+        path + '/share_resource_detail', {
+          params: params
+        }
+      )
+    }
+
     function getInfoItemList(params) {
       return $http.get(
         path + '/allitem_detail', {
@@ -6237,13 +6281,128 @@ DepartmentShare.factory('DepartmentShare.Service.Http', ['$http', 'API',
         }
       )
     }
+    function getShareResourceExampleDatas(params) {
+      return $http.get(
+        path + '/info_resource_examples', {
+          params: params
+        }
+      )
+    };
+
+    function getShareResourceReqByDepTotals(params) {
+      return $http.get(
+        path + '/info_item_requirementDeps', {
+          params: params
+        }
+      )
+    };
     return {
       getSystemDictByCatagory: getSystemDictByCatagory,
       shareInfoResourceList: shareInfoResourceList,
       getQuotaDetail: getQuotaDetail,
       followDepartment: followDepartment,
       cancelFollowDepartment: cancelFollowDepartment,
-      getInfoItemList: getInfoItemList
+      getShareInfoResDetail: getShareInfoResDetail,
+      getInfoItemList: getInfoItemList,
+      getShareResourceExampleDatas: getShareResourceExampleDatas,
+      getShareResourceReqByDepTotals: getShareResourceReqByDepTotals
+    }
+  }
+]);
+
+
+DepartmentShare.directive('wiservShareExampleData', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:500px;height:400px;position:relative;top:20px'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.ShareDataExamples.then(function(result) {
+          if(result.data.body && result.data.body[0] && result.data.body[0].file_content) {
+            element.html(result.data.body[0].file_content);
+          }
+        })
+      }
+    }
+  }
+]);
+DepartmentShare.directive('wiservShareReqdepRelationship', [
+  function() {
+    return {
+      restrict: 'AE',
+      template: "<div style='width:900px;height:400px;position:relative;top:20px'></div>",
+      link: function(scope, element, attr) {
+        console.log(scope);
+        scope.ShareResourceReqByDepTotals.then(function(result) {
+          if (200 == result.data.head.status) {
+            var dataquotaRequirement = result.data.body[0];
+            var deptotal = _.size(dataquotaRequirement.depNames) ;
+            var resourceName = dataquotaRequirement.resourceName;
+            var depNames = dataquotaRequirement.depNames;
+            var data1 = [{name: resourceName, x: 500, y:130 }];
+            var links1 = [{source: resourceName,target: "" }];
+            if(deptotal){
+               _(depNames).forEach(function (value,key){
+                 console.log(key+":"+value);
+                 var dep_obj = {};
+                 dep_obj.name = value;
+                 dep_obj.x = 600;
+                 dep_obj.y = 100 + (key+1)*20;
+                 data1.push(dep_obj);
+
+                 var target_obj = {};
+                 target_obj.target = value ;
+                 target_obj.source = resourceName;
+                 links1.push(target_obj);
+               });
+               console.log(data1);
+               console.log(links1);
+             }
+             var myChart = echarts.init((element.find('div'))[0]);
+             var option = {
+               title: {
+                 text: "对应的需求部门数:"+deptotal+"个"
+               },
+               tooltip: {},
+               animationDurationUpdate: 1500,
+               animationEasingUpdate: 'quinticInOut',
+               series : [
+                 {
+                   type: 'graph',
+                   layout: 'none',
+                   symbolSize: 50,
+                   roam: true,
+                   label: {
+                     normal: {
+                       show: true
+                     }
+                   },
+                   edgeSymbol: ['circle', 'arrow'],
+                   edgeSymbolSize: [4, 10],
+                   edgeLabel: {
+                     normal: {
+                       textStyle: {
+                         fontSize: 20
+                       }
+                     }
+                   },
+                   data: data1,
+                   links: links1,
+                   lineStyle: {
+                     normal: {
+                       opacity: 0.9,
+                       width: 2,
+                       curveness: 0.3
+                     }
+                   }
+                 }
+               ]
+             };
+             myChart.setOption(option);
+          }
+        });
+      }
     }
   }
 ]);
