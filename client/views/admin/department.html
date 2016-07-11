@@ -136,7 +136,7 @@
         <div class="col-sm-8">
           <select class="form-control" ng-model="department.role_type">
             <option ng-if="department.parent_id!='0'" value="{{department1.role_type}}" selected>{{department1.role_type_name}}</option>
-            <option ng-if="department.parent_id=='0'" ng-repeat="ocupation in  ocupations" value="{{type.id}}" selected>{{type.dict_name}}</option>
+            <option ng-if="department.parent_id=='0'" ng-repeat="ocupation in  ocupations" value="{{ocupation.id}}" selected>{{ocupation.dict_name}}</option>
           </select>
         </div>
       </div>
@@ -154,8 +154,8 @@
         <label for="" class="col-sm-3 control-label">
         <span class="require-sign">*</span>主题名称:</label>
         <div class="col-sm-8">
-          <select class="form-control" ng-model="department.theme_code">
-            <option ng-if="department.parent_id!='0'" value="{{department1.theme_code}}" selected>{{department1.theme_code_name}}</option>
+          <select class="form-control" ng-model="department.theme">
+            <option ng-if="department.parent_id!='0'" value="{{department1.theme}}" selected>{{department1.theme_name}}</option>
             <option ng-if="department.parent_id=='0'" ng-repeat="theme in  themeNames" value="{{theme.id}}" selected>{{theme.dict_name}}</option>
           </select>
         </div>

@@ -80,9 +80,10 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
       $scope.department = {}; // Clean scope of modal
       $scope.department.dep_en_name="anquanting.png";
       $scope.department.parent_id = "0";
-      $scope.department.area_code ="c9cf130a-1e2f-11e6-ac02-507b9d1b58bb";
-      $scope.department.dep_type = "aa7772bb-10de-11e6-9b44-507b9d1b58bb";
-      $scope.department.role_type = "d7bfbc31-10de-11e6-9b44-507b9d1b58bb";
+      $scope.department.area_code ="2c2934b2-10df-11e6-9b44-507b9d1b58bb";//默认四川省
+      $scope.department.dep_type = "aa7772bb-10de-11e6-9b44-507b9d1b58bb";//部门管理机构
+      $scope.department.role_type = "d7f3a0df-10de-11e6-9b44-507b9d1b58bb";//机构职能默认监察类
+      $scope.department.theme = "7751ba0f-3c4f-11e6-be2b-507b9d1b58bb";//其他
       var promise = Component.popModal($scope, '添加', 'add-department-modal');
       promise.opened.then(function() {
         $scope.Modal.TypeArea = function(){
@@ -128,7 +129,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
           }
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           getDepartmentList(_httpParams);
           getDepTotal();
         })
@@ -137,9 +138,10 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     $scope.updateDepartment = function(AdminDep) {
       $scope.department = AdminDep;
       $scope.department.parent_id = "0";
-      $scope.department.area_code ="c9cf130a-1e2f-11e6-ac02-507b9d1b58bb";
+      $scope.department.area_code ="2c2934b2-10df-11e6-9b44-507b9d1b58bb";
       $scope.department.dep_type = "aa7772bb-10de-11e6-9b44-507b9d1b58bb";
-      $scope.department.role_type = "d7bfbc31-10de-11e6-9b44-507b9d1b58bb";
+      $scope.department.role_type = "d7f3a0df-10de-11e6-9b44-507b9d1b58bb";
+      $scope.department.theme = "7751ba0f-3c4f-11e6-be2b-507b9d1b58bb";
       $scope.department.dep_en_name="anquanting.png";
       _.remove($scope.AllDepartments, function(dep) {
         return (dep.dep_name == AdminDep.dep_name);
@@ -184,7 +186,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
         Http.updateDepartment($scope.department).then(function(result) {
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           if (200 == result.data.head.status) {
             alert('修改成功');
           }
@@ -202,7 +204,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
         Http.deleteDepartment(AdminDep).then(function(result) {
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           if (200 == result.data.head.status) {
             alert('删除成功');
           }
