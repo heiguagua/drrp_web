@@ -200,7 +200,12 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     Http.getSystemDictByCatagory({
       'dict_category': SHARE_LEVEL
     }).then(function(result) {
-      $scope.ShareLevels = result.data.body;
+      var shareLevelPre = result.data.body;
+      _.remove(shareLevelPre,function(n){
+        return n.dict_name=="暂不开放"
+      })
+      // console.log(shareLevelPre);
+      $scope.ShareLevels = shareLevelPre;
     });
     Http.getSystemDictByCatagory({
       'dict_category': SHARE_FREQUENCY

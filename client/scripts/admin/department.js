@@ -40,16 +40,25 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     Http.getDepartmentList().then(function(result) {
       $scope.AllDepartments = result.data.body;
     });
+    <!--depType-->
     Http.getSysDict({
       dict_category:"7"
     }).then(function(result) {
       $scope.types = result.data.body;
     });
+    <!--depOcupation-->
+    Http.getSysDict({
+      dict_category:"8"
+    }).then(function(result) {
+      $scope.ocupations = result.data.body;
+    });
+    <!--AreaName-->
     Http.getSysDict({
       dict_category:"9"
     }).then(function(result) {
       $scope.areaNames = result.data.body;
     });
+    <!--themeName-->
     Http.getSysDict({
       dict_category:"17"
     }).then(function(result) {
@@ -73,6 +82,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
       $scope.department.parent_id = "0";
       $scope.department.area_code ="c9cf130a-1e2f-11e6-ac02-507b9d1b58bb";
       $scope.department.dep_type = "aa7772bb-10de-11e6-9b44-507b9d1b58bb";
+      $scope.department.role_type = "d7bfbc31-10de-11e6-9b44-507b9d1b58bb";
       var promise = Component.popModal($scope, '添加', 'add-department-modal');
       promise.opened.then(function() {
         $scope.Modal.TypeArea = function(){
@@ -129,6 +139,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
       $scope.department.parent_id = "0";
       $scope.department.area_code ="c9cf130a-1e2f-11e6-ac02-507b9d1b58bb";
       $scope.department.dep_type = "aa7772bb-10de-11e6-9b44-507b9d1b58bb";
+      $scope.department.role_type = "d7bfbc31-10de-11e6-9b44-507b9d1b58bb";
       $scope.department.dep_en_name="anquanting.png";
       _.remove($scope.AllDepartments, function(dep) {
         return (dep.dep_name == AdminDep.dep_name);
