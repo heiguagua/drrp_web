@@ -26,7 +26,7 @@ DInventoryUpload.controller('Department.InventoryUpload.Controller', ['$scope', 
             alert('上传失败');
           }
           else {
-            alert('上传失败，上传文件格式有误！');
+            alert(result.data.head.message);
           }
         }
       });
