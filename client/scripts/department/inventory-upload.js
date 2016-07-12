@@ -57,23 +57,42 @@ DInventoryUpload.controller('Department.InventoryUploadExamples.Controller', ['$
 
     $scope.uploadFile = function() {
       var file = $scope.myFile;
-      console.log('file is ');
-      console.dir(file);
+      var uploadflag = false;
       if (!file) {
         alert('您还未选择文件');
         return;
       }
-      $scope.uploadPromise = Http.uploadExamplesFile(file,$stateParams.ID).then(function(result) {
-        if (200 == result.data.head.status) {
-          alert('上传成功！');
-          $state.go("main.department.inventory", {}, {
-            reload: true
-          });
-        }
-        else {
-          alert('上传失败，上传文件格式有误！');
-        }
-      });
+      else {
+        Http.checkExistExamples({
+          resource_id : $stateParams.ID
+        }).then(function(res) {
+          if(200 == res.data.head.status) {
+            if(res.data.body[0].isexists == 'true') {
+              var cover = confirm('该资源已经存在样例数据，继续上传将覆盖已有的样例数据，是否继续？');
+              if(cover) {
+                uploadflag = true;
+              }
+            }
+            else {
+              uploadflag = true;
+            }
+          }
+          if(uploadflag) {
+            $scope.uploadPromise = Http.uploadExamplesFile(file,$stateParams.ID).then(function(result) {
+              if (200 == result.data.head.status) {
+                alert('上传成功！');
+                $state.go("main.department.inventory", {}, {
+                  reload: true
+                });
+              }
+              else {
+                alert('上传失败，上传文件格式有误！');
+              }
+            });
+          }
+        })
+      }
+
     }
 
     $scope.toIndex = function() {
@@ -103,6 +122,14 @@ DInventoryUpload.factory('Department.InventoryUpload.Service.Http', ['$http', '$
       return promise;
     }
 
+    function checkExistExamples(id) {
+      return $http.get(
+        path + '/resource_examples_exists', {
+          params: id
+        }
+      )
+    }
+
     function uploadExamplesFile(file,id) {
       var fd = new FormData();
       var uploadUrl = path + '/upload/examples?resource_id=' + id;
@@ -117,7 +144,8 @@ DInventoryUpload.factory('Department.InventoryUpload.Service.Http', ['$http', '$
     }
     return {
       uploadFile: uploadFile,
-      uploadExamplesFile: uploadExamplesFile
+      uploadExamplesFile: uploadExamplesFile,
+      checkExistExamples: checkExistExamples
     }
   }])
 

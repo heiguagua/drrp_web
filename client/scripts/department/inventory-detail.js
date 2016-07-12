@@ -157,7 +157,8 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
                    roam: true,
                    label: {
                      normal: {
-                       show: true
+                       show: true,
+                       position: 'insideLeft'
                      }
                    },
                    edgeSymbol: ['circle', 'arrow'],
