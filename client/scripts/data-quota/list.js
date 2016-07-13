@@ -56,7 +56,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
       Http.getDataQuotaApplyInfo({info_resource_id: data_quota_id}).then(function() {
         // alert('申请中，等待审核');
         var httpParams = {};
-        _.assign(httpParams, {limit:10, skip: ($scope.Paging.currentPage-1) * 10});
+        _.assign(httpParams,currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10},{resource_name: $scope.TargetDataQuotaName});
         getDataQuotaList(httpParams);
       });
     };
