@@ -115,8 +115,8 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
              var option = {
                title : {
                     text: '当前信息资源对应的需求部门为'+deptotal+'个',
-                    x:'right',
-                    y:'bottom'
+                    x:'center',
+                    y:'top'
                 },
                 tooltip : {
                     trigger: 'item',
