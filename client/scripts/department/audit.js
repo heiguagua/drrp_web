@@ -31,7 +31,7 @@ Audit.controller('Department.Audit.Controller.Main', ['$scope', '$q', 'Departmen
       });
     }
 
-    $scope.searchInfoResourceByName = function() {
+    $scope.searchDeptAuditByName = function() {
       _httpParams.resource_name = $scope.InfoResource.resource_name_filter;
       _httpParams.limit = 10;
       _httpParams.skip = 0;
