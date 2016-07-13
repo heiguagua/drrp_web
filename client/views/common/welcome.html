@@ -242,7 +242,9 @@
               </div>
             </div>
 
-            <uib-pagination class='pull-right' total-items='Paging.totalItems' ng-model='Paging.currentPage' ng-change='Paging.pageChanged()' items-per-page='Paging.itemsPerPage'  next-text='下一页' previous-text='上一页'></uib-pagination>
+            <div class="pull-right">
+              <uib-pagination boundary-links="true" ng-change="Paging.pageChanged()" total-items="Paging.totalItems" items-per-page="Paging.itemsPerPage" ng-model="Paging.currentPage" max-size="Paging.maxSize" class="pagination" boundary-link-numbers="true" rotate="false" first-text="首页" last-text="末页" next-text="下一页" previous-text="上一页"></uib-pagination>
+            </div>
 
           </div>
 

@@ -13,6 +13,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
     var initPaging = {limit:10, skip: 0};
     $scope.Paging = {};
     $scope.Paging.currentPage = 1;
+    $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
     $scope.Paging.pageChanged = function() {
       var httpParams = {};

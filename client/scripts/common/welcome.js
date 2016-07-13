@@ -120,6 +120,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     var initPaging = {limit:10, skip: 0};
     $scope.Paging = {};
     $scope.Paging.currentPage = 1;
+    $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
     $scope.Paging.pageChanged = function() {
       var httpParams = {};

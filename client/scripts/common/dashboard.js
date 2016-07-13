@@ -167,6 +167,30 @@ Dashboard.controller('Dashboard.Controller.Main', ['$cookies', '$scope', 'Dashbo
       }
     }
 
+    // filter by resource format
+    $scope.resFormatMainSelection = [];
+    $scope.getInfoResourceByResFormat = function(item) {
+      var idx = $scope.resFormatMainSelection.indexOf(item.id);
+      if (idx > -1) {
+        $scope.resFormatMainSelection = [];
+      } else {
+        $scope.resFormatMainSelection = item.id;
+      }
+      _httpModalParams.resource_format = $scope.resFormatMainSelection;
+      _httpModalParams.limit = 10;
+      _httpModalParams.skip = 0;
+      getDeptInfoResourceList(_httpModalParams);
+    }
+
+    // resource format all
+    $scope.getResFormatAll = function() {
+      $scope.resFormatMainSelection = [];
+      _httpModalParams.resource_format = null;
+      _httpModalParams.limit = 10;
+      _httpModalParams.skip = 0;
+      getDeptInfoResourceList(_httpModalParams);
+    }
+
     // 点击展开
     $scope.openItems = function(index, resourceId) {
       $scope.collapseIndex = index;
