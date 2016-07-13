@@ -193,8 +193,8 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
                  dep_obj.value = 2;
                  data1.push(dep_obj);
                  var target_obj = {};
-                 target_obj.target = '当前信息资源' ;
-                 target_obj.source = value;
+                 target_obj.source = '当前信息资源' ;
+                 target_obj.target = value;
                  target_obj.weight = 1;
                  links1.push(target_obj);
                });
