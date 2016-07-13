@@ -124,7 +124,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     $scope.Paging.itemsPerPage = 10;
     $scope.Paging.pageChanged = function() {
       var httpParams = {};
-      _.assign(httpParams, currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10});
+      _.assign(httpParams, currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10},{resource_name: $scope.TargetDataQuotaName});
       getDataQuotaList(httpParams);
     };
     // Get data quota list

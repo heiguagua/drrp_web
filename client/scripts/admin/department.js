@@ -19,12 +19,14 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
 
     $scope.Paging.pageChanged = function() {
       _httpParams.skip = ($scope.Paging.currentPage - 1)*_httpParams.limit;
+      _httpParams.sysdepname = $scope.dep_name;
       getDepartmentList(_httpParams);
     }
     //pagination
     function getDepartmentList(_httpParams) {
       Http.getDepartmentList(_httpParams).then(function(result) {
         $scope.AdminDepartments = result.data.body;
+        //$scope.Paging.totalItems = result.data.body.length;
       });
     }
 

@@ -18,6 +18,7 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
     _httpParams.dep_id = ((LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') ? null : dep_id);
     $scope.Paging.pageChanged = function() {
       _httpParams.skip = ($scope.Paging.currentPage - 1)*_httpParams.limit;
+      _httpParams.sysusername = $scope.username;
       getUserList(_httpParams);
     }
 
