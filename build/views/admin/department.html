@@ -26,6 +26,7 @@
                   <th>部门名称</th>
                   <th>上级部门</th>
                   <th>机构类型</th>
+                  <th>机构职能</th>
                   <th>区域名称</th>
                   <th>主题名称</th>
                   <th>联系人</th>
@@ -34,7 +35,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="AdminDep in AdminDepartments">
-                  <td class='orderStyle'>{{$index+1}}</td>
+                  <td class='orderStyle'>{{$index+(Paging.currentPage-1)*10+1}}</td>
                   <td>
                     <a ng-click="updateDepartment(AdminDep)"><button type="button" class="btn btn-success btn-xs"><i class="fa fa-pencil-square-o"> 修改</i></button></a>&nbsp;&nbsp;
                     <a ng-click="deleteDepartment(AdminDep)"><button type="button" class="btn btn-danger btn-xs"><i class="fa fa-remove"> 删除</i></button></a>
@@ -44,6 +45,7 @@
                   <td>{{AdminDep.dep_name}}</td>
                   <td>{{AdminDep.parent_fullname}}</td>
                   <td>{{AdminDep.dep_type_name}}</td>
+                  <td>{{AdminDep.role_type_name}}</td>
                   <td>{{AdminDep.area_code_name}}</td>
                   <td>{{AdminDep.theme_name}}</td>
                   <td>{{AdminDep.contacts}}</td>
@@ -130,6 +132,16 @@
       </div>
       <div class="form-group">
         <label for="" class="col-sm-3 control-label">
+        <span class="require-sign">*</span>机构职能:</label>
+        <div class="col-sm-8">
+          <select class="form-control" ng-model="department.role_type">
+            <option ng-if="department.parent_id!='0'" value="{{department1.role_type}}" selected>{{department1.role_type_name}}</option>
+            <option ng-if="department.parent_id=='0'" ng-repeat="ocupation in  ocupations" value="{{ocupation.id}}" selected>{{ocupation.dict_name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">
         <span class="require-sign">*</span>区域名称:</label>
         <div class="col-sm-8">
           <select class="form-control" ng-model="department.area_code">
@@ -142,8 +154,8 @@
         <label for="" class="col-sm-3 control-label">
         <span class="require-sign">*</span>主题名称:</label>
         <div class="col-sm-8">
-          <select class="form-control" ng-model="department.theme_code">
-            <option ng-if="department.parent_id!='0'" value="{{department1.theme_code}}" selected>{{department1.theme_code_name}}</option>
+          <select class="form-control" ng-model="department.theme">
+            <option ng-if="department.parent_id!='0'" value="{{department1.theme}}" selected>{{department1.theme_name}}</option>
             <option ng-if="department.parent_id=='0'" ng-repeat="theme in  themeNames" value="{{theme.id}}" selected>{{theme.dict_name}}</option>
           </select>
         </div>

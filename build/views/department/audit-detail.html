@@ -2,7 +2,9 @@
   <!-- BEGIN MAIN -->
   <div class='requirement-detail'>
     <div class="panel panel-default">
-      <div class="panel-heading">数据审核详情</div>
+      <div class="panel-heading">数据审核详情
+        <a class='btn btn-xs pull-right' onclick='history.go(-1)'>返回</a>
+      </div>
       <div class="panel-body audit-wrap">
 
         <!-- audit -->
@@ -15,24 +17,28 @@
               <div class='col-sm-9'>{{InfoResourceDetail.apply_time | date:"yyyy-MM-dd HH:mm:ss"}}
               </div>
             </div>
-              <div class="row">
-                <label for="" class="col-sm-3 text-right control-label">申请单位：</label>
-                <div class='col-sm-9'>{{InfoResourceDetail.apply_dep_name}}
-                </div>
+            <div class="row">
+              <label for="" class="col-sm-3 text-right control-label">申请单位：</label>
+              <div class='col-sm-9'>{{InfoResourceDetail.apply_dep_name}}
               </div>
-              <div class="row">
-                <label for="" class="col-sm-3 text-right control-label">审核状态：</label>
-                <div class="col-sm-9">
-                  <span ng-if='InfoResourceDetail.audit_status == "0"'><i class='fa fa-question-circle' style='color:#f0ad4e'></i>&nbsp;未审核</span>
-                  <span ng-if='InfoResourceDetail.audit_status == "1"'><i class='fa fa-check-circle' style='color:#5cb85c'></i>&nbsp;通过</span>
-                  <span ng-if='InfoResourceDetail.audit_status == "2"'><i class='fa fa-times-circle-o' style='color:#d9534f'></i>&nbsp;不通过</span></dd>
-                </div>
-              </div>
-              <div class="row">
-                <label for="" class="col-sm-3 text-right control-label">审核意见：</label>
-                <div class="col-sm-9" style='word-wrap: break-word;'>{{InfoResourceDetail.audit_opinion}}
-                </div>
-              </div>
+            </div>
+            <div class="row">
+              <label for="" class="col-sm-3 text-right control-label">审核状态：</label>
+              <div class="col-sm-9">
+                <span ng-if='InfoResourceDetail.audit_status == "0"'>
+                  <i class='fa fa-question-circle' style='color:#f0ad4e'></i>&nbsp;未审核</span>
+                <span ng-if='InfoResourceDetail.audit_status == "1"'>
+                  <i class='fa fa-check-circle' style='color:#5cb85c'></i>&nbsp;通过</span>
+                <span ng-if='InfoResourceDetail.audit_status == "2"'>
+                  <i class='fa fa-times-circle-o' style='color:#d9534f'></i>&nbsp;不通过</span>
+              </dd>
+            </div>
+          </div>
+          <div class="row">
+            <label for="" class="col-sm-3 text-right control-label">审核意见：</label>
+            <div class="col-sm-9" style='word-wrap: break-word;'>{{InfoResourceDetail.audit_opinion}}
+            </div>
+          </div>
         </div>
 
         <!-- info -->
@@ -54,7 +60,9 @@
             <div role="tabpanel" class="tab-pane" ng-class="{true: 'active', false: 'inactive'}[!auditInfo.show]">
               <div class='row'>
                 <label class='col-sm-3 text-right'>信息资源名称:</label>
-                <div class='col-sm-9' title='{{InfoResourceDetail.resource_name}}'><pre>{{InfoResourceDetail.resource_name}}</pre></div>
+                <div class='col-sm-9' title='{{InfoResourceDetail.resource_name}}'>
+                  <pre>{{InfoResourceDetail.resource_name}}</pre>
+                </div>
               </div>
               <div class='row'>
                 <label class='col-sm-3 text-right'>信息资源别称:</label>
@@ -108,15 +116,15 @@
                 <label class='col-sm-3 text-right'>计算方法:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.calculate_method}}'>{{InfoResourceDetail.calculate_method}}</div>
               </div>
-              <div class='row' >
+              <div class='row'>
                 <label class='col-sm-3 text-right'>共享级别:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_level_name}}'>{{InfoResourceDetail.share_level_name}}</div>
               </div>
-              <div class='row' >
+              <div class='row'>
                 <label class='col-sm-3 text-right'>共享类型:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_type_name}}'>{{InfoResourceDetail.share_type_name}}</div>
               </div>
-              <div class='row' >
+              <div class='row'>
                 <label class='col-sm-3 text-right'>共享条件:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_limit}}'>{{InfoResourceDetail.share_limit}}</div>
               </div>
@@ -124,15 +132,15 @@
                 <label class='col-sm-3 text-right'>共享方式:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_method_name}}'>{{InfoResourceDetail.share_method_name}}</div>
               </div>
-              <div class='row' >
+              <div class='row'>
                 <label class='col-sm-3 text-right'>共享方式说明:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.share_method_desc}}'>{{InfoResourceDetail.share_method_desc}}</div>
               </div>
-              <div class='row' >
+              <div class='row'>
                 <label class='col-sm-3 text-right'>是否面向社会开放:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.social_open_flag_name}}'>{{InfoResourceDetail.social_open_flag_name}}</div>
               </div>
-              <div class='row' >
+              <div class='row'>
                 <label class='col-sm-3 text-right'>开放条件:</label>
                 <div class='col-sm-9' title='{{InfoResourceDetail.social_open_limit}}'>{{InfoResourceDetail.social_open_limit}}</div>
               </div>

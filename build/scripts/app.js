@@ -232,7 +232,8 @@ app.run(['$rootScope', function($rootScope){
 var Config = angular.module('Config', []);
 
 Config.constant('API', {
-  path: 'http://localhost:8080/drrp/api' //发布
+  path: 'http://localhost:8080/drrp/api'
+
 });
 
 'use strict';
@@ -277,16 +278,25 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     Http.getDepartmentList().then(function(result) {
       $scope.AllDepartments = result.data.body;
     });
+    <!--depType-->
     Http.getSysDict({
       dict_category:"7"
     }).then(function(result) {
       $scope.types = result.data.body;
     });
+    <!--depOcupation-->
+    Http.getSysDict({
+      dict_category:"8"
+    }).then(function(result) {
+      $scope.ocupations = result.data.body;
+    });
+    <!--AreaName-->
     Http.getSysDict({
       dict_category:"9"
     }).then(function(result) {
       $scope.areaNames = result.data.body;
     });
+    <!--themeName-->
     Http.getSysDict({
       dict_category:"17"
     }).then(function(result) {
@@ -308,8 +318,10 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
       $scope.department = {}; // Clean scope of modal
       $scope.department.dep_en_name="anquanting.png";
       $scope.department.parent_id = "0";
-      $scope.department.area_code ="c9cf130a-1e2f-11e6-ac02-507b9d1b58bb";
-      $scope.department.dep_type = "aa7772bb-10de-11e6-9b44-507b9d1b58bb";
+      $scope.department.area_code ="2c2934b2-10df-11e6-9b44-507b9d1b58bb";//默认四川省
+      $scope.department.dep_type = "aa7772bb-10de-11e6-9b44-507b9d1b58bb";//部门管理机构
+      $scope.department.role_type = "d7f3a0df-10de-11e6-9b44-507b9d1b58bb";//机构职能默认监察类
+      $scope.department.theme = "7751ba0f-3c4f-11e6-be2b-507b9d1b58bb";//其他
       var promise = Component.popModal($scope, '添加', 'add-department-modal');
       promise.opened.then(function() {
         $scope.Modal.TypeArea = function(){
@@ -355,7 +367,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
           }
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           getDepartmentList(_httpParams);
           getDepTotal();
         })
@@ -364,8 +376,10 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     $scope.updateDepartment = function(AdminDep) {
       $scope.department = AdminDep;
       $scope.department.parent_id = "0";
-      $scope.department.area_code ="c9cf130a-1e2f-11e6-ac02-507b9d1b58bb";
+      $scope.department.area_code ="2c2934b2-10df-11e6-9b44-507b9d1b58bb";
       $scope.department.dep_type = "aa7772bb-10de-11e6-9b44-507b9d1b58bb";
+      $scope.department.role_type = "d7f3a0df-10de-11e6-9b44-507b9d1b58bb";
+      $scope.department.theme = "7751ba0f-3c4f-11e6-be2b-507b9d1b58bb";
       $scope.department.dep_en_name="anquanting.png";
       _.remove($scope.AllDepartments, function(dep) {
         return (dep.dep_name == AdminDep.dep_name);
@@ -410,7 +424,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
         Http.updateDepartment($scope.department).then(function(result) {
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           if (200 == result.data.head.status) {
             alert('修改成功');
           }
@@ -428,7 +442,7 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
         Http.deleteDepartment(AdminDep).then(function(result) {
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           if (200 == result.data.head.status) {
             alert('删除成功');
           }
@@ -803,7 +817,7 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
           }
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           getUserList(_httpParams);
           getUserTotal();
         })
@@ -881,7 +895,7 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
         Http.updateUser($scope.sysUser).then(function(result) {
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           if (200 == result.data.head.status) {
             alert('修改成功');
           }
@@ -899,7 +913,7 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
     //       Http.deleteUser(user).then(function(result) {
     //         _httpParams.limit = 10;
     //         _httpParams.skip = 0;
-    //         $scope.Paging.currentPage = 0 ;
+    //         $scope.Paging.currentPage = 1 ;
     //         if (200 == result.data.head.status) {
     //           alert('删除成功');
     //           getUserTotal();
@@ -970,7 +984,7 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
           }
           _httpParams.limit = 10;
           _httpParams.skip = 0;
-          $scope.Paging.currentPage = 0 ;
+          $scope.Paging.currentPage = 1 ;
           getUserList(_httpParams);
           getUserTotal();
         })
@@ -1313,6 +1327,30 @@ Dashboard.controller('Dashboard.Controller.Main', ['$cookies', '$scope', 'Dashbo
         $scope.resParent.dropListShow = false;
         $scope.errorMsg = '';
       }
+    }
+
+    // filter by resource format
+    $scope.resFormatMainSelection = [];
+    $scope.getInfoResourceByResFormat = function(item) {
+      var idx = $scope.resFormatMainSelection.indexOf(item.id);
+      if (idx > -1) {
+        $scope.resFormatMainSelection = [];
+      } else {
+        $scope.resFormatMainSelection = item.id;
+      }
+      _httpModalParams.resource_format = $scope.resFormatMainSelection;
+      _httpModalParams.limit = 10;
+      _httpModalParams.skip = 0;
+      getDeptInfoResourceList(_httpModalParams);
+    }
+
+    // resource format all
+    $scope.getResFormatAll = function() {
+      $scope.resFormatMainSelection = [];
+      _httpModalParams.resource_format = null;
+      _httpModalParams.limit = 10;
+      _httpModalParams.skip = 0;
+      getDeptInfoResourceList(_httpModalParams);
     }
 
     // 点击展开
@@ -2242,6 +2280,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     var initPaging = {limit:10, skip: 0};
     $scope.Paging = {};
     $scope.Paging.currentPage = 1;
+    $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
     $scope.Paging.pageChanged = function() {
       var httpParams = {};
@@ -2322,7 +2361,12 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     Http.getSystemDictByCatagory({
       'dict_category': SHARE_LEVEL
     }).then(function(result) {
-      $scope.ShareLevels = result.data.body;
+      var shareLevelPre = result.data.body;
+      _.remove(shareLevelPre,function(n){
+        return n.dict_name=="暂不开放"
+      })
+      // console.log(shareLevelPre);
+      $scope.ShareLevels = shareLevelPre;
     });
     Http.getSystemDictByCatagory({
       'dict_category': SHARE_FREQUENCY
@@ -2615,7 +2659,7 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
   function(){
     return {
       restrict: 'AE',
-      template: "<div style='width:900px;height:400px;position:relative;top:20px'></div>",
+      template: "<div style='width:900px;height:400px;position:relative;top:20px;text-overflow:ellipsis'></div>",
       link: function(scope, element, attr){
         scope.DataquotaRequirementByDepTotals.then(function(result) {
           if (200 == result.data.head.status) {
@@ -2623,65 +2667,100 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
             var deptotal = _.size(dataquotaRequirement.depNames) ;
             var resourceName = dataquotaRequirement.resourceName;
             var depNames = dataquotaRequirement.depNames;
-            var data1 = [{name: resourceName, x: 500, y:100 }];
-            var links1 = [{source: resourceName,target: "" }];
+            var data1 = [{category:0, name: '当前信息资源',  value : 10, label: '当前信息资源'}];
+            var links1 = [];
             if(deptotal){
                _(depNames).forEach(function (value,key){
                 //  console.log(key+":"+value);
                  var dep_obj = {};
+                 dep_obj.category = 1;
                  dep_obj.name = value;
-                 dep_obj.x = 520;
-                 dep_obj.y = 100 + (key+1)*10;
+                 dep_obj.value = 2;
                  data1.push(dep_obj);
                  var target_obj = {};
-                 target_obj.target = value ;
-                 target_obj.source = resourceName;
+                 target_obj.target = '当前信息资源' ;
+                 target_obj.source = value;
+                 target_obj.weight = 1;
                  links1.push(target_obj);
                });
-              //  console.log(data1);
-              //  console.log(links1);
              }
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
-               title: {
-                 text: "对应需求部门数:"+deptotal+"个"
-               },
-               tooltip: {},
-               animationDurationUpdate: 1500,
-               animationEasingUpdate: 'quinticInOut',
-               series : [
-                 {
-                   type: 'graph',
-                   layout: 'none',
-                   symbolSize: 50,
-                   roam: true,
-                   label: {
-                     normal: {
-                       show: true
-                     }
-                   },
-                   edgeSymbol: ['circle', 'arrow'],
-                   edgeSymbolSize: [4, 10],
-                   edgeLabel: {
-                     normal: {
-                       textStyle: {
-                         fontSize: 20
-                       }
-                     }
-                   },
-                   data: data1,
-                   links: links1,
-                   lineStyle: {
-                     normal: {
-                       opacity: 0.9,
-                       width: 2,
-                       curveness: 0.3
-                     }
-                   }
-                 }
-               ]
-             };
-             myChart.setOption(option);
+               title : {
+                    text: '当前信息资源对应的需求部门为'+deptotal+'个',
+                    x:'center',
+                    y:'top'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: '{a} : {b}'
+                },
+                // toolbox: {
+                //     show : true,
+                //     feature : {
+                //         restore : {show: true},
+                //     }
+                // },
+                legend: {
+                    x: 'left',
+                    data:['需求部门']
+                },
+                series : [
+                    {
+                        type:'force',
+                        name : "当前信息资源-需求部门",
+                        ribbonType: false,
+                        categories : [
+                            {
+                                name: '当前信息资源'
+                            },
+                            {
+                                name: '需求部门'
+                            }
+
+                        ],
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#333'
+                                    }
+                                },
+                                nodeStyle : {
+                                    brushType : 'both',
+                                    borderColor : 'rgba(255,215,0,0.4)',
+                                    borderWidth : 1
+                                },
+
+                            },
+                            emphasis: {
+                                label: {
+                                    show: false
+                                    // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                                },
+                                nodeStyle : {
+                                    //r: 30
+                                },
+                                linkStyle : {}
+                            }
+                        },
+                        // useWorker: false,
+                        minRadius : 15,
+                        maxRadius :25,
+                        gravity: 1.1,
+                        scaling: 1.1,
+                        draggable: false,
+                        linkSymbol: 'arrow',
+                        steps: 10,
+                        coolDown: 0.9,
+                        roam: 'move',
+                        nodes:data1,
+                        links : links1
+                    }
+                ]
+            };
+            myChart.setOption(option);
           }
         });
       }
@@ -2704,6 +2783,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
     var initPaging = {limit:10, skip: 0};
     $scope.Paging = {};
     $scope.Paging.currentPage = 1;
+    $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
     $scope.Paging.pageChanged = function() {
       var httpParams = {};
@@ -3419,65 +3499,159 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
             var deptotal = _.size(dataquotaRequirement.depNames) ;
             var resourceName = dataquotaRequirement.resourceName;
             var depNames = dataquotaRequirement.depNames;
-            var data1 = [{name: resourceName, x: 500, y:130 }];
-            var links1 = [{source: resourceName,target: "" }];
+            // var data1 = [{name: resourceName, x: 500, y:130 }];
+            // var links1 = [{source: resourceName,target: "" }];
+            // if(deptotal){
+            //    _(depNames).forEach(function (value,key){
+            //      console.log(key+":"+value);
+            //      var dep_obj = {};
+            //      dep_obj.name = value;
+            //      dep_obj.x = 600;
+            //      dep_obj.y = 100 + (key+1)*20;
+            //      data1.push(dep_obj);
+            //
+            //      var target_obj = {};
+            //      target_obj.target = value ;
+            //      target_obj.source = resourceName;
+            //      links1.push(target_obj);
+            //    });
+            //    console.log(data1);
+            //    console.log(links1);
+            //  }
+            //  var myChart = echarts.init((element.find('div'))[0]);
+            //  var option = {
+            //    title: {
+            //      text: "对应的需求部门数:"+deptotal+"个"
+            //    },
+            //    tooltip: {},
+            //    animationDurationUpdate: 1500,
+            //    animationEasingUpdate: 'quinticInOut',
+            //    series : [
+            //      {
+            //        type: 'graph',
+            //        layout: 'none',
+            //        symbolSize: 50,
+            //        roam: true,
+            //        label: {
+            //          normal: {
+            //            show: true,
+            //            position: 'insideLeft'
+            //          }
+            //        },
+            //        edgeSymbol: ['circle', 'arrow'],
+            //        edgeSymbolSize: [4, 10],
+            //        edgeLabel: {
+            //          normal: {
+            //            textStyle: {
+            //              fontSize: 20
+            //            }
+            //          }
+            //        },
+            //        data: data1,
+            //        links: links1,
+            //        lineStyle: {
+            //          normal: {
+            //            opacity: 0.9,
+            //            width: 2,
+            //            curveness: 0.3
+            //          }
+            //        }
+            //      }
+            //    ]
+            //  };
+            var data1 = [{category:0, name: '当前信息资源',  value : 10, label: '当前信息资源'}];
+            var links1 = [];
             if(deptotal){
                _(depNames).forEach(function (value,key){
-                 console.log(key+":"+value);
+                //  console.log(key+":"+value);
                  var dep_obj = {};
+                 dep_obj.category = 1;
                  dep_obj.name = value;
-                 dep_obj.x = 600;
-                 dep_obj.y = 100 + (key+1)*20;
+                 dep_obj.value = 2;
                  data1.push(dep_obj);
-
                  var target_obj = {};
-                 target_obj.target = value ;
-                 target_obj.source = resourceName;
+                 target_obj.target = '当前信息资源' ;
+                 target_obj.source = value;
+                 target_obj.weight = 1;
                  links1.push(target_obj);
                });
-               console.log(data1);
-               console.log(links1);
              }
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
-               title: {
-                 text: "对应的需求部门数:"+deptotal+"个"
-               },
-               tooltip: {},
-               animationDurationUpdate: 1500,
-               animationEasingUpdate: 'quinticInOut',
-               series : [
-                 {
-                   type: 'graph',
-                   layout: 'none',
-                   symbolSize: 50,
-                   roam: true,
-                   label: {
-                     normal: {
-                       show: true
-                     }
-                   },
-                   edgeSymbol: ['circle', 'arrow'],
-                   edgeSymbolSize: [4, 10],
-                   edgeLabel: {
-                     normal: {
-                       textStyle: {
-                         fontSize: 20
-                       }
-                     }
-                   },
-                   data: data1,
-                   links: links1,
-                   lineStyle: {
-                     normal: {
-                       opacity: 0.9,
-                       width: 2,
-                       curveness: 0.3
-                     }
-                   }
-                 }
-               ]
-             };
+               title : {
+                    text: '当前信息资源对应的需求部门为'+deptotal+'个',
+                    x:'center',
+                    y:'top'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: '{a} : {b}'
+                },
+                // toolbox: {
+                //     show : true,
+                //     feature : {
+                //         restore : {show: true},
+                //     }
+                // },
+                legend: {
+                    x: 'left',
+                    data:['需求部门']
+                },
+                series : [
+                    {
+                        type:'force',
+                        name : "当前信息资源-需求部门",
+                        ribbonType: false,
+                        categories : [
+                            {
+                                name: '当前信息资源'
+                            },
+                            {
+                                name: '需求部门'
+                            }
+
+                        ],
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#333'
+                                    }
+                                },
+                                nodeStyle : {
+                                    brushType : 'both',
+                                    borderColor : 'rgba(255,215,0,0.4)',
+                                    borderWidth : 1
+                                },
+
+                            },
+                            emphasis: {
+                                label: {
+                                    show: false
+                                    // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                                },
+                                nodeStyle : {
+                                    //r: 30
+                                },
+                                linkStyle : {}
+                            }
+                        },
+                        // useWorker: false,
+                        minRadius : 15,
+                        maxRadius :25,
+                        gravity: 1.1,
+                        scaling: 1.1,
+                        draggable: false,
+                        linkSymbol: 'arrow',
+                        steps: 10,
+                        coolDown: 0.9,
+                        roam: 'move',
+                        nodes:data1,
+                        links : links1
+                    }
+                ]
+            };
              myChart.setOption(option);
           }
         });
@@ -3514,7 +3688,7 @@ DInventoryUpload.controller('Department.InventoryUpload.Controller', ['$scope', 
             alert('上传失败');
           }
           else {
-            alert('上传失败，上传文件格式有误！');
+            alert(result.data.head.message);
           }
         }
       });
@@ -3545,23 +3719,42 @@ DInventoryUpload.controller('Department.InventoryUploadExamples.Controller', ['$
 
     $scope.uploadFile = function() {
       var file = $scope.myFile;
-      console.log('file is ');
-      console.dir(file);
+      var uploadflag = false;
       if (!file) {
         alert('您还未选择文件');
         return;
       }
-      $scope.uploadPromise = Http.uploadExamplesFile(file,$stateParams.ID).then(function(result) {
-        if (200 == result.data.head.status) {
-          alert('上传成功！');
-          $state.go("main.department.inventory", {}, {
-            reload: true
-          });
-        }
-        else {
-          alert('上传失败，上传文件格式有误！');
-        }
-      });
+      else {
+        Http.checkExistExamples({
+          resource_id : $stateParams.ID
+        }).then(function(res) {
+          if(200 == res.data.head.status) {
+            if(res.data.body[0].isexists == 'true') {
+              var cover = confirm('该资源已经存在样例数据，继续上传将覆盖已有的样例数据，是否继续？');
+              if(cover) {
+                uploadflag = true;
+              }
+            }
+            else {
+              uploadflag = true;
+            }
+          }
+          if(uploadflag) {
+            $scope.uploadPromise = Http.uploadExamplesFile(file,$stateParams.ID).then(function(result) {
+              if (200 == result.data.head.status) {
+                alert('上传成功！');
+                $state.go("main.department.inventory", {}, {
+                  reload: true
+                });
+              }
+              else {
+                alert('上传失败，上传文件格式有误！');
+              }
+            });
+          }
+        })
+      }
+
     }
 
     $scope.toIndex = function() {
@@ -3591,6 +3784,14 @@ DInventoryUpload.factory('Department.InventoryUpload.Service.Http', ['$http', '$
       return promise;
     }
 
+    function checkExistExamples(id) {
+      return $http.get(
+        path + '/resource_examples_exists', {
+          params: id
+        }
+      )
+    }
+
     function uploadExamplesFile(file,id) {
       var fd = new FormData();
       var uploadUrl = path + '/upload/examples?resource_id=' + id;
@@ -3605,7 +3806,8 @@ DInventoryUpload.factory('Department.InventoryUpload.Service.Http', ['$http', '$
     }
     return {
       uploadFile: uploadFile,
-      uploadExamplesFile: uploadExamplesFile
+      uploadExamplesFile: uploadExamplesFile,
+      checkExistExamples: checkExistExamples
     }
   }])
 
