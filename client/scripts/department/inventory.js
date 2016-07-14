@@ -297,7 +297,55 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     $scope.InfoResource.share_method_desc = '';
     // item list
     $scope.ResourceItemList = [];
+    $scope.itemTreeList = [];
     //$scope.ResourceItemConfigList = [];
+
+    // $scope.itemTreeList = [{
+    //   'id': 'name1',
+    //   'item_name': 'name1',
+    //   'children': [{
+    //     'id': 'name1-1',
+    //     'item_name': 'name1-1'
+    //   }, {
+    //     'id': 'name1-2',
+    //     'item_name': 'name1-2'
+    //   }]
+    // }, {
+    //   'id': 'name2',
+    //   'item_name': 'name2',
+    //   'children': [{
+    //     'id': 'name2-1',
+    //     'item_name': 'name2-1',
+    //     'parent_id': 'name2',
+    //     'children': [{
+    //       'id': 'name2-1-1',
+    //       'item_name': 'name2-1-1',
+    //       'parent_id': 'name2-1,name2',
+    //     }, {
+    //       'id': 'name2-1-2',
+    //       'item_name': 'name2-1-2',
+    //       'parent_id': 'name2-1,name2',
+    //     }]
+    //   }, {
+    //     'id': 'name2-2',
+    //     'item_name': 'name2-2',
+    //     'parent_id': 'name2'
+    //   }]
+    // }, {
+    //   'id': 'name3',
+    //   'item_name': 'name3',
+    //   'children': [{
+    //     'id': 'name3-1',
+    //     'item_name': 'name3-1'
+    //   }, {
+    //     'id': 'name3-2',
+    //     'item_name': 'name3-2'
+    //   }]
+    // }]
+
+    $scope.showSelected = function(sel) {
+      $scope.parent.selectedItem = sel;
+    };
 
     // resource name duplicate check
     $scope.resNameExist = false;
@@ -331,6 +379,18 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             })
             item.update_period_name = shareFreqDictName.toString();
           })
+        }
+      })
+    }
+
+    // 获取信息项的树结构
+    function getInfoItemTreeList(resourceId) {
+      // 获取信息项列表
+      Http.getInfoItemTreeList({
+        resource_id: resourceId
+      }).then(function(result) {
+        if (200 == result.data.head.status) {
+          $scope.itemTreeList = result.data.body;
         }
       })
     }
@@ -587,6 +647,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             } else {
               // 获取信息项列表
               getInfoItemList($scope.InfoResource.id);
+              getInfoItemTreeList($scope.InfoResource.id);
               $scope.ResItemListShow = true;
             }
 
@@ -641,24 +702,25 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.data = {};
       $scope.ResourceItem.item_type = $scope.itemTypeList[0].id;
       $scope.ResourceItem.secret_flag = $scope.secretFlagList[0].id;
+      $scope.parent.selectedItem = undefined;
 
       $scope.ResourceItemConfigList = [];
       var ItemCommitObj = {};
 
-      $scope.$watch('data.parent_id', function(n) {
-        $scope.parent.childParentConflict = false;
-        if (n && n.length > 0) {
-          _($scope.ResourceItemList).forEach(function(item) {
-            if ((n[0].item_name != $scope.ResourceItem.item_name) && (n[0].item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
-              $scope.parent.childParentConflict = true;
-              return;
-            }
-          });
-          $scope.ResourceItem.parent_id = n[0].id ? n[0].id : '';
-        } else {
-          $scope.ResourceItem.parent_id = '';
-        }
-      })
+      // $scope.$watch('data.parent_id', function(n) {
+      //   $scope.parent.childParentConflict = false;
+      //   if (n && n.length > 0) {
+      //     _($scope.ResourceItemList).forEach(function(item) {
+      //       if ((n[0].item_name != $scope.ResourceItem.item_name) && (n[0].item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+      //         $scope.parent.childParentConflict = true;
+      //         return;
+      //       }
+      //     });
+      //     $scope.ResourceItem.parent_id = n[0].id ? n[0].id : '';
+      //   } else {
+      //     $scope.ResourceItem.parent_id = '';
+      //   }
+      // })
 
 
       $scope.checkItemName = function() {
@@ -688,13 +750,14 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
       }
 
-      $scope.parent.ItemsList = $scope.ResourceItemList;
-      _.remove($scope.parent.ItemsList, function(item) {
-        return item.item_name == '';
-      });
+      $scope.opts = {};
+      $scope.parent.itemTreeList = $scope.itemTreeList;
+
+
       Component.popModal($scope, 'Department.Inventory.Controller.publish', '新增', 'item-add-modal').result.then(function(res) {
         $scope.itemAdded = false;
-
+        console.log($scope.parent.selectedItem);
+        $scope.ResourceItem.parent_id = $scope.parent.selectedItem ? $scope.parent.selectedItem.item_id : '';
         var shareFreqDictName = [];
         _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
           var sys_dict = {};
@@ -713,6 +776,8 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             alert('保存成功！');
             // 获取信息项列表
             getInfoItemList($scope.InfoResource.id);
+            getInfoItemTreeList($scope.InfoResource.id);
+            console.log($scope.itemTreeList);
           } else {
             alert('保存失败！');
           }
@@ -736,49 +801,62 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           $scope.ResourceItem = angular.copy($scope.InfoItem);
           $scope.ResourceItem.shareFreqItemSelection = _.map($scope.InfoItem.config, 'id');
           $scope.ResourceItem.shareFreqItemObjSelection = $scope.InfoItem.config;
+
           $scope.shareFreqEmpty = false;
           $scope.parent = {};
           $scope.parent.itemNameExist = false;
-          $scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
+          $scope.parent.selectedItem = {};
+          //$scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
+          $scope.parent.itemTreeList = angular.copy($scope.itemTreeList);
           var hasEmpty = false;
           console.log($scope.InfoItem);
           console.log($scope.ResourceItem.shareFreqItemSelection);
           var ItemUpdateObj = {};
 
-          _($scope.parent.ItemsList).forEach(function(item) {
-            if (item.item_name == '') {
-              hasEmpty = true;
-            }
-          })
-          if (!hasEmpty) {
-            $scope.parent.ItemsList.push({
-              'item_name': ''
-            });
-          }
+          $scope.parent.selectedItem.item_name = $scope.InfoItem.parent_id;
+          $scope.parent.selectedItem.item_id = $scope.InfoItem.parent_item_id;
+          // var jsonloop = new JSONLoop($scope.itemTreeList, 'id', 'item_name');
+          // jsonloop.findNodeById($scope.itemTreeList, 'name2', function(err, node) {
+          //   if (err) {
+          //     console.log(err);
+          //   } else {
+          //     console.dir(node);
+          //   }
+          // });
+          // _($scope.parent.ItemsList).forEach(function(item) {
+          //   if (item.item_name == '') {
+          //     hasEmpty = true;
+          //   }
+          // })
+          // if (!hasEmpty) {
+          //   $scope.parent.ItemsList.push({
+          //     'item_name': ''
+          //   });
+          // }
 
-          $scope.data = {};
-          _($scope.parent.ItemsList).forEach(function(resourceItem) {
-            if ($scope.InfoItem.parent_id == resourceItem.item_name) {
-              $scope.data.parent_id = [];
-              resourceItem.ticked = true;
-              $scope.data.parent_id.push(resourceItem);
-            }
-          })
+          // $scope.data = {};
+          // _($scope.parent.ItemsList).forEach(function(resourceItem) {
+          //   if ($scope.InfoItem.parent_id == resourceItem.item_name) {
+          //     $scope.data.parent_id = [];
+          //     resourceItem.ticked = true;
+          //     $scope.data.parent_id.push(resourceItem);
+          //   }
+          // })
 
-          $scope.$watch('data.parent_id', function(n) {
-            $scope.parent.childParentConflict = false;
-            if (n && n.length > 0) {
-              _($scope.ResourceItemList).forEach(function(item) {
-                if ((n[0].item_name != $scope.ResourceItem.item_name) && (n[0].item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
-                  $scope.parent.childParentConflict = true;
-                  return;
-                }
-              });
-              $scope.ResourceItem.parent_id = n[0].id ? n[0].id : '';
-            } else {
-              $scope.ResourceItem.parent_id = '';
-            }
-          })
+          // $scope.$watch('data.parent_id', function(n) {
+          //   $scope.parent.childParentConflict = false;
+          //   if (n && n.length > 0) {
+          //     _($scope.ResourceItemList).forEach(function(item) {
+          //       if ((n[0].item_name != $scope.ResourceItem.item_name) && (n[0].item_name == item.item_name) && ($scope.ResourceItem.item_name == item.parent_id)) {
+          //         $scope.parent.childParentConflict = true;
+          //         return;
+          //       }
+          //     });
+          //     $scope.ResourceItem.parent_id = n[0].id ? n[0].id : '';
+          //   } else {
+          //     $scope.ResourceItem.parent_id = '';
+          //   }
+          // })
 
           $scope.checkItemName = function() {
             if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
@@ -805,10 +883,18 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
           }
 
+          $scope.opts = {
+            isSelectable: function(node) {
+              var parent_ids = node.parents ? node.parents : '';
+              return (node.item_id !== $scope.ResourceItem.id && (parent_ids.indexOf($scope.ResourceItem.id) < 0));
+            }
+          };
+
           Component.popModal($scope, 'Department.Inventory.Controller.publish', '修改', 'item-add-modal').result.then(function(res) {
             $scope.itemUpdated = false;
             var shareFreqDictName = [];
-
+            console.log($scope.parent.selectedItem);
+            $scope.ResourceItem.parent_id = $scope.parent.selectedItem ? $scope.parent.selectedItem.item_id : '';
             _($scope.ResourceItem.shareFreqItemObjSelection).forEach(function(item) {
               var sys_dict = {};
               sys_dict.InfoItemId = $scope.ResourceItem.id;
@@ -827,6 +913,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
                 alert('保存成功！');
                 // 获取信息项列表
                 getInfoItemList($scope.InfoResource.id);
+                getInfoItemTreeList($scope.InfoResource.id);
               } else {
                 alert('保存失败！');
               }
@@ -842,7 +929,11 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
     }
 
     // delete info item
-    $scope.deleteItem = function(id) {
+    $scope.deleteItem = function(id, isleaf) {
+      if(isleaf == '0') {
+        alert('该信息项包含子信息项，请先删除其子信息项！');
+        return;
+      }
       var deleteFlag = confirm('确定删除本条信息项？');
       console.log(id);
       if (deleteFlag && id) {
@@ -853,6 +944,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
             alert('删除成功！');
             // 获取信息项列表
             getInfoItemList($scope.InfoResource.id);
+            getInfoItemTreeList($scope.InfoResource.id);
           } else {
             alert('删除失败！');
           }
@@ -1025,6 +1117,14 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
       )
     }
 
+    function getInfoItemTreeList(params) {
+      return $http.get(
+        path + '/allinfo_item_detail', {
+          params: params
+        }
+      )
+    }
+
     function getSystemDictByCatagory(params) {
       return $http.get(
         path + '/sys_dict', {
@@ -1143,6 +1243,7 @@ DInventory.factory('Department.Inventory.Service.Http', ['$http', '$q', 'API',
       deleteInfoResource: deleteInfoResource,
       updateInfoResource: updateInfoResource,
       getInfoItemList: getInfoItemList,
+      getInfoItemTreeList: getInfoItemTreeList,
       getResourceAreaLevel: getResourceAreaLevel,
       getResourceUpdatePeriod: getResourceUpdatePeriod,
       getResourceShareDeps: getResourceShareDeps,
