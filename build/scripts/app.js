@@ -232,8 +232,7 @@ app.run(['$rootScope', function($rootScope){
 var Config = angular.module('Config', []);
 
 Config.constant('API', {
-  path: 'http://localhost:8080/drrp/api'
-
+  path: 'http://localhost:8080/drrp/api' //发布
 });
 
 'use strict';
@@ -1699,7 +1698,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       },
                       data:[{
                         value: (summary) ? (summary.total_resource) : 0 ,
-                        name: '/条（资源总数）'
+                        name: '条（资源总数）'
                     }]
                   },
                   {
@@ -1742,7 +1741,7 @@ Dashboard.directive('wiservDataQuotaOverviewChart', [
                       },
                       data:[{
                         value:(summary) ? (summary.month_increment_resource) : 0,
-                        name: '/条(本月新增)'
+                        name: '条(本月新增)'
                       }]
                   }
 
@@ -1869,7 +1868,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       },
                       data:[{
                         value: (summary) ? (summary.requiement_number) : 0,
-                        name: '/条（需求总数）'
+                        name: '条（需求总数）'
                     }]
                   },
                   {
@@ -1912,7 +1911,7 @@ Dashboard.directive('wiservRequirementOverviewChart', [
                       },
                       data:[{
                         value:(summary) ? (summary.requiement_number_inc) : 0,
-                        name: '/条(本月新增)'
+                        name: '条(本月新增)'
                       }]
                   }
 
