@@ -149,7 +149,7 @@
           <span class='help-block' style='display:inline-block'>{{errorMsg}}</span>
           <span class='checked-resource' title='{{checkedResourceName}}'>{{checkedResourceName}}</span>
           <p class='help-info'>根据需求选择对应的资源信息</p>
-          <div class='infoListDropdown' ng-class="{true: 'ng-show', false: 'ng-hide'}[resParent.dropListShow]" >
+          <div class='infoListDropdown' ng-class="{true: 'ng-show', false: 'ng-hide'}[resParent.dropListShow]">
             <ul class="pager">
               <li class='filter-label'>信息资源格式</li>
               <li role="presentation">
@@ -176,10 +176,10 @@
                     <span ng-if='depInfo.resource_format_name == "数据库类"'>
                       <a ng-click='openItems($index,depInfo.id)' ng-class="{true: 'ng-show', false: 'ng-hide'}[!closeShow]">
                         <i class='fa fa-angle-double-down'></i>展开</a>
-                        <a ng-click='closeItems($index)' ng-class="{true: 'ng-show', false: 'ng-hide'}[closeShow && ($index == showIndex)]">
-                          <i class='fa fa-angle-double-up'></i>收起</a>
+                      <a ng-click='closeItems($index)' ng-class="{true: 'ng-show', false: 'ng-hide'}[closeShow && ($index == showIndex)]">
+                        <i class='fa fa-angle-double-up'></i>收起</a>
                     </span>
-                    <span ng-if='depInfo.resource_format_name != "数据库类"'><input type='checkbox' ng-checked="resourceSelection.indexOf(depInfo.id) > -1" ng-click="toggleResourceSelection(depInfo.id, depInfo.resource_name)"  /></span>
+                    <span ng-if='depInfo.resource_format_name != "数据库类"'><input type='checkbox' ng-checked="resourceSelection.indexOf(depInfo.id) > -1" ng-click="toggleResourceSelection(depInfo.id, depInfo.resource_name)"/></span>
                   </td>
                   <td class='text-center' title='{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}'>{{::$index+(Paging.currentPage-1)*Paging.itemsPerPage+1}}</td>
                   <td title='{{depInfo.resource_name}}'>{{depInfo.resource_name}}</td>
@@ -204,7 +204,7 @@
                           </thead>
                           <tbody>
                             <tr ng-repeat='rescoureItem in InfoItems | orderBy:"-create_time" '>
-                              <td><input type='checkbox' value='{{rescoureItem.id}}' ng-checked="resourceItemSelection.indexOf(rescoureItem.id) > -1" ng-click="toggleResItemSelection(depInfo.id, rescoureItem, depInfo.resource_name)" /></td>
+                              <td><input type='checkbox' value='{{rescoureItem.id}}' ng-checked="resourceItemSelection.indexOf(rescoureItem.id) > -1" ng-click="toggleResItemSelection(depInfo.id, rescoureItem, depInfo.resource_name)"/></td>
                               <td class='text-center'>{{$index+1}}</td>
                               <td title='{{rescoureItem.item_name}}'>{{rescoureItem.item_name}}</td>
                               <td title='{{rescoureItem.item_type_name}}'>{{rescoureItem.item_type_name}}</td>
@@ -213,7 +213,8 @@
                               <td title='{{rescoureItem.meter_unit}}'>{{rescoureItem.meter_unit}}</td>
                               <td title='{{rescoureItem.calculate_method}}'>{{rescoureItem.calculate_method}}</td>
                               <td title='{{rescoureItem.update_period_name}}'>{{rescoureItem.update_period_name}}</td>
-                              <td title='{{rescoureItem.secret_flag_name}}'>{{rescoureItem.secret_flag_name}}</td></tr>
+                              <td title='{{rescoureItem.secret_flag_name}}'>{{rescoureItem.secret_flag_name}}</td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -223,20 +224,14 @@
                 <tr ng-repeat-end></tr>
               </tbody>
             </table>
-            <div class='pull-right' >
+            <div class='pull-right'>
               <uib-pagination boundary-links='true' ng-change='ModalPaging.pageChanged()' total-items='ModalPaging.totalItems' items-per-page='ModalPaging.itemsPerPage' ng-model='ModalPaging.currentPage' max-size='ModalPaging.maxSize' class='pagination' boundary-link-numbers='true' rotate='false' first-text='首页' last-text='末页' next-text='下一页' previous-text='上一页'></uib-pagination>
             </div>
             <div class="pull-right" style='clear:right'>
-              <div class="btn btn-group">
-                <a class="btn btn-default " ng-click='resParent.dropListShow = false'>取消</a>
-              </div>
-              <div class="btn btn-group">
-                <a class="btn btn-success " ng-click='saveChooseResource()' >保存</a>
-              </div>
+              <a class="btn btn-default " style='margin-right: 6px;' ng-click='resParent.dropListShow = false'>取消</a>
+              <a class="btn btn-success " ng-click='saveChooseResource()'>保存</a>
             </div>
           </div>
-
-
 
         </div>
       </div>

@@ -13,7 +13,7 @@
           <span class='num'>{{resourceCount}}</span>
         </li>
         <li role="presentation">
-          <input type="text" class='input-filter' placeholder="请输入查询信息资源名称" ng-model='DeptAudit.resource_name_filter'>
+          <input type="text" class='input-filter' placeholder="请输入查询信息资源名称" ng-model='InfoResource.resource_name_filter'>
           <button type="button" class="btn btn-primary" ng-click='searchDeptAuditByName()'>查询</button>
         </li>
       </ul>
@@ -110,7 +110,7 @@
                   <td title='{{DeptAudit.share_level_name}}'>{{DeptAudit.share_level_name}}</td>
                   <td title='{{DeptAudit.social_open_flag_name}}'>{{DeptAudit.social_open_flag_name}}</td>
                   <td title=''>
-                    <a ui-sref='main.department.detail({item:DeptAudit.id})'>
+                    <a ui-sref='main.department.detail({item:DeptAudit.resource_id})'>
                       <pre>更多...</pre>
                     </a>
                   </td>

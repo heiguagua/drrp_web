@@ -257,12 +257,14 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
 
     $scope.Paging.pageChanged = function() {
       _httpParams.skip = ($scope.Paging.currentPage - 1)*_httpParams.limit;
+      _httpParams.sysdepname = $scope.dep_name;
       getDepartmentList(_httpParams);
     }
     //pagination
     function getDepartmentList(_httpParams) {
       Http.getDepartmentList(_httpParams).then(function(result) {
         $scope.AdminDepartments = result.data.body;
+        //$scope.Paging.totalItems = result.data.body.length;
       });
     }
 
@@ -606,6 +608,7 @@ AdminDepartment.service('AdminDepartment.Service.Component', ['$uibModal','$stat
     _httpParams.skip = 0;
     $scope.Paging.pageChanged = function() {
       _httpParams.skip = ($scope.Paging.currentPage - 1)*_httpParams.limit;
+      _httpParams.dep_name = $scope.query.dep_name;
       getDepRelRescount(_httpParams);
     }
 
@@ -689,6 +692,7 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
     _httpParams.dep_id = ((LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') ? null : dep_id);
     $scope.Paging.pageChanged = function() {
       _httpParams.skip = ($scope.Paging.currentPage - 1)*_httpParams.limit;
+      _httpParams.sysusername = $scope.username;
       getUserList(_httpParams);
     }
 
@@ -2284,7 +2288,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     $scope.Paging.itemsPerPage = 10;
     $scope.Paging.pageChanged = function() {
       var httpParams = {};
-      _.assign(httpParams, currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10});
+      _.assign(httpParams, currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10},{resource_name: $scope.TargetDataQuotaName});
       getDataQuotaList(httpParams);
     };
     // Get data quota list
@@ -2678,8 +2682,8 @@ DataQuotaDetail.directive('requirementDepatmentRelationship',[
                  dep_obj.value = 2;
                  data1.push(dep_obj);
                  var target_obj = {};
-                 target_obj.target = '当前信息资源' ;
-                 target_obj.source = value;
+                 target_obj.source = '当前信息资源' ;
+                 target_obj.target = value;
                  target_obj.weight = 1;
                  links1.push(target_obj);
                });
@@ -2787,7 +2791,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
     $scope.Paging.itemsPerPage = 10;
     $scope.Paging.pageChanged = function() {
       var httpParams = {};
-      _.assign(httpParams, currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10});
+      _.assign(httpParams, currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10},{resource_name: $scope.TargetDataQuotaName});
       getDataQuotaList(httpParams);
     };
     // Get data quota list
@@ -2826,7 +2830,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
       Http.getDataQuotaApplyInfo({info_resource_id: data_quota_id}).then(function() {
         // alert('申请中，等待审核');
         var httpParams = {};
-        _.assign(httpParams, {limit:10, skip: ($scope.Paging.currentPage-1) * 10});
+        _.assign(httpParams,currentDepID, {limit:10, skip: ($scope.Paging.currentPage-1) * 10},{resource_name: $scope.TargetDataQuotaName});
         getDataQuotaList(httpParams);
       });
     };
@@ -3214,7 +3218,7 @@ Audit.controller('Department.Audit.Controller.Main', ['$scope', '$q', 'Departmen
       });
     }
 
-    $scope.searchInfoResourceByName = function() {
+    $scope.searchDeptAuditByName = function() {
       _httpParams.resource_name = $scope.InfoResource.resource_name_filter;
       _httpParams.limit = 10;
       _httpParams.skip = 0;
@@ -3570,8 +3574,8 @@ DInventoryDetail.directive('wiservReqdepRelationship', [
                  dep_obj.value = 2;
                  data1.push(dep_obj);
                  var target_obj = {};
-                 target_obj.target = '当前信息资源' ;
-                 target_obj.source = value;
+                 target_obj.source = '当前信息资源' ;
+                 target_obj.target = value;
                  target_obj.weight = 1;
                  links1.push(target_obj);
                });
@@ -6542,65 +6546,99 @@ DepartmentShare.directive('wiservShareReqdepRelationship', [
             var deptotal = _.size(dataquotaRequirement.depNames) ;
             var resourceName = dataquotaRequirement.resourceName;
             var depNames = dataquotaRequirement.depNames;
-            var data1 = [{name: resourceName, x: 500, y:130 }];
-            var links1 = [{source: resourceName,target: "" }];
+            var data1 = [{category:0, name: '当前信息资源',  value : 10, label: '当前信息资源'}];
+            var links1 = [];
             if(deptotal){
                _(depNames).forEach(function (value,key){
-                 console.log(key+":"+value);
+                //  console.log(key+":"+value);
                  var dep_obj = {};
+                 dep_obj.category = 1;
                  dep_obj.name = value;
-                 dep_obj.x = 600;
-                 dep_obj.y = 100 + (key+1)*20;
+                 dep_obj.value = 2;
                  data1.push(dep_obj);
-
                  var target_obj = {};
-                 target_obj.target = value ;
-                 target_obj.source = resourceName;
+                 target_obj.source = '当前信息资源' ;
+                 target_obj.target = value;
+                 target_obj.weight = 1;
                  links1.push(target_obj);
                });
-               console.log(data1);
-               console.log(links1);
              }
              var myChart = echarts.init((element.find('div'))[0]);
              var option = {
-               title: {
-                 text: "对应的需求部门数:"+deptotal+"个"
-               },
-               tooltip: {},
-               animationDurationUpdate: 1500,
-               animationEasingUpdate: 'quinticInOut',
-               series : [
-                 {
-                   type: 'graph',
-                   layout: 'none',
-                   symbolSize: 50,
-                   roam: true,
-                   label: {
-                     normal: {
-                       show: true
-                     }
-                   },
-                   edgeSymbol: ['circle', 'arrow'],
-                   edgeSymbolSize: [4, 10],
-                   edgeLabel: {
-                     normal: {
-                       textStyle: {
-                         fontSize: 20
-                       }
-                     }
-                   },
-                   data: data1,
-                   links: links1,
-                   lineStyle: {
-                     normal: {
-                       opacity: 0.9,
-                       width: 2,
-                       curveness: 0.3
-                     }
-                   }
-                 }
-               ]
-             };
+               title : {
+                    text: '当前信息资源对应的需求部门为'+deptotal+'个',
+                    x:'center',
+                    y:'top'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: '{a} : {b}'
+                },
+                // toolbox: {
+                //     show : true,
+                //     feature : {
+                //         restore : {show: true},
+                //     }
+                // },
+                legend: {
+                    x: 'left',
+                    data:['需求部门']
+                },
+                series : [
+                    {
+                        type:'force',
+                        name : "当前信息资源-需求部门",
+                        ribbonType: false,
+                        categories : [
+                            {
+                                name: '当前信息资源'
+                            },
+                            {
+                                name: '需求部门'
+                            }
+
+                        ],
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#333'
+                                    }
+                                },
+                                nodeStyle : {
+                                    brushType : 'both',
+                                    borderColor : 'rgba(255,215,0,0.4)',
+                                    borderWidth : 1
+                                },
+
+                            },
+                            emphasis: {
+                                label: {
+                                    show: false
+                                    // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                                },
+                                nodeStyle : {
+                                    //r: 30
+                                },
+                                linkStyle : {}
+                            }
+                        },
+                        // useWorker: false,
+                        minRadius : 15,
+                        maxRadius :25,
+                        gravity: 1.1,
+                        scaling: 1.1,
+                        draggable: false,
+                        linkSymbol: 'arrow',
+                        steps: 10,
+                        coolDown: 0.9,
+                        roam: 'move',
+                        nodes:data1,
+                        links : links1
+                    }
+                ]
+            };
              myChart.setOption(option);
           }
         });
