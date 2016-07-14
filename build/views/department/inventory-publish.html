@@ -329,7 +329,7 @@
                 <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
                 <td class='text-center'>{{$index+1}}</td>
                 <td>
-                  <a class='delete btn btn-danger btn-xs' ng-click='deleteItem(rescoureItem.id)'>
+                  <a class='delete btn btn-danger btn-xs' ng-click='deleteItem(rescoureItem.id,resourceItem.isleaf)'>
                     <i class='fa fa-trash'></i>&nbsp;删除</a>
                   <a class='edit btn btn-success btn-xs' ng-click='updateItem(rescoureItem.id)'>
                     <i class='fa fa-pencil'></i>&nbsp;修改</a>
@@ -480,13 +480,21 @@
         <label for="" class="col-sm-2 control-label">
           父节点信息项:</label>
           <div class="col-sm-10">
-            <div style='display:inline-block;max-width:300px;' isteven-multi-select
+            <div style='padding-top: 7px;'>已选择：{{parent.selectedItem.item_name}}</div>
+            <div class='select-item-box'>
+              <treecontrol selected-node="parent.selectedItem" class="tree-light" tree-model="parent.itemTreeList" options="opts" on-selection="showSelected(node)">
+                item:
+                {{node.item_name}}
+              </treecontrol>
+            </div>
+
+            <!-- <div style='display:inline-block;max-width:300px;' isteven-multi-select
             input-model="parent.ItemsList" output-model="data.parent_id" selection-mode="single" helper-elements="all none filter"
-             button-label="item_name" item-label="item_name" tick-property="ticked" max-height="250px"></div>
+             button-label="item_name" item-label="item_name" tick-property="ticked" max-height="250px"></div> -->
 
             <!-- <select ng-model='data.parent_id' ng-options="srcItem as srcItem.item_name for srcItem in parent.ItemsList track by srcItem.item_name" class='custom-form-control'></select> -->
-            <p ng-show="(data.parent_id[0].item_name == ResourceItem.item_name) && ResourceItem.item_name" class="help-block">不能选择自身作为父级信息项。</p>
-            <p ng-show="parent.childParentConflict" class="help-block">所选信息项不能与自己互为父节点。</p>
+            <!-- <p ng-show="(data.parent_id[0].item_name == ResourceItem.item_name) && ResourceItem.item_name" class="help-block">不能选择自身作为父级信息项。</p> -->
+            <!-- <p ng-show="parent.childParentConflict" class="help-block">所选信息项不能与自己互为父节点。</p> -->
           </div>
       </div>
 

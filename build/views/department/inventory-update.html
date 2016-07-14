@@ -101,7 +101,7 @@
                 <option ng-repeat='resourceFormat in resourceFormatList' value='{{resourceFormat.id}}'>{{resourceFormat.dict_name}}</option>
               </select>
               <span ng-class="{true: 'ng-hide', false: 'ng-show'}[resFormatOtherShow || resItemAddBtn || resItemUpdateBtn]">
-                <label>格式说明：</label><input type='text' class='custom-form-control' name='resource_format_desc' ng-model='InfoResource.resource_format_desc' ng-maxlength='256' />
+                <label>格式说明：</label><input type='text' class='custom-form-control' name='resource_format_desc' ng-model='InfoResource.resource_format_desc' ng-maxlength='256'/>
               </span>
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[resFormatOtherShow]"><input type='text' class='custom-form-control' name='resource_format_other' ng-maxlength='256' placeholder='请输入其他信息资源格式' ng-model='InfoResource.resource_format_other'/></span>
               <!-- <span ng-class="{true: 'ng-show', false: 'ng-hide'}[resItemAddBtn]"><a class='btn btn-default' ng-click='ResItemListShow = true'><i class='fa fa-plus'></i>&nbsp;信息项</a></span> -->
@@ -210,8 +210,7 @@
               </select>
 
               <span>
-                <label>共享方式说明：</label><input ng-class="{true: 'ng-hide', false: 'ng-show'}[shareMethodOtherShow]"
-                type='text' class='custom-form-control' name='share_method_desc' ng-model='InfoResource.share_method_desc'  ng-maxlength='256'  />
+                <label>共享方式说明：</label><input ng-class="{true: 'ng-hide', false: 'ng-show'}[shareMethodOtherShow]" type='text' class='custom-form-control' name='share_method_desc' ng-model='InfoResource.share_method_desc' ng-maxlength='256'/>
               </span>
 
               <span ng-class="{true: 'ng-show', false: 'ng-hide'}[shareMethodOtherShow]">
@@ -327,7 +326,7 @@
                 <!-- <td><input type='checkbox' ng-click='deleteReq(rescoureItem.id)' />删除</td> -->
                 <td class='text-center'>{{$index+1}}</td>
                 <td>
-                  <a class='delete btn btn-danger btn-xs' ng-click='deleteItem(rescoureItem.id)'>
+                  <a class='delete btn btn-danger btn-xs' ng-click='deleteItem(rescoureItem.id,resourceItem.isleaf)'>
                     <i class='fa fa-trash'></i>&nbsp;删除</a>
                   <a class='edit btn btn-success btn-xs' ng-click='updateItem(rescoureItem.id)'>
                     <i class='fa fa-pencil'></i>&nbsp;修改</a>
@@ -474,7 +473,7 @@
             </span> -->
 
           <select ng-model='ResourceItem.secret_flag' required class='custom-form-control'>
-            <option ng-repeat="qsflag in  secretFlagList" ng-selected='ResourceItem.secret_flag == qsflag.id'  value='{{qsflag.id}}'>{{qsflag.dict_name}}</option>
+            <option ng-repeat="qsflag in  secretFlagList" ng-selected='ResourceItem.secret_flag == qsflag.id' value='{{qsflag.id}}'>{{qsflag.dict_name}}</option>
           </select>
         </div>
       </div>
@@ -483,13 +482,18 @@
         <label for="" class="col-sm-2 control-label">
           父节点信息项:</label>
         <div class="col-sm-10">
-          <div style='display:inline-block;max-width:300px;' isteven-multi-select
-          input-model="parent.ItemsList" output-model="data.parent_id" selection-mode="single" helper-elements="all none filter"
-           button-label="item_name" item-label="item_name" tick-property="ticked" max-height="250px"></div>
+          <div style='padding-top: 7px;' >已选择：{{parent.selectedItem.item_name}}</div>
+          <div class='select-item-box'>
+            <treecontrol selected-node="parent.selectedItem" class="tree-light" tree-model="parent.itemTreeList" options="opts" on-selection="showSelected(node)">
+              item:
+              {{node.item_name}}
+            </treecontrol>
+          </div>
+          <!-- <div style='display:inline-block;max-width:300px;' isteven-multi-select input-model="parent.ItemsList" output-model="data.parent_id" selection-mode="single" helper-elements="all none filter" button-label="item_name" item-label="item_name" tick-property="ticked" max-height="250px"></div> -->
 
           <!-- <select ng-model='data.parent_id' ng-options="srcItem as srcItem.item_name for srcItem in parent.ItemsList track by srcItem.item_name" class='custom-form-control'></select> -->
-          <p ng-show="(data.parent_id[0].item_name == ResourceItem.item_name) && ResourceItem.item_name" class="help-block">不能选择自身作为父级信息项。</p>
-          <p ng-show="parent.childParentConflict" class="help-block">所选信息项不能与自己互为父节点。</p>
+          <!-- <p ng-show="(data.parent_id[0].item_name == ResourceItem.item_name) && ResourceItem.item_name" class="help-block">不能选择自身作为父级信息项。</p>
+          <p ng-show="parent.childParentConflict" class="help-block">所选信息项不能与自己互为父节点。</p> -->
         </div>
       </div>
 
