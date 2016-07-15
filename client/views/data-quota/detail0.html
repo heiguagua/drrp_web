@@ -120,6 +120,7 @@
                <tr>
                  <th width="40px">序号</th>
                  <th width="40px">信息项名称</th>
+                 <th width="40px">父信息项</th>
                  <th width="40px">数据类型</th>
                  <th width="40px">数据精度</th>
                  <th width="40px">数据长度</th>
@@ -133,6 +134,7 @@
                <tr ng-repeat='columns in DataQuotaExample'>
                  <td class="orderStyle" >{{$index+1}}</td>
                  <td title="{{columns.item_name}}">{{columns.item_name}}</td>
+                 <td title="{{columns.parent_name}}">{{columns.parent_name}}</td>
                  <td title="{{columns.item_type}}">{{columns.item_type}}</td>
                  <td title="{{columns.data_precision}}">{{columns.data_precision}}</td>
                  <td title="{{columns.data_length}}">{{columns.data_length}}</td>
