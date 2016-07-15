@@ -968,6 +968,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         }
         $scope.InfoResource.social_open_flag = 0;
       } else {
+        $scope.depShow = false;
         $scope.InfoResource.social_open_flag = 1;
         $scope.outputDeptList = [];
       }
