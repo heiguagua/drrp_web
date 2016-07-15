@@ -484,7 +484,9 @@
         <label for="" class="col-sm-2 control-label">
           父节点信息项:</label>
         <div class="col-sm-10">
-          <div style='padding-top: 7px;' >已选择：{{parent.selectedItem.item_name}}</div>
+          <div style='padding-top: 7px;' >已选择：{{parent.selectedItem.item_name}}
+            <p class='help-tips'>提示：再次点击取消选择</p>
+          </div>
           <div class='select-item-box'>
             <treecontrol selected-node="parent.selectedItem" class="tree-light" tree-model="parent.itemTreeList" options="opts" on-selection="showSelected(node)">
               信息项:
