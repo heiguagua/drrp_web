@@ -26,14 +26,13 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     function getDepartmentList(_httpParams) {
       Http.getDepartmentList(_httpParams).then(function(result) {
         $scope.AdminDepartments = result.data.body;
-        //$scope.Paging.totalItems = result.data.body.length;
       });
     }
 
     // init
     getDepartmentList(_httpParams);
-    function getDepTotal(){
-      Http.getDepTotal().then(function(result) {
+    function getDepTotal(params){
+      Http.getDepTotal(params).then(function(result) {
         $scope.depTotal = result.data.body[0].number;
         $scope.Paging.totalItems = $scope.depTotal;
       });
@@ -231,9 +230,10 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
       }else{
         Http.getDepartmentList(_httpParams).then(function(result) {
           if(result.data.head.total >=1){
+            getDepTotal({sysdepname : $scope.dep_name});
             $scope.AdminDepartments = result.data.body;
-            $scope.depTotal = result.data.head.total;
-            $scope.Paging.totalItems =  $scope.depTotal;
+            // $scope.depTotal = result.data.head.total;
+            // $scope.Paging.totalItems =  $scope.depTotal;
           }else {
             alert("系统没有查到'"+$scope.dep_name+"'这个部门，请重新输入");
             $scope.dep_name = "";
@@ -263,9 +263,11 @@ AdminDepartment.factory('AdminDepartment.Service.Http', ['$http', 'API',
       )
     };
 
-    function getDepTotal() {
+    function getDepTotal(params) {
       return $http.get(
-        path + '/sys_dep/count'
+        path + '/sys_dep/count',{
+          params: params
+        }
       )
     };
     function saveDepartment(data) {

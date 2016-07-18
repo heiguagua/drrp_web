@@ -30,16 +30,18 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
         $scope.users = result.data.body;
       });
     }
-    function getUserTotal(){
+    function getUserTotal(params){
       Http.getUserTotal({
-        "dep_id" : dep_id
+         dep_id : dep_id,
+         sysusername : $scope.username
       }).then(function(result) {
-        if (LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') {
-          var tatol =  result.data.body[0].number - 1 ;
-          $scope.UserTotal = tatol;
-        }else {
-          $scope.UserTotal = result.data.body[0].number;
-        }
+        // if (LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') {
+        //   var tatol =  result.data.body[0].number  ;
+        //   $scope.UserTotal = tatol;
+        // }else {
+        //   $scope.UserTotal = result.data.body[0].number;
+        // }
+        $scope.UserTotal = result.data.body[0].number;
         $scope.Paging.totalItems = $scope.UserTotal;
       });
     }
@@ -332,10 +334,11 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
         getUserList(_httpParams);
       }else{
         Http.getUserList(_httpParams).then(function(result) {
+          getUserTotal({sysusername : $scope.username});
           if(result.data.head.total >= 1){
             $scope.users = result.data.body;
-            $scope.UserTotal = result.data.head.total;
-            $scope.Paging.totalItems = $scope.UserTotal;
+            // $scope.UserTotal = result.data.head.total;
+            // $scope.Paging.totalItems = $scope.UserTotal;
           }else{
             alert("系统没有查到'"+$scope.username+"'这个用户名，请重新输入");
             $state.go("main.admin.user", {}, {

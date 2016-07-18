@@ -17,8 +17,8 @@
       getDepRelRescount(_httpParams);
     }
 
-    function getDepsTotal() {
-      Http.getDepCount().then(function(result) {
+    function getDepsTotal(params) {
+      Http.getDepCount(params).then(function(result) {
         $scope.depTotal = result.data.body[0].number;
         $scope.Paging.totalItems = $scope.depTotal;
       });
@@ -32,6 +32,30 @@
     getDepsTotal();
     getDepRelRescount(_httpParams);
 
+    //search department
+    $scope.searchDepartment = function(){
+      _httpParams.limit = 10;
+      _httpParams.skip = 0;
+      _httpParams.sysdepname = $scope.dep_name;
+      if($scope.dep_name==null){
+        getDepsTotal();
+        getDepRelRescount(_httpParams);
+      }else{
+        Http.getDepRelRescount(_httpParams).then(function(result) {
+          if(result.data.head.total >=1){
+            getDepsTotal({sysdepname : $scope.dep_name});
+            $scope.depRecouces = result.data.body;
+          }else {
+            alert("系统没有查到'"+$scope.dep_name+"'这个部门，请重新输入");
+            $scope.dep_name = "";
+            $state.go("main.admin.dep-resource", {}, {
+              reload: true
+            });
+          }
+        });
+      }
+    }
+
 
 
   }
@@ -42,9 +66,11 @@ AdminDepResource.factory('AdminDepResource.Service.Http', ['$http', 'API',
   function($http, API) {
     var path = API.path;
 
-    function getDepCount() {
+    function getDepCount(params) {
       return $http.get(
-        path + '/sys_dep/count'
+        path + '/sys_dep/count',{
+          params: params
+        }
       )
     };
     function getDepRelRescount(params) {
