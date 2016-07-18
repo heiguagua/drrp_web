@@ -374,9 +374,9 @@
         <label for="" class="col-sm-2 control-label">
           <span class='require-sign'>*</span>信息项名称:</label>
         <div class="col-sm-10">
-          <input type="text" name='item_name' ng-maxlength='256' class="form-control" required ng-model='ResourceItem.item_name' ng-keyup='checkItemName()'>
+          <input type="text" name='item_name' ng-maxlength='256' class="form-control" required ng-model='ResourceItem.item_name' >
           <p ng-show="addItemForm.item_name.$error.required && itemAdded" class="help-block">请输入信息项名称</p>
-          <p ng-show="parent.itemNameExist" class="help-block">信息项名称已存在！</p>
+          <!-- <p ng-show="parent.itemNameExist" class="help-block">信息项名称已存在！</p> -->
           <p ng-show="addItemForm.item_name.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
         </div>
       </div>

@@ -696,7 +696,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.ResourceItem.shareFreqItemObjSelection = [];
       //$scope.ResourceItem.isleaf = 1;
       $scope.parent = {};
-      $scope.parent.itemNameExist = false;
+      //$scope.parent.itemNameExist = false;
       $scope.parent.childParentConflict = false;
 
       $scope.data = {};
@@ -723,32 +723,32 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       // })
 
 
-      $scope.checkItemName = function() {
-        if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
-          console.log($scope.ResourceItem);
-          console.log($scope.ResourceItemList);
-          $scope.parent.itemNameExist = false;
-          _($scope.ResourceItemList).forEach(function(item) {
-            if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
-              $scope.parent.itemNameExist = true;
-            }
-          })
-          if (!$scope.parent.itemNameExist) {
-            Http.checkItemName({
-              item_name: $scope.ResourceItem.item_name,
-              info_resource_id: $scope.InfoResource.id
-            }).then(function(res) {
-              if (res.data.body[0].isexists == 'true') {
-                $scope.parent.itemNameExist = true;
-              } else {
-                $scope.parent.itemNameExist = false;
-              }
-            })
-          }
-
-        }
-
-      }
+      // $scope.checkItemName = function() {
+      //   if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+      //     console.log($scope.ResourceItem);
+      //     console.log($scope.ResourceItemList);
+      //     $scope.parent.itemNameExist = false;
+      //     _($scope.ResourceItemList).forEach(function(item) {
+      //       if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
+      //         $scope.parent.itemNameExist = true;
+      //       }
+      //     })
+      //     if (!$scope.parent.itemNameExist) {
+      //       Http.checkItemName({
+      //         item_name: $scope.ResourceItem.item_name,
+      //         info_resource_id: $scope.InfoResource.id
+      //       }).then(function(res) {
+      //         if (res.data.body[0].isexists == 'true') {
+      //           $scope.parent.itemNameExist = true;
+      //         } else {
+      //           $scope.parent.itemNameExist = false;
+      //         }
+      //       })
+      //     }
+      //
+      //   }
+      //
+      // }
 
       $scope.opts = {};
       $scope.parent.itemTreeList = $scope.itemTreeList;
@@ -804,7 +804,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
           $scope.shareFreqEmpty = false;
           $scope.parent = {};
-          $scope.parent.itemNameExist = false;
+          //$scope.parent.itemNameExist = false;
           $scope.parent.selectedItem = {};
           //$scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
           $scope.parent.itemTreeList = angular.copy($scope.itemTreeList);
@@ -858,30 +858,30 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           //   }
           // })
 
-          $scope.checkItemName = function() {
-            if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
-              $scope.parent.itemNameExist = false;
-              _($scope.ResourceItemList).forEach(function(item) {
-                if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
-                  $scope.parent.itemNameExist = true;
-                }
-              })
-              if (!$scope.parent.itemNameExist) {
-                Http.checkItemName({
-                  item_name: $scope.ResourceItem.item_name,
-                  info_resource_id: $scope.InfoResource.id
-                }).then(function(res) {
-                  if (res.data.body[0].isexists == 'true') {
-                    $scope.parent.itemNameExist = true;
-                  } else {
-                    $scope.parent.itemNameExist = false;
-                  }
-                })
-              }
-
-            }
-
-          }
+          // $scope.checkItemName = function() {
+          //   if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+          //     $scope.parent.itemNameExist = false;
+          //     _($scope.ResourceItemList).forEach(function(item) {
+          //       if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
+          //         $scope.parent.itemNameExist = true;
+          //       }
+          //     })
+          //     if (!$scope.parent.itemNameExist) {
+          //       Http.checkItemName({
+          //         item_name: $scope.ResourceItem.item_name,
+          //         info_resource_id: $scope.InfoResource.id
+          //       }).then(function(res) {
+          //         if (res.data.body[0].isexists == 'true') {
+          //           $scope.parent.itemNameExist = true;
+          //         } else {
+          //           $scope.parent.itemNameExist = false;
+          //         }
+          //       })
+          //     }
+          //
+          //   }
+          //
+          // }
 
           $scope.opts = {
             isSelectable: function(node) {
@@ -1288,14 +1288,13 @@ DInventory.service('Department.Inventory.Service.Component', ['$uibModal', '$sta
         scope: scope
       });
       scope.Modal.confirm = function() {
-        console.log(scope.parent.itemNameExist);
         if (scope.ResourceItem.shareFreqItemSelection.length == 0) {
           scope.shareFreqEmpty = true;
           return;
         }
-        if (scope.parent.itemNameExist) {
-          return;
-        }
+        // if (scope.parent.itemNameExist) {
+        //   return;
+        // }
         modalInstance.close(scope.Modal);
       };
       scope.Modal.cancel = function() {
