@@ -14,7 +14,6 @@
     _httpParams.skip = 0;
     $scope.Paging.pageChanged = function() {
       _httpParams.skip = ($scope.Paging.currentPage - 1)*_httpParams.limit;
-      _httpParams.dep_name = $scope.query.dep_name;
       getDepRelRescount(_httpParams);
     }
 
