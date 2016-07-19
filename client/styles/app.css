@@ -1789,6 +1789,18 @@ input.ng-touched.ng-invalid {
 #data-quota-detail .quota-example .table-responsive {
   margin-top: 0;
 }
+#data-quota-detail .wiserv-example-data-show {
+  overflow: scroll;
+}
+#data-quota-detail .wiserv-example-data-show wiserv-example-data-show table {
+  table-layout: auto !important;
+}
+#data-quota-detail .wiserv-example-data-show wiserv-example-data-show table tr td {
+  overflow: inherit;
+  white-space: inherit;
+  text-overflow: inherit;
+  min-width: 100px;
+}
 #admin-user .row {
   height: 450px;
 }
