@@ -13,9 +13,38 @@
     .tab-pane>.row{
       padding:4px 0;
     }
+    pre {
+      overflow: hidden;
+      border: none;
+      border-radius: 0;
+      word-break: initial;
+      word-wrap: break-word;
+      color: inherit;
+      background: none;
+      padding: 0;
+      font-size: inherit;
+      font-family: inherit;
+      margin: 0;
+    }
     #invntDetail {
       .text-right {
         text-align: right;
+      }
+    }
+  }
+  .example-datas-wrap{
+    overflow:scroll;
+    wiserv-share-example-data {
+      table {
+        table-layout: auto !important;
+        tr {
+          td {
+            overflow: inherit;
+            white-space: inherit;
+            text-overflow: inherit;
+            min-width: 100px;
+          }
+        }
       }
     }
   }

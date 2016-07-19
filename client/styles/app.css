@@ -794,13 +794,17 @@ input.ng-touched.ng-invalid {
 #department-inventory-detail .tab-content #invntDetail .text-right {
   text-align: right;
 }
-#department-inventory-detail .tab-content wiserv-example-data table {
+#department-inventory-detail .tab-content .example-data-wrap {
+  overflow: scroll;
+}
+#department-inventory-detail .tab-content .example-data-wrap wiserv-example-data table {
   table-layout: auto !important;
 }
-#department-inventory-detail .tab-content wiserv-example-data table tr td {
+#department-inventory-detail .tab-content .example-data-wrap wiserv-example-data table tr td {
   overflow: inherit;
   white-space: inherit;
   text-overflow: inherit;
+  min-width: 100px;
 }
 #department-inventory-upload {
   margin-bottom: 50px;
@@ -997,8 +1001,33 @@ input.ng-touched.ng-invalid {
 #department-share-detail .tab-content .tab-pane > .row {
   padding: 4px 0;
 }
+#department-share-detail .tab-content pre {
+  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  word-break: initial;
+  word-wrap: break-word;
+  color: inherit;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  margin: 0;
+}
 #department-share-detail .tab-content #invntDetail .text-right {
   text-align: right;
+}
+#department-share-detail .example-datas-wrap {
+  overflow: scroll;
+}
+#department-share-detail .example-datas-wrap wiserv-share-example-data table {
+  table-layout: auto !important;
+}
+#department-share-detail .example-datas-wrap wiserv-share-example-data table tr td {
+  overflow: inherit;
+  white-space: inherit;
+  text-overflow: inherit;
+  min-width: 100px;
 }
 #department-requirement {
   margin-bottom: 50px;
