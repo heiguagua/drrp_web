@@ -13,6 +13,9 @@
         <li ui-sref-active-eq="active">
           <a ui-sref="main.department.summary" ui-sref-opts='{reload: true}'><i class="fa fa-cogs"> 部门资源管理</i></a>
         </li>
+        <li ui-sref-active-eq="active">
+          <a target="_self" ng-href="{{downloadHelp}}" download="help.zip" >使用手册下载</a>
+        </li>
       </ul>
       <!-- Right Admin Button -->
       <div class="btn-group pull-right btn-login">

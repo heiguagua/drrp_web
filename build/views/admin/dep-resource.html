@@ -3,9 +3,10 @@
     <div class="panel panel-default ">
       <div class="panel-heading">部门资源统计</div>
       <div class="panel-body">
-        <div class="input-group col-xs-3 pull-right">
-          <input type="text" class="form-control" placeholder="请输入部门名称..." ng-model="query.dep_name">
-          <div class="input-group-addon">查询</div>
+        <div class="input-group col-xs-4 pull-right">
+          <div class="input-group-addon">部门总数(<span ng-bind="depTotal"></span>)</div>
+          <input type="text" class="form-control" placeholder="请输入部门名称..." ng-model="dep_name">
+          <div class="input-group-addon" ng-click="searchDepartment()">查询</div>
         </div>
       </div>
       <div class='table-responsive'>
@@ -20,7 +21,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="depResource in depRecouces | filter: query">
+                  <tr ng-repeat="depResource in depRecouces">
                     <td class='orderBy'>{{$index+(Paging.currentPage-1)*10+1}}</td>
                     <td>{{depResource.dep_name}}</td>
                     <td class='numberAndDateStyle'>{{depResource.resourcenumber}}</td>
@@ -30,7 +31,7 @@
           </div>
         </div>
       </div>
-      <div ng-show="!query"class="pull-right">
+      <div  class="pull-right">
         <uib-pagination boundary-links="true" ng-change="Paging.pageChanged()" total-items="Paging.totalItems" items-per-page="Paging.itemsPerPage" ng-model="Paging.currentPage" max-size="Paging.maxSize" class="pagination" boundary-link-numbers="true" rotate="false" first-text="首页" last-text="末页" next-text="下一页" previous-text="上一页"></uib-pagination>
       </div>
     </div>

@@ -2,7 +2,7 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <i class="fa fa-paperclip"> 信息资源详情</i>
-      <a class="pull-right btn btn-xs" type="button" onclick="history.go(-1)">返回</a>
+      <a class="pull-right btn btn-xs" type="button" onclick="history.go(-1);">返回</a>
     </div>
     <div class="panel-body">
       <uib-tabset class='quota-detail' active="active">
@@ -118,8 +118,9 @@
              <thead>
                <caption class="caption"></caption>
                <tr>
-                 <th width="40px">序号</th>
-                 <th width="40px">信息项名称</th>
+                 <th width="20px">序号</th>
+                 <th width="60px">信息项名称</th>
+                 <th width="40px">父信息项</th>
                  <th width="40px">数据类型</th>
                  <th width="40px">数据精度</th>
                  <th width="40px">数据长度</th>
@@ -133,6 +134,7 @@
                <tr ng-repeat='columns in DataQuotaExample'>
                  <td class="orderStyle" >{{$index+1}}</td>
                  <td title="{{columns.item_name}}">{{columns.item_name}}</td>
+                 <td title="{{columns.parent_name}}">{{columns.parent_name}}</td>
                  <td title="{{columns.item_type}}">{{columns.item_type}}</td>
                  <td title="{{columns.data_precision}}">{{columns.data_precision}}</td>
                  <td title="{{columns.data_length}}">{{columns.data_length}}</td>
@@ -146,7 +148,7 @@
           </div>
         </uib-tab>
         <uib-tab ng-show="DataQuotaDetail.resource_format ==='数据库类'" class='quota-example-data' index='2' heading="样例数据">
-          <wiserv-example-data-show style='padding:15px 0' />
+           <div class='wiserv-example-data-show'><wiserv-example-data-show style='padding:15px 0' /></div>
         </uib-tab>
         <uib-tab  class='quota-requirement-relationship' heading="需求关联拓扑">
         <div>

@@ -264,14 +264,13 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
     function getDepartmentList(_httpParams) {
       Http.getDepartmentList(_httpParams).then(function(result) {
         $scope.AdminDepartments = result.data.body;
-        //$scope.Paging.totalItems = result.data.body.length;
       });
     }
 
     // init
     getDepartmentList(_httpParams);
-    function getDepTotal(){
-      Http.getDepTotal().then(function(result) {
+    function getDepTotal(params){
+      Http.getDepTotal(params).then(function(result) {
         $scope.depTotal = result.data.body[0].number;
         $scope.Paging.totalItems = $scope.depTotal;
       });
@@ -469,9 +468,10 @@ AdminDepartment.controller('Admin.Department.Controller.Main', ['$rootScope', '$
       }else{
         Http.getDepartmentList(_httpParams).then(function(result) {
           if(result.data.head.total >=1){
+            getDepTotal({sysdepname : $scope.dep_name});
             $scope.AdminDepartments = result.data.body;
-            $scope.depTotal = result.data.head.total;
-            $scope.Paging.totalItems =  $scope.depTotal;
+            // $scope.depTotal = result.data.head.total;
+            // $scope.Paging.totalItems =  $scope.depTotal;
           }else {
             alert("系统没有查到'"+$scope.dep_name+"'这个部门，请重新输入");
             $scope.dep_name = "";
@@ -501,9 +501,11 @@ AdminDepartment.factory('AdminDepartment.Service.Http', ['$http', 'API',
       )
     };
 
-    function getDepTotal() {
+    function getDepTotal(params) {
       return $http.get(
-        path + '/sys_dep/count'
+        path + '/sys_dep/count',{
+          params: params
+        }
       )
     };
     function saveDepartment(data) {
@@ -608,12 +610,11 @@ AdminDepartment.service('AdminDepartment.Service.Component', ['$uibModal','$stat
     _httpParams.skip = 0;
     $scope.Paging.pageChanged = function() {
       _httpParams.skip = ($scope.Paging.currentPage - 1)*_httpParams.limit;
-      _httpParams.dep_name = $scope.query.dep_name;
       getDepRelRescount(_httpParams);
     }
 
-    function getDepsTotal() {
-      Http.getDepCount().then(function(result) {
+    function getDepsTotal(params) {
+      Http.getDepCount(params).then(function(result) {
         $scope.depTotal = result.data.body[0].number;
         $scope.Paging.totalItems = $scope.depTotal;
       });
@@ -627,6 +628,30 @@ AdminDepartment.service('AdminDepartment.Service.Component', ['$uibModal','$stat
     getDepsTotal();
     getDepRelRescount(_httpParams);
 
+    //search department
+    $scope.searchDepartment = function(){
+      _httpParams.limit = 10;
+      _httpParams.skip = 0;
+      _httpParams.sysdepname = $scope.dep_name;
+      if($scope.dep_name==null){
+        getDepsTotal();
+        getDepRelRescount(_httpParams);
+      }else{
+        Http.getDepRelRescount(_httpParams).then(function(result) {
+          if(result.data.head.total >=1){
+            getDepsTotal({sysdepname : $scope.dep_name});
+            $scope.depRecouces = result.data.body;
+          }else {
+            alert("系统没有查到'"+$scope.dep_name+"'这个部门，请重新输入");
+            $scope.dep_name = "";
+            $state.go("main.admin.dep-resource", {}, {
+              reload: true
+            });
+          }
+        });
+      }
+    }
+
 
 
   }
@@ -637,9 +662,11 @@ AdminDepResource.factory('AdminDepResource.Service.Http', ['$http', 'API',
   function($http, API) {
     var path = API.path;
 
-    function getDepCount() {
+    function getDepCount(params) {
       return $http.get(
-        path + '/sys_dep/count'
+        path + '/sys_dep/count',{
+          params: params
+        }
       )
     };
     function getDepRelRescount(params) {
@@ -704,16 +731,18 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
         $scope.users = result.data.body;
       });
     }
-    function getUserTotal(){
+    function getUserTotal(params){
       Http.getUserTotal({
-        "dep_id" : dep_id
+         dep_id : dep_id,
+         sysusername : $scope.username
       }).then(function(result) {
-        if (LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') {
-          var tatol =  result.data.body[0].number - 1 ;
-          $scope.UserTotal = tatol;
-        }else {
-          $scope.UserTotal = result.data.body[0].number;
-        }
+        // if (LoginUser.id==='e147f177-1e83-11e6-ac02-507b9d1b58bb') {
+        //   var tatol =  result.data.body[0].number  ;
+        //   $scope.UserTotal = tatol;
+        // }else {
+        //   $scope.UserTotal = result.data.body[0].number;
+        // }
+        $scope.UserTotal = result.data.body[0].number;
         $scope.Paging.totalItems = $scope.UserTotal;
       });
     }
@@ -1006,10 +1035,11 @@ AdminUser.controller('Admin.User.Controller.Main', ['$cookies', '$scope', '$q', 
         getUserList(_httpParams);
       }else{
         Http.getUserList(_httpParams).then(function(result) {
+          getUserTotal({sysusername : $scope.username});
           if(result.data.head.total >= 1){
             $scope.users = result.data.body;
-            $scope.UserTotal = result.data.head.total;
-            $scope.Paging.totalItems = $scope.UserTotal;
+            // $scope.UserTotal = result.data.head.total;
+            // $scope.Paging.totalItems = $scope.UserTotal;
           }else{
             alert("系统没有查到'"+$scope.username+"'这个用户名，请重新输入");
             $state.go("main.admin.user", {}, {
@@ -2131,9 +2161,10 @@ Login.factory('Login.Service.Http', ['$http', 'API',
 var Main = angular.module('Main', ['ui.router', 'ngCookies']);
 
 /** Main Controller */
-Main.controller('Main.Controller.Main', ['$scope', '$cookies', 'Main.Service.Http', '$state',
-  function($scope, $cookies, Http, $state) {
+Main.controller('Main.Controller.Main', ['$scope', '$cookies', 'Main.Service.Http', '$state', 'API',
+  function($scope, $cookies, Http, $state, API) {
     $scope.User = JSON.parse($cookies.get('User'));
+    $scope.downloadHelp = API.path + '/download?help=zip';
     $scope.logout = function() {
       console.log($scope.User);
       if(sessionStorage.token){
@@ -2786,7 +2817,8 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
     // Params for pagin
     var initPaging = {limit:10, skip: 0};
     $scope.Paging = {};
-    $scope.Paging.currentPage = 1;
+    $scope.Paging.currentPage =1;
+    console.log($scope.Paging.currentPage);
     $scope.Paging.maxSize = 5;
     $scope.Paging.itemsPerPage = 10;
     $scope.Paging.pageChanged = function() {
@@ -3752,7 +3784,12 @@ DInventoryUpload.controller('Department.InventoryUploadExamples.Controller', ['$
                 });
               }
               else {
-                alert('上传失败，上传文件格式有误！');
+                if('error' == result.data.head.message) {
+                  alert('上传失败');
+                }
+                else {
+                  alert(result.data.head.message);
+                }
               }
             });
           }
@@ -4572,7 +4609,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       $scope.ResourceItem.shareFreqItemObjSelection = [];
       //$scope.ResourceItem.isleaf = 1;
       $scope.parent = {};
-      $scope.parent.itemNameExist = false;
+      //$scope.parent.itemNameExist = false;
       $scope.parent.childParentConflict = false;
 
       $scope.data = {};
@@ -4599,32 +4636,32 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
       // })
 
 
-      $scope.checkItemName = function() {
-        if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
-          console.log($scope.ResourceItem);
-          console.log($scope.ResourceItemList);
-          $scope.parent.itemNameExist = false;
-          _($scope.ResourceItemList).forEach(function(item) {
-            if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
-              $scope.parent.itemNameExist = true;
-            }
-          })
-          if (!$scope.parent.itemNameExist) {
-            Http.checkItemName({
-              item_name: $scope.ResourceItem.item_name,
-              info_resource_id: $scope.InfoResource.id
-            }).then(function(res) {
-              if (res.data.body[0].isexists == 'true') {
-                $scope.parent.itemNameExist = true;
-              } else {
-                $scope.parent.itemNameExist = false;
-              }
-            })
-          }
-
-        }
-
-      }
+      // $scope.checkItemName = function() {
+      //   if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+      //     console.log($scope.ResourceItem);
+      //     console.log($scope.ResourceItemList);
+      //     $scope.parent.itemNameExist = false;
+      //     _($scope.ResourceItemList).forEach(function(item) {
+      //       if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
+      //         $scope.parent.itemNameExist = true;
+      //       }
+      //     })
+      //     if (!$scope.parent.itemNameExist) {
+      //       Http.checkItemName({
+      //         item_name: $scope.ResourceItem.item_name,
+      //         info_resource_id: $scope.InfoResource.id
+      //       }).then(function(res) {
+      //         if (res.data.body[0].isexists == 'true') {
+      //           $scope.parent.itemNameExist = true;
+      //         } else {
+      //           $scope.parent.itemNameExist = false;
+      //         }
+      //       })
+      //     }
+      //
+      //   }
+      //
+      // }
 
       $scope.opts = {};
       $scope.parent.itemTreeList = $scope.itemTreeList;
@@ -4680,7 +4717,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
 
           $scope.shareFreqEmpty = false;
           $scope.parent = {};
-          $scope.parent.itemNameExist = false;
+          //$scope.parent.itemNameExist = false;
           $scope.parent.selectedItem = {};
           //$scope.parent.ItemsList = angular.copy($scope.ResourceItemList);
           $scope.parent.itemTreeList = angular.copy($scope.itemTreeList);
@@ -4734,30 +4771,30 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
           //   }
           // })
 
-          $scope.checkItemName = function() {
-            if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
-              $scope.parent.itemNameExist = false;
-              _($scope.ResourceItemList).forEach(function(item) {
-                if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
-                  $scope.parent.itemNameExist = true;
-                }
-              })
-              if (!$scope.parent.itemNameExist) {
-                Http.checkItemName({
-                  item_name: $scope.ResourceItem.item_name,
-                  info_resource_id: $scope.InfoResource.id
-                }).then(function(res) {
-                  if (res.data.body[0].isexists == 'true') {
-                    $scope.parent.itemNameExist = true;
-                  } else {
-                    $scope.parent.itemNameExist = false;
-                  }
-                })
-              }
-
-            }
-
-          }
+          // $scope.checkItemName = function() {
+          //   if ($scope.ResourceItem.item_name && $scope.ResourceItem.item_name != '') {
+          //     $scope.parent.itemNameExist = false;
+          //     _($scope.ResourceItemList).forEach(function(item) {
+          //       if (($scope.ResourceItem.item_name == item.item_name) && $scope.ResourceItem !== item) {
+          //         $scope.parent.itemNameExist = true;
+          //       }
+          //     })
+          //     if (!$scope.parent.itemNameExist) {
+          //       Http.checkItemName({
+          //         item_name: $scope.ResourceItem.item_name,
+          //         info_resource_id: $scope.InfoResource.id
+          //       }).then(function(res) {
+          //         if (res.data.body[0].isexists == 'true') {
+          //           $scope.parent.itemNameExist = true;
+          //         } else {
+          //           $scope.parent.itemNameExist = false;
+          //         }
+          //       })
+          //     }
+          //
+          //   }
+          //
+          // }
 
           $scope.opts = {
             isSelectable: function(node) {
@@ -4844,6 +4881,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         }
         $scope.InfoResource.social_open_flag = 0;
       } else {
+        $scope.depShow = false;
         $scope.InfoResource.social_open_flag = 1;
         $scope.outputDeptList = [];
       }
@@ -5163,14 +5201,13 @@ DInventory.service('Department.Inventory.Service.Component', ['$uibModal', '$sta
         scope: scope
       });
       scope.Modal.confirm = function() {
-        console.log(scope.parent.itemNameExist);
         if (scope.ResourceItem.shareFreqItemSelection.length == 0) {
           scope.shareFreqEmpty = true;
           return;
         }
-        if (scope.parent.itemNameExist) {
-          return;
-        }
+        // if (scope.parent.itemNameExist) {
+        //   return;
+        // }
         modalInstance.close(scope.Modal);
       };
       scope.Modal.cancel = function() {
