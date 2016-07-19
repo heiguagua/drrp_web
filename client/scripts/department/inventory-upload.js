@@ -86,7 +86,12 @@ DInventoryUpload.controller('Department.InventoryUploadExamples.Controller', ['$
                 });
               }
               else {
-                alert('上传失败，上传文件格式有误！');
+                if('error' == result.data.head.message) {
+                  alert('上传失败');
+                }
+                else {
+                  alert(result.data.head.message);
+                }
               }
             });
           }
