@@ -1827,6 +1827,9 @@ input.ng-touched.ng-invalid {
 #admin-user .table-patch .orderStyle {
   text-align: center;
 }
+#admin-department .row {
+  height: 450px;
+}
 #admin-department .table-patch td,
 #admin-department .table-patch th {
   max-width: 200px;
@@ -1852,6 +1855,9 @@ input.ng-touched.ng-invalid {
 }
 #dep-resource .row {
   height: 450px;
+}
+#dep-resource table {
+  border: 2px solid #ddd;
 }
 #dep-resource .table-patch td,
 #dep-resource .table-patch th {
