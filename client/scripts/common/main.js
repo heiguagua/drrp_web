@@ -5,7 +5,8 @@ var Main = angular.module('Main', ['ui.router', 'ngCookies']);
 Main.controller('Main.Controller.Main', ['$scope', '$cookies', 'Main.Service.Http', '$state', 'API',
   function($scope, $cookies, Http, $state, API) {
     $scope.User = JSON.parse($cookies.get('User'));
-    $scope.downloadHelp = API.path + '/download?help=zip';
+    $scope.downloadDuide = API.path + '/download?type=guide';
+    $scope.downloadInstru = API.path + '/download?type=instruction';
     $scope.logout = function() {
       console.log($scope.User);
       if(sessionStorage.token){
