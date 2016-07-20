@@ -29,7 +29,8 @@
           options="treeOptions"
           on-selection="showSelected(node)"
           selected-node="node1">
-          <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+          <span ng-if="node.id" ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+          <span ng-if="!node.id">{{node.dep_short_name}}</span>
           </treecontrol>
         </div>
         <div ng-if="flag==2" class='menu' ui-tree data-drag-enabled="false">
@@ -40,7 +41,8 @@
           options="treeOptions"
           on-selection="showSelected(node)"
           selected-node="node1">
-          <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+          <span ng-if="node.id" ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+          <span ng-if="!node.id">{{node.dep_short_name}}</span>
           </treecontrol>
         </div>
         <div ng-if="flag==3" class='menu' ui-tree data-drag-enabled="false">
@@ -51,7 +53,8 @@
           options="treeOptions"
           on-selection="showSelected(node)"
           selected-node="node1">
-          <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+          <span ng-if="node.id" ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+          <span ng-if="!node.id">{{node.dep_short_name}}</span>
           </treecontrol>
         </div>
         <div ng-if="flag==4" class='menu' ui-tree data-drag-enabled="false">
@@ -62,7 +65,8 @@
           options="treeOptions"
           on-selection="showSelected(node)"
           selected-node="node1">
-          <span ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+          <span ng-if="node.id" ui-sref="main.data-quota.list({resource_dep_id: node.id, dep_name: node.dep_name})">{{node.dep_short_name}}</span>
+          <span ng-if="!node.id">{{node.dep_short_name}}</span>
           </treecontrol>
         </div>
       </div>
