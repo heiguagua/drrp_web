@@ -232,7 +232,8 @@ app.run(['$rootScope', function($rootScope){
 var Config = angular.module('Config', []);
 
 Config.constant('API', {
-  path: 'http://localhost:8080/drrp/api' //发布
+  path: 'http://localhost:8080/drrp/api'
+
 });
 
 'use strict';
@@ -2163,7 +2164,8 @@ var Main = angular.module('Main', ['ui.router', 'ngCookies']);
 Main.controller('Main.Controller.Main', ['$scope', '$cookies', 'Main.Service.Http', '$state', 'API',
   function($scope, $cookies, Http, $state, API) {
     $scope.User = JSON.parse($cookies.get('User'));
-    $scope.downloadHelp = API.path + '/download?help=zip';
+    $scope.downloadDuide = API.path + '/download?type=guide';
+    $scope.downloadInstru = API.path + '/download?type=instruction';
     $scope.logout = function() {
       console.log($scope.User);
       if(sessionStorage.token){

@@ -796,6 +796,7 @@ input.ng-touched.ng-invalid {
 }
 #department-inventory-detail .tab-content .example-data-wrap {
   overflow: scroll;
+  min-height: 290px;
 }
 #department-inventory-detail .tab-content .example-data-wrap wiserv-example-data table {
   table-layout: auto !important;
@@ -1019,6 +1020,7 @@ input.ng-touched.ng-invalid {
 }
 #department-share-detail .example-datas-wrap {
   overflow: scroll;
+  min-height: 290px;
 }
 #department-share-detail .example-datas-wrap wiserv-share-example-data table {
   table-layout: auto !important;
