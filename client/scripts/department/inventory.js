@@ -545,7 +545,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         }
 
         //$scope.ResourceItemConfigList = [];
-        // 获取资源分地区数据级别
+        // 获取资源数据分区级别
         Http.getResourceAreaLevel({
           resource_id: $scope.InfoResource.id
         }).then(function(res) {

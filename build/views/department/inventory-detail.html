@@ -23,7 +23,7 @@
             <div class='col-sm-10' title='{{InfoResourceDetail.category_name}}'>{{InfoResourceDetail.category_name}}</div>
           </div>
           <div class='row'>
-            <label class='col-sm-2 text-right'>信息资源目录代码:</label>
+            <label class='col-sm-2 text-right'>信息资源代码:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.resource_sn}}'>{{InfoResourceDetail.resource_sn}}</div>
           </div>
           <div class='row'>
@@ -35,7 +35,7 @@
             <div class='col-sm-10' title='{{InfoResourceDetail.area_range}}'>{{InfoResourceDetail.area_range}}</div>
           </div>
           <div class='row'>
-            <label class='col-sm-2 text-right'>分地区数据级别:</label>
+            <label class='col-sm-2 text-right'>数据分区级别:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.area_level}}'>{{InfoResourceDetail.area_level}}</div>
           </div>
           <div class='row'>
@@ -55,11 +55,11 @@
             <div class='col-sm-10' title='{{InfoResourceDetail.secret_flag_name}}'>{{InfoResourceDetail.secret_flag_name}}</div>
           </div>
           <div class='row' ng-show='!InfoItemShow'>
-            <label class='col-sm-2 text-right' >计量单位:</label>
+            <label class='col-sm-2 text-right' >数据单位:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.meter_unit}}'>{{InfoResourceDetail.meter_unit}}</div>
           </div>
           <div class='row' ng-show='!InfoItemShow'>
-            <label class='col-sm-2 text-right' >计算方法:</label>
+            <label class='col-sm-2 text-right' >计量方法:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.calculate_method}}'>{{InfoResourceDetail.calculate_method}}</div>
           </div>
           <div class='row'>
@@ -83,7 +83,7 @@
             <div class='col-sm-10' title='{{InfoResourceDetail.share_method_desc}}'>{{InfoResourceDetail.share_method_desc}}</div>
           </div>
           <div class='row'>
-            <label class='col-sm-2 text-right'>是否面向社会开放:</label>
+            <label class='col-sm-2 text-right'>是否开放:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.social_open_flag_name}}'>{{InfoResourceDetail.social_open_flag_name}}</div>
           </div>
           <div class='row'>
@@ -107,7 +107,7 @@
             <div class='col-sm-10' title='{{InfoResourceDetail.contact_phone}}'>{{InfoResourceDetail.contact_phone}}</div>
           </div>
           <div class='row'>
-            <label class='col-sm-2 text-right'>创建时间:</label>
+            <label class='col-sm-2 text-right'>数据发布日期:</label>
             <div class='col-sm-10' title='{{InfoResourceDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}'>{{InfoResourceDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}</div>
           </div>
         </uib-tab>
@@ -120,10 +120,10 @@
                 <th width='80px'>信息项名称</th>
                 <th width='60px'>父信息项</th>
                 <th width='70px'>数据类型</th>
-                <th width='70px'>数据精度</th>
+                <th width='70px'>计量精度</th>
                 <th width='70px'>数据长度</th>
-                <th width='70px'>计量单位</th>
-                <th width='70px'>计算方法</th>
+                <th width='70px'>数据单位</th>
+                <th width='70px'>计量方法</th>
                 <th width='80px'>更新周期</th>
                 <th width='70px'>是否涉密</th>
               </tr>

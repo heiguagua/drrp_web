@@ -273,8 +273,8 @@
                     "item_type": "123683ac-262c-11e6-a9e9-507b9d1b58bb",
                     "data_precision": "小数点后取2位",
                     "data_length": "如小于小于9位",
-                    "item_meter_unit": "计量单位1",
-                    "item_calculate_method": "计算方法1",
+                    "item_meter_unit": "数据单位1",
+                    "item_calculate_method": "计量方法1",
                     "item_secret": "250a53a3-02f0-11e6-a52a-5cf9dd40ad7e",
                     "item_ord": 1
                 },
@@ -327,8 +327,8 @@
                     "item_type": "123683ac-262c-11e6-a9e9-507b9d1b58bb",
                     "data_precision": "小数点后取2位",
                     "data_length": "如小于小于9位",
-                    "item_meter_unit": "计量单位1",
-                    "item_calculate_method": "计算方法2",
+                    "item_meter_unit": "数据单位1",
+                    "item_calculate_method": "计量方法2",
                     "item_secret": "250a53a3-02f0-11e6-a52a-5cf9dd40ad7e",
                     "item_ord": 2
                 }

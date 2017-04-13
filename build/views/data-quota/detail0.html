@@ -24,7 +24,7 @@
             <div class='col-sm-10' title='{{DataQuotaDetail.category}}'>{{DataQuotaDetail.category}}</div>
           </div>
           <div class='row'>
-            <label class='col-sm-2 text-right'>信息资源目录代码:</label>
+            <label class='col-sm-2 text-right'>信息资源代码:</label>
             <div class='col-sm-10' title='{{DataQuotaDetail.resource_sn}}'>{{DataQuotaDetail.resource_sn}}</div>
           </div>
           <div class='row'>
@@ -36,7 +36,7 @@
             <div class='col-sm-10' title='{{DataQuotaDetail.area_range}}'>{{DataQuotaDetail.area_range}}</div>
           </div>
           <div class='row'>
-            <label class='col-sm-2 text-right'>分地区数据级别:</label>
+            <label class='col-sm-2 text-right'>数据分区级别:</label>
             <div class='col-sm-10' title='{{DataQuotaDetail.regionallevel}}'>{{DataQuotaDetail.regionallevel}}</div>
           </div>
           <div class='row'>
@@ -56,11 +56,11 @@
             <div class='col-sm-10' title='{{DataQuotaDetail.secret_flag}}'>{{DataQuotaDetail.secret_flag}}</div>
           </div>
           <div class='row' ng-show='!DataQuotaDetail.resource_format ==="数据库类"'>
-            <label class='col-sm-2 text-right' >计量单位:</label>
+            <label class='col-sm-2 text-right' >数据单位:</label>
             <div class='col-sm-10' title='{{DataQuotaDetail.meter_unit}}'>{{DataQuotaDetail.meter_unit}}</div>
           </div>
           <div class='row' ng-show='!DataQuotaDetail.resource_format ==="数据库类"'>
-            <label class='col-sm-2 text-right' >计算方法:</label>
+            <label class='col-sm-2 text-right' >计量方法:</label>
             <div class='col-sm-10' title='{{DataQuotaDetail.calculate_method}}'>{{DataQuotaDetail.calculate_method}}</div>
           </div>
           <div class='row'>
@@ -84,7 +84,7 @@
             <div class='col-sm-10' title='{{DataQuotaDetail.share_method_desc}}'>{{DataQuotaDetail.share_method_desc}}</div>
           </div>
           <div class='row'>
-            <label class='col-sm-2 text-right'>是否面向社会开放:</label>
+            <label class='col-sm-2 text-right'>是否开放:</label>
             <div class='col-sm-10' title='{{DataQuotaDetail.social_open}}'>{{DataQuotaDetail.social_open}}</div>
           </div>
           <div class='row'>
@@ -108,7 +108,7 @@
             <div class='col-sm-10' title='{{DataQuotaDetail.contact_phone}}'>{{DataQuotaDetail.contact_phone}}</div>
           </div>
           <div class='row'>
-            <label class='col-sm-2 text-right'>创建时间:</label>
+            <label class='col-sm-2 text-right'>数据发布日期:</label>
             <div class='col-sm-10' title='{{DataQuotaDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}'>{{DataQuotaDetail.create_time| date:"yyyy-MM-dd HH:mm:ss"}}</div>
           </div>
         </uib-tab>
@@ -122,12 +122,12 @@
                  <th width="60px">信息项名称</th>
                  <th width="40px">父信息项</th>
                  <th width="40px">数据类型</th>
-                 <th width="40px">数据精度</th>
+                 <th width="40px">计量精度</th>
                  <th width="40px">数据长度</th>
                  <th width="40px">更新周期</th>
                  <th width="40px">是否涉密</th>
-                 <th width="40px">计量单位</th>
-                 <th width="40px">计算方法</th>
+                 <th width="40px">数据单位</th>
+                 <th width="40px">计量方法</th>
                </tr>
              </thead>
              <tbody>

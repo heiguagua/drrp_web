@@ -10,7 +10,7 @@
     "dict_code":"1",
     "dict_name":"是",
     "parent_code":"0",
-    "dict_desc":"是否面向社会开放",
+    "dict_desc":"是否开放",
     "dict_ord":1,
     "active_flag":"1"
   },{
@@ -19,7 +19,7 @@
     "dict_code":"0",
     "dict_name":"否",
     "parent_code":"0",
-    "dict_desc":"是否面向社会开放",
+    "dict_desc":"是否开放",
     "dict_ord":2,
     "active_flag":"1"
   }]

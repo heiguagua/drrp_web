@@ -51,7 +51,7 @@
 
           <!-- <div class="form-group">
             <label for="" class="col-sm-2 control-label">
-              <span class='require-sign'>*</span>信息资源目录代码:</label>
+              <span class='require-sign'>*</span>信息资源代码:</label>
             <div class="col-sm-10">
               <input type="text" required name='resource_sn' class="form-control" ng-model='InfoResource.resource_sn'>
               <span class='help-info'>说明政务信息资源分类的类目信息</span>
@@ -84,7 +84,7 @@
           </div>
 
           <div class="form-group">
-            <label for="" class="col-sm-2 control-label">分地区数据级别:</label>
+            <label for="" class="col-sm-2 control-label">数据分区级别:</label>
             <div class="col-sm-10">
               <span ng-repeat="dataLevel in  dataLevelList">
                 <input type="checkbox" value="{{dataLevel.id}}" ng-checked="dataLevelSelection.indexOf(dataLevel.id) > -1" ng-click="toggleDataLevelSelection(dataLevel)">
@@ -141,10 +141,10 @@
 
           <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
             <label for="" class="col-sm-2 control-label">
-              计量单位:</label>
+              数据单位:</label>
             <div class="col-sm-10">
               <input type="text" name='meter_unit' ng-maxlength='256' class="form-control" ng-model='InfoResource.meter_unit'>
-              <p ng-show="InfoResourceForm.meter_unit.$error.required && submitted" class="help-block">请输入计量单位</p>
+              <p ng-show="InfoResourceForm.meter_unit.$error.required && submitted" class="help-block">请输入数据单位</p>
               <p ng-show="InfoResourceForm.meter_unit.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
               <span class='help-info'>
                 反映资源信息具体数值的实际度量单位，可对应多个
@@ -154,7 +154,7 @@
 
           <div class="form-group" ng-class="{true: 'ng-show', false: 'ng-hide'}[(!resItemAddBtn) && (!resItemUpdateBtn)]">
             <label for="" class="col-sm-2 control-label">
-              计算方法:</label>
+              计量方法:</label>
             <div class="col-sm-10">
               <textarea class="form-control" name='calculate_method' ng-maxlength="256" rows='3' ng-model='InfoResource.calculate_method'></textarea>
               <p ng-show="InfoResourceForm.calculate_method.$error.maxlength" class="help-block">您输入的内容太长。</p>
@@ -224,12 +224,12 @@
 
           <div class="form-group">
             <label for="" class="col-sm-2 control-label" style='padding-left:0'>
-              <span class='require-sign'>*</span>是否面向社会开放:</label>
+              <span class='require-sign'>*</span>是否开放:</label>
             <div class="col-sm-10">
               <select ng-model='InfoResource.social_open_flag' readonly='{{socialOpenFlag}}' class='custom-form-control'>
                 <option ng-selected="socialOpen.dict_code == InfoResource.social_open_flag" ng-repeat="socialOpen in  socialOpenList" value='{{socialOpen.dict_code}}'>{{socialOpen.dict_name}}</option>
               </select>
-              <p ng-show="(InfoResource.social_open_flag != 0 && InfoResource.social_open_flag != 1) && submitted && !resItemAddBtn" class="help-block">请选择是否面向社会开放</p>
+              <p ng-show="(InfoResource.social_open_flag != 0 && InfoResource.social_open_flag != 1) && submitted && !resItemAddBtn" class="help-block">请选择是否开放</p>
             </div>
           </div>
 
@@ -314,10 +314,10 @@
                 <th width='80px'>信息项名称</th>
                 <th width='60px'>父信息项</th>
                 <th width='100px'>数据类型</th>
-                <th width='80px'>数据精度</th>
+                <th width='80px'>计量精度</th>
                 <th width='80px'>数据长度</th>
-                <th width='80px'>计量单位</th>
-                <th width='80px'>计算方法</th>
+                <th width='80px'>数据单位</th>
+                <th width='80px'>计量方法</th>
                 <th width='80px'>更新周期</th>
                 <th width='80px'>是否涉密</th>
               </tr>
@@ -405,10 +405,10 @@
 
       <div class="form-group">
         <label for="" class="col-sm-2 control-label">
-          <span class='require-sign'>*</span>数据精度:</label>
+          <span class='require-sign'>*</span>计量精度:</label>
         <div class="col-sm-10">
           <input type="text" name='data_precision' ng-maxlength='256' class="form-control" required ng-model='ResourceItem.data_precision'>
-          <p ng-show="addItemForm.data_precision.$error.required  && itemAdded" class="help-block">请输入数据精度</p>
+          <p ng-show="addItemForm.data_precision.$error.required  && itemAdded" class="help-block">请输入计量精度</p>
           <p ng-show="addItemForm.data_precision.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
           <span class='help-info'>
             数值型指标数据定义的数据存储的小数位数。如：小数点后取2位
@@ -431,7 +431,7 @@
 
       <div class="form-group">
         <label for="" class="col-sm-2 control-label">
-          计量单位:</label>
+          数据单位:</label>
         <div class="col-sm-10">
           <input type="text" name='meter_unit' ng-maxlength='256' class="form-control" ng-model='ResourceItem.meter_unit'>
           <p ng-show="addItemForm.meter_unit.$error.maxlength" class="help-block">您输入的内容太长，最长不超过256个字符。</p>
@@ -443,7 +443,7 @@
 
       <div class="form-group">
         <label for="" class="col-sm-2 control-label">
-          计算方法:</label>
+          计量方法:</label>
         <div class="col-sm-10">
           <textarea class="form-control" name='calculate_method' ng-maxlength="256" rows='3' ng-model='ResourceItem.calculate_method'></textarea>
           <p ng-show="addItemForm.calculate_method.$error.maxlength" class="help-block">您输入的内容太长。</p>

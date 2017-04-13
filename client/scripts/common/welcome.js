@@ -178,7 +178,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     };
     // Filter generator
     var SHARE_FREQUENCY = 1, //更新周期
-        DATA_LEVEL = 2, //分地区数据级别
+        DATA_LEVEL = 2, //数据分区级别
         SHARE_LEVEL = 3, //共享级别
         RESOURCE_FORMAT = 11, //信息资源格式
         SOCIAL_OPEN_FLAG  = 14, //面向社会开放
@@ -293,7 +293,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       }
     };
 
-    /* 分地区数据级别 */
+    /* 数据分区级别 */
     filterParams.area_level = [];
     $scope.DataLevelActive = [];
     $scope.DataLevelFilter = function(id, index){

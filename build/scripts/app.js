@@ -232,8 +232,7 @@ app.run(['$rootScope', function($rootScope){
 var Config = angular.module('Config', []);
 
 Config.constant('API', {
-  path: 'http://localhost:8080/drrp/api'
-
+   path: 'http://localhost:8080/drrp/api' //发布
 });
 
 'use strict';
@@ -2113,7 +2112,7 @@ Login.controller('Login.Controller.Main', ['$rootScope', '$cookies', '$scope', '
     $scope.Login.submit = function(valid) {
       $scope.loginSubmitted = false;
       if (valid) {
-        var username = $scope.Login.username;
+        var username = $scope.Login.username; 
         var password = hex_md5($scope.Login.password);
         Http.login({
           username: username,
@@ -2374,7 +2373,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
     };
     // Filter generator
     var SHARE_FREQUENCY = 1, //更新周期
-        DATA_LEVEL = 2, //分地区数据级别
+        DATA_LEVEL = 2, //数据分区级别
         SHARE_LEVEL = 3, //共享级别
         RESOURCE_FORMAT = 11, //信息资源格式
         SOCIAL_OPEN_FLAG  = 14, //面向社会开放
@@ -2489,7 +2488,7 @@ Welcome.controller('Welcome.Controller.Main', ['$scope', '$state', 'Welcome.Serv
       }
     };
 
-    /* 分地区数据级别 */
+    /* 数据分区级别 */
     filterParams.area_level = [];
     $scope.DataLevelActive = [];
     $scope.DataLevelFilter = function(id, index){
@@ -2869,7 +2868,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
     };
     // Filter generator
     var SHARE_FREQUENCY = 1, //更新周期
-        DATA_LEVEL = 2, //分地区数据级别
+        DATA_LEVEL = 2, //数据分区级别
         SHARE_LEVEL = 3, //共享级别
         RESOURCE_FORMAT = 11, //信息资源格式
         SOCIAL_OPEN_FLAG  = 14, //面向社会开放
@@ -2979,7 +2978,7 @@ DataQuotaList.controller('DataQuotaList.Controller.Main', ['$scope', '$state', '
       }
     };
 
-    /* 分地区数据级别 */
+    /* 数据分区级别 */
     filterParams.area_level = [];
     $scope.DataLevelActive = [];
     $scope.DataLevelFilter = function(id, index){
@@ -4459,7 +4458,7 @@ DInventory.controller('Department.Inventory.Controller.publish', ['$cookies', '$
         }
 
         //$scope.ResourceItemConfigList = [];
-        // 获取资源分地区数据级别
+        // 获取资源数据分区级别
         Http.getResourceAreaLevel({
           resource_id: $scope.InfoResource.id
         }).then(function(res) {
@@ -5645,7 +5644,7 @@ DepartmentReq.controller('Department.Requirement.Controller.Main', ['$cookies', 
         $scope.shareFreqSelection = res.data.body[0].id;
       })
 
-      // 获取需求对应的分地区数据级别
+      // 获取需求对应的数据分区级别
       Http.getReqAreaLevel({
         requiement_id: item.id
       }).then(function(res) {
